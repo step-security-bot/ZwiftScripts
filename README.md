@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     let file_list_html = '';
                     switch(contentId) {
                         case 'file-list-1':
-                            file_list_html = `<ul><h2 style="color: #3ba145;">Repo Root</h2>
+                            file_list_html = `<ul><h2 style="color: #a9c369;">Repo Root</h2>
 - [.black](https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.black)
 - [.editorconfig](https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.editorconfig)
 - [.gitignore](https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.gitignore)
@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", function() {
             let file_list_html = '';
             switch(contentId) {
                 case 'file-list-1':
-                    file_list_html = `<ul><h2 style="color: #3ba145;">Repo Root</h2>
+                    file_list_html = `<ul><h2 style="color: #a9c369;">Repo Root</h2>
 - [.black](https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.black)
 - [.editorconfig](https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.editorconfig)
 - [.gitignore](https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.gitignore)
