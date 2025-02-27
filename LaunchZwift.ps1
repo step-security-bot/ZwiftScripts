@@ -16,7 +16,7 @@ catch {
 # Start Zwift Launcher
 if (Test-Path -LiteralPath $ZwiftLauncherPath) {
     try {
-        $zwiftProcess = Start-Process -FilePath $ZwiftLauncherPath -NoNewWindow -PassThru -ErrorAction Stop -Wait
+        $zwiftProcess = Start-Process -FilePath $ZwiftLauncherPath -PassThru -ErrorAction Stop
         if ($zwiftProcess) {
             Write-Output "Zwift Launcher started successfully from path: $ZwiftLauncherPath"
         }
@@ -35,7 +35,7 @@ else {
 # Start Zwift Monitor Script
 if (Test-Path -LiteralPath $MonitorZwiftScriptPath) {
     try {
-        $monitorProcess = Start-Process -FilePath 'powershell.exe' -ArgumentList "-File `"$MonitorZwiftScriptPath`"" -NoNewWindow -PassThru -ErrorAction Stop
+        $monitorProcess = Start-Process -FilePath 'powershell.exe' -ArgumentList "-File `"$MonitorZwiftScriptPath`"" -PassThru -ErrorAction Stop
         if ($monitorProcess) {
             Write-Output "Zwift Monitor Script started successfully from path: $MonitorZwiftScriptPath"
         }

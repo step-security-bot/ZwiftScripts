@@ -1,7 +1,7 @@
 param (
 	[string]$ModulePath = "$env:USERPROFILE\Documents\PowerShell\Modules\DisplayConfig\3.1.0\DisplayConfig.dll",
 	[int]$Transparency = 25,
-	[int]$SleepInterval = 2, # Default sleep interval in seconds
+	[int]$SleepInterval = 30, # Default sleep interval in seconds
 	[string]$ZwiftExe = 'ZwiftLauncher', # Replace with Zwift's actual process name (without .exe)
 	[int]$PrimaryDisplayZwift = 4,
 	[int]$PrimaryDisplayDefault = 2
