@@ -1,7 +1,7 @@
 param (
 	[string]$ModulePath = "$env:USERPROFILE\Documents\PowerShell\Modules\DisplayConfig\3.1.0\DisplayConfig.dll",
 	[int]$Transparency = 25,
-	[int]$SleepInterval = 10, # Default sleep interval in seconds
+	[int]$SleepInterval = 2, # Default sleep interval in seconds
 	[string]$ZwiftExe = 'ZwiftLauncher', # Replace with Zwift's actual process name (without .exe)
 	[int]$PrimaryDisplayZwift = 4,
 	[int]$PrimaryDisplayDefault = 2
@@ -87,7 +87,8 @@ while ($true) {
 			Write-Host "$(Get-Date): Zwift closed. Setting primary display to $PrimaryDisplayDefault"
 			Set-DisplayPrimary $PrimaryDisplayDefault
 			$WasRunning = $false
-			break  # Exit the loop after Zwift closes
+			Write-Host "Closing the PowerShell window."
+			exit  # Exit the script after Zwift closes
 		}
 	}
 	catch {
