@@ -35,7 +35,7 @@ else {
 # Start Zwift Monitor Script
 if (Test-Path -LiteralPath $MonitorZwiftScriptPath) {
     try {
-        $monitorProcess = Start-Process -FilePath "powershell.exe" -ArgumentList "-File `"$MonitorZwiftScriptPath`"" -NoNewWindow -PassThru -ErrorAction Stop
+        $monitorProcess = Start-Process -FilePath 'powershell.exe' -ArgumentList "-File `"$MonitorZwiftScriptPath`"" -NoNewWindow -PassThru -ErrorAction Stop
         if ($monitorProcess) {
             Write-Output "Zwift Monitor Script started successfully from path: $MonitorZwiftScriptPath"
         }

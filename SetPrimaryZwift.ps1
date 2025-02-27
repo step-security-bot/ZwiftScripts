@@ -1,9 +1,9 @@
-$ZwiftProcessName = 'ZwiftLauncher' # Replace with Zwift's actual process name
-$PrimaryDisplayZwift = 4
-$PrimaryDisplayDefault = 2
-
-# Path to the DisplayConfig module
-$ModulePath = 'C:\Users\Nick\Dropbox\PC (2)\Documents\PowerShell\Modules\DisplayConfig\3.1.0\DisplayConfig.dll'
+param (
+	[string]$ZwiftProcessName = 'ZwiftLauncher', # Replace with Zwift's actual process name
+	[int]$PrimaryDisplayZwift = 4,
+	[int]$PrimaryDisplayDefault = 2,
+	[string]$ModulePath = 'C:\Users\Nick\Dropbox\PC (2)\Documents\PowerShell\Modules\DisplayConfig\3.1.0\DisplayConfig.dll'
+)
 
 # Import the DisplayConfig module with error handling
 try {
@@ -16,22 +16,34 @@ catch {
 }
 
 # Function to check if Zwift is running
-function Is-ZwiftRunning {
-	return (Get-Process -Name $ZwiftProcessName -ErrorAction SilentlyContinue) -ne $null
+function Test-ZwiftRunning {
+	try {
+		return $null -ne (Get-Process -Name $ZwiftProcessName -ErrorAction SilentlyContinue)
+	}
+	catch {
+		Write-Verbose 'Zwift process not found.'
+		return $false
+	}
 }
 
 # Ensure Set-DisplayPrimary function exists
-if (-not (Get-Command -Name Set-DisplayPrimary -ErrorAction SilentlyContinue)) {
-	Write-Error "Set-DisplayPrimary function not found. Ensure the DisplayConfig module is correctly imported."
+try {
+	if (-not (Get-Command -Name Set-DisplayPrimary -ErrorAction SilentlyContinue)) {
+		throw 'Set-DisplayPrimary function not found. Ensure the DisplayConfig module is correctly imported.'
+	}
+}
+catch {
+	Write-Error "$($_.Exception.Message)"
 	exit 1
 }
 
 # Set the primary display based on whether Zwift is running
 try {
-	if (-not (Is-ZwiftRunning)) {
+	if (-not (Test-ZwiftRunning)) {
 		Set-DisplayPrimary $PrimaryDisplayDefault
 		Write-Output "Primary display set to default: $PrimaryDisplayDefault"
-	} else {
+	}
+	else {
 		Set-DisplayPrimary $PrimaryDisplayZwift
 		Write-Output "Primary display set to Zwift: $PrimaryDisplayZwift"
 	}
