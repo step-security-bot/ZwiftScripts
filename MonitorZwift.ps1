@@ -87,7 +87,7 @@ while ($true) {
 			Write-Host "$(Get-Date): Zwift closed. Setting primary display to $PrimaryDisplayDefault"
 			Set-DisplayPrimary $PrimaryDisplayDefault
 			$WasRunning = $false
-			Write-Host "Closing the PowerShell window."
+			Write-Host 'Closing the PowerShell window.'
 			exit  # Exit the script after Zwift closes
 		}
 	}

@@ -1,46 +1,11 @@
 param (
-	[string]$ModulePath = "$env:USERPROFILE\Documents\PowerShell\Modules\DisplayConfig\3.1.0\DisplayConfig.dll",
 	[int]$Transparency = 25,
-	[int]$SleepInterval = 5, # Reduced interval for faster detection
+	[int]$SleepInterval = 5, # Reduced interval for faster detection of Zwift launcher and game processes
 	[string]$ZwiftLauncher = 'ZwiftLauncher', # Zwift launcher process name
 	[string]$ZwiftGame = 'ZwiftApp', # Zwift game process name
-	[int]$PrimaryDisplayZwift = 4,
-	[int]$PrimaryDisplayDefault = 2
+	[int]$PrimaryDisplayZwift = 4, # Zero-based index of the display to be used for Zwift
+	[int]$PrimaryDisplayDefault = 2 # Index of the default primary display
 )
-
-# Import the DisplayConfig module or install it if not available
-function Import-DisplayConfigModule {
-	if (-not (Test-Path $ModulePath)) {
-		Write-Host "$(Get-Date): Module path $ModulePath does not exist. Downloading DisplayConfig module..."
-		try {
-			Install-Module -Name DisplayConfig -Force -AllowClobber -Scope CurrentUser -ErrorAction Stop
-			Write-Host "$(Get-Date): Module downloaded and installed successfully."
-		}
-		catch {
-			Write-Host "$(Get-Date): Failed to download and install module: $($_.Exception.Message). Continuing without it."
-		}
-	}
-
-	try {
-		Import-Module $ModulePath -ErrorAction Stop
-		Write-Host "$(Get-Date): Successfully imported DisplayConfig module."
-	}
-	catch {
-		Write-Host "$(Get-Date): Failed to import module from ${ModulePath}: $($_.Exception.Message). Continuing without it."
-	}
-}
-
-# Function to check if a process is running
-function Get-ProcessRunning {
-	param ([string]$ProcessName)
-	try {
-		return $null -ne (Get-Process -Name $ProcessName -ErrorAction SilentlyContinue)
-	}
-	catch {
-		Write-Host "$(Get-Date): Error checking process ${ProcessName}: $($_.Exception.Message)"
-		return $false
-	}
-}
 
 # Function to set window transparency
 # Define the Win32 class once
@@ -70,7 +35,40 @@ public class Win32 {
 	Add-Type -TypeDefinition $win32Code
 }
 
-# Ensure the transparency is applied only to the PowerShell window
+# Import the DisplayConfig module or install it if not available
+function Import-DisplayConfigModule {
+	try {
+		if (-not (Get-Module -ListAvailable -Name DisplayConfig)) {
+			Write-Host "$(Get-Date): DisplayConfig module not found. Downloading..."
+			Install-Module -Name DisplayConfig -Force -AllowClobber -Scope CurrentUser -ErrorAction Stop
+			Write-Host "$(Get-Date): Module downloaded and installed successfully."
+		}
+	}
+	catch {
+		Write-Host "$(Get-Date): Failed to download and install module: $($_.Exception.Message). Continuing without it."
+	}
+
+	try {
+		Import-Module DisplayConfig -ErrorAction Stop
+		Write-Host "$(Get-Date): Successfully imported DisplayConfig module."
+	}
+	catch {
+		Write-Host "$(Get-Date): Failed to import DisplayConfig module: $($_.Exception.Message). Continuing without it."
+	}
+}
+# Function to check if a process is running
+function Get-ProcessRunning {
+	param ([string]$ProcessName)
+	try {
+		return $null -ne (Get-Process -Name $ProcessName -ErrorAction SilentlyContinue)
+	}
+	catch {
+		Write-Host "$(Get-Date): Error checking process ${ProcessName}: $($_.Exception.Message)"
+		return $false
+	}
+}
+
+# Ensure the transparency is applied only to the current PowerShell window
 function Set-WindowTransparency {
 	param (
 		[int]$Transparency
@@ -79,13 +77,15 @@ function Set-WindowTransparency {
 		$hwnd = [Win32]::GetForegroundWindow()
 		$process = Get-Process -Id ([System.Diagnostics.Process]::GetCurrentProcess().Id)
 		$processName = $process.ProcessName.ToLower()
-		if ($processName -eq 'powershell' -or $processName -eq 'pwsh' -or $processName -eq 'windowsterminal' -or $processName -eq 'wt') {
+		$allowedProcesses = @('powershell', 'pwsh', 'windowsterminal', 'wt')
+		if ($allowedProcesses -contains $processName) {
 			$style = [Win32]::GetWindowLong($hwnd, [Win32]::GWL_EXSTYLE)
 			[Win32]::SetWindowLong($hwnd, [Win32]::GWL_EXSTYLE, $style -bor [Win32]::WS_EX_LAYERED)
 			[Win32]::SetLayeredWindowAttributes($hwnd, 0, [byte]$Transparency, [Win32]::LWA_ALPHA)
 			Write-Host "$(Get-Date): Successfully set window transparency to $Transparency"
 		}
 		else {
+
 			Write-Host "$(Get-Date): The foreground window is not a PowerShell or Windows Terminal window. Transparency not applied."
 		}
 	}
@@ -94,7 +94,7 @@ function Set-WindowTransparency {
 	}
 }
 
-# Function to set primary display
+# Function to set primary display (zero-based index)
 function Set-PrimaryDisplay {
 	param ([int]$DisplayIndex)
 	try {
@@ -170,6 +170,7 @@ try {
 catch {
 	Write-Host "$(Get-Date): Error monitoring Zwift game: $($_.Exception.Message)"
 }
+
 try {
 	Write-Host "$(Get-Date): Closing the script."
 }
