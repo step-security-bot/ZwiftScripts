@@ -211,15 +211,9 @@ catch {
 	Write-Host "$(Get-Date): Error setting window transparency: $($_.Exception.Message)"
 }
 
+# Wait for Zwift launcher to start and set primary display to Zwift display (index: 4)
 try {
 	Write-Host "$(Get-Date): Waiting for Zwift launcher to start..."
-}
-catch {
-	Write-Host "$(Get-Date): Error while waiting for Zwift launcher to start: $($_.Exception.Message)"
-}
-
-# Wait for Zwift launcher to start and switch primary display to Zwift display (index: 4)
-try {
 	while (-not (Get-ProcessRunning -ProcessName $ZwiftLauncher)) {
 		Start-Sleep -Seconds $SleepInterval
 	}
@@ -227,29 +221,23 @@ try {
 	Set-PrimaryDisplay $PrimaryDisplayZwift
 }
 catch {
-	Write-Host "$(Get-Date): Error detecting Zwift launcher: $($_.Exception.Message)"
+	Write-Host "$(Get-Date): Error while waiting for Zwift launcher to start or switching primary display: $($_.Exception.Message)"
 }
-
-try {
-	Write-Host "$(Get-Date): Waiting for Zwift game to start..."
-}
-catch {
-	Write-Host "$(Get-Date): Error while waiting for Zwift game to start: $($_.Exception.Message)"
-}
-
 # Wait for Zwift game to start and monitor until it closes
 try {
+	Write-Host "$(Get-Date): Waiting for Zwift game to start (checking every $SleepInterval seconds)..."
 	while (-not (Get-ProcessRunning -ProcessName $ZwiftGame)) {
 		Start-Sleep -Seconds $SleepInterval
 	}
-	Write-Host "$(Get-Date): Zwift game detected. Monitoring until it closes..."
+	Write-Host "$(Get-Date): Zwift game detected."
 }
 catch {
-	Write-Host "$(Get-Date): Error detecting Zwift game: $($_.Exception.Message)"
+	Write-Host "$(Get-Date): Error while waiting for or detecting Zwift game: $($_.Exception.Message)"
 }
 
 # Wait for Zwift game to close and restore primary display to default display (index: 2)
 try {
+	Write-Host "$(Get-Date): Zwift game is running. Waiting for it to close (checking every $SleepInterval seconds)..."
 	while (Get-ProcessRunning -ProcessName $ZwiftGame) {
 		Start-Sleep -Seconds $SleepInterval
 	}
@@ -257,10 +245,11 @@ try {
 	Set-PrimaryDisplay $PrimaryDisplayDefault
 }
 catch {
-	Write-Host "$(Get-Date): Error monitoring Zwift game: $($_.Exception.Message)"
+	Write-Host "$(Get-Date): Error monitoring Zwift game or restoring display: $($_.Exception.Message)"
 }
 
 # Run FreeFileSync batch job after Zwift game closes and display is restored to default display (index: 2)
+# This ensures that any files (screenshots) modified during the Zwift session are synchronized with the backup location.
 try {
 	Write-Host "$(Get-Date): Running FreeFileSync batch job..."
 	Start-Process -FilePath $FreeFileSyncPath -ArgumentList "`"$BatchJobPath`"" -Wait
