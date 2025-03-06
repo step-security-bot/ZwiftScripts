@@ -133,8 +133,18 @@ param (
 	# GUID for the PowerToys Workspace
 	[string]$FreeFileSyncPath = 'C:\Program Files\FreeFileSync\FreeFileSync.exe',
 	# Path to FreeFileSync executable
-	[string]$BatchJobPath = 'C:\Users\Nick\Dropbox\Random Save\Task Scheduler Rules\ZwiftPics.ffs_batch'
+	[string]$BatchJobPath = 'C:\Users\Nick\Dropbox\Random Save\Task Scheduler Rules\ZwiftPics.ffs_batch',
 	# Path to FreeFileSync batch job
+	[int]$WindowPositionX = 100,
+	# Default window position X
+	[int]$WindowPositionY = 100,
+	# Default window position Y
+	[int]$WindowWidth = 200,
+	# Default window width
+	[int]$WindowHeight = 600,
+	# Default window height
+	[string[]]$AppsToCheck = @('Spotify', 'obs64', 'Sauce for Zwift™')
+	# List of additional apps to check for and close when Zwift is detected
 )
 
 # Function to set window transparency using Win32 API functions
@@ -187,13 +197,31 @@ public class Win32 {
 	[return: MarshalAs(UnmanagedType.Bool)]
 	public static extern bool SetLayeredWindowAttributes(IntPtr hwnd, uint crKey, byte bAlpha, uint dwFlags);
 
+	[DllImport("user32.dll", SetLastError = true)]
+	public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+
 	public const int GWL_EXSTYLE = -20;
 	public const int WS_EX_LAYERED = 0x80000;
 	public const int LWA_ALPHA = 0x2;
+	public const uint SWP_NOSIZE = 0x0001;
+	public const uint SWP_NOMOVE = 0x0002;
+	public const uint SWP_NOZORDER = 0x0004;
+	public const uint SWP_SHOWWINDOW = 0x0040;
 }
 '@
 	Add-Type -TypeDefinition $win32Code
 }
+
+try {
+	# Resize the PowerShell window
+	$hwnd = [Win32]::GetForegroundWindow()
+	[Win32]::SetWindowPos($hwnd, [IntPtr]::Zero, $WindowPositionX, $WindowPositionY, $WindowWidth, $WindowHeight, [Win32]::SWP_NOZORDER -bor [Win32]::SWP_SHOWWINDOW)
+	Write-Host "$(Get-Date): Successfully resized the PowerShell window."
+}
+catch {
+	Write-Host "$(Get-Date): Error resizing the PowerShell window: $($_.Exception.Message)"
+}
+
 
 # Import the DisplayConfig module or install it if not available (requires PowerShellGet) and handle exceptions
 function Import-DisplayConfigModule {
@@ -299,10 +327,18 @@ catch {
 
 # Launch the PowerToys Workspaces for Zwift (if installed) after the Zwift launcher starts
 try {
-	Write-Host "$(Get-Date): Launching Zwift PowerToys Workspaces..."
-	Start-Process -FilePath $PowerToysPath -ArgumentList "$WorkspaceGuid 1"
-	Start-Sleep -Seconds $WorkspacesSleepInterval
-	Write-Host "$(Get-Date): Zwift PowerToys Workspaces launched successfully."
+	# Check if any of the specified applications are running
+	$appsRunning = $AppsToCheck | ForEach-Object { Get-Process -Name $_ -ErrorAction SilentlyContinue }
+
+	if ($appsRunning) {
+		Write-Host "$(Get-Date): One or more specified applications are running. Skipping PowerToys Workspaces launch."
+	}
+	else {
+		Write-Host "$(Get-Date): Launching Zwift PowerToys Workspaces..."
+		Start-Process -FilePath $PowerToysPath -ArgumentList "$WorkspaceGuid 1"
+		Start-Sleep -Seconds $WorkspacesSleepInterval
+		Write-Host "$(Get-Date): Zwift PowerToys Workspaces launched successfully."
+	}
 }
 catch {
 	Write-Host "$(Get-Date): Error launching PowerToys Workspaces: $($_.Exception.Message)"
