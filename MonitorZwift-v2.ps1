@@ -1,33 +1,54 @@
 <#
 .SYNOPSIS
-    Monitors the Zwift launcher and game processes, adjusts window transparency, and switches primary display.
+	Monitors the Zwift launcher and game processes, adjusts window transparency,
+	and switches primary display.
 
 .DESCRIPTION
-    This script monitors the Zwift launcher and game processes, adjusts the transparency of the current PowerShell or Windows Terminal window, switches the primary display to a specified display when Zwift starts, and restores the primary display to the default display when Zwift closes. It also runs a FreeFileSync batch job after Zwift closes.
+	This script monitors the Zwift launcher and game processes, adjusts the
+	transparency of the current PowerShell or Windows Terminal window, switches
+	the primary display to a specified display when Zwift starts, and restores
+	the primary display to the default display when Zwift closes. It also runs
+	a FreeFileSync batch job after Zwift closes.
 
 .PARAMETER Transparency
-    The transparency percentage for the PowerShell or Windows Terminal window (0-100). Default is 75.
+	The transparency percentage for the PowerShell or Windows Terminal window
+	(0-100). Default is 75.
 
 .PARAMETER SleepInterval
-    The interval in seconds for checking the Zwift launcher and game processes. Default is 5 seconds.
+	The interval in seconds for checking the Zwift launcher and game processes.
+	Default is 5 seconds.
+
+.PARAMETER PowerToysPath
+	The file path to the PowerToys Workspaces executable. Default is
+	'C:\Program Files\PowerToys\PowerToys.WorkspacesLauncher.exe'.
+
+.PARAMETER WorkspaceGuid
+	The GUID for the PowerToys Workspace. Default is
+	'{E2CDEA2A-6E33-4CFD-A26B-0C5CC2E55F40'.
+
+.PARAMETER WorkspacesSleepInterval
+	The interval in seconds to wait after launching PowerToys Workspaces.
+	Default is 5 seconds.
 
 .PARAMETER ZwiftLauncher
-    The process name of the Zwift launcher. Default is 'ZwiftLauncher'.
+	The process name of the Zwift launcher. Default is 'ZwiftLauncher'.
 
 .PARAMETER ZwiftGame
-    The process name of the Zwift game. Default is 'ZwiftApp'.
+	The process name of the Zwift game. Default is 'ZwiftApp'.
 
 .PARAMETER PrimaryDisplayZwift
-    The zero-based index of the display to be used for Zwift. Default is 4.
+	The zero-based index of the display to be used for Zwift. Default is 4.
 
 .PARAMETER PrimaryDisplayDefault
-    The index of the default primary display. Default is 2.
+	The index of the default primary display. Default is 2.
 
 .PARAMETER FreeFileSyncPath
-    The file path to the FreeFileSync executable. Default is 'C:\Program Files\FreeFileSync\FreeFileSync.exe'.
+	The file path to the FreeFileSync executable. Default is
+	'C:\Program Files\FreeFileSync\FreeFileSync.exe'.
 
 .PARAMETER BatchJobPath
-    The file path to the FreeFileSync batch job. Default is 'C:\Users\Nick\Dropbox\Random Save\Task Scheduler Rules\ZwiftPics.ffs_batch'.
+	The file path to the FreeFileSync batch job. Default is
+	'C:\Users\Nick\Dropbox\Random Save\Task Scheduler Rules\ZwiftPics.ffs_batch'.
 
 .FUNCTIONS
     Import-DisplayConfigModule
@@ -73,29 +94,81 @@
     This example sets the window transparency to 50% and the sleep interval to 10 seconds.
 
 .EXAMPLE
-    .\MonitorZwift-v2.ps1 -Transparency 75 -SleepInterval 5
+	.\MonitorZwift-v2.ps1 `
+		-Transparency 75 `
+		-SleepInterval 5 `
+		-PowerToysPath 'C:\Program Files\PowerToys\PowerToys.WorkspacesLauncher.exe' `
+		-WorkspaceGuid '{E2CDEA2A-6E33-4CFD-A26B-0C5CC2E55F40' `
+		-WorkspacesSleepInterval 5 `
+		-ZwiftLauncher 'ZwiftLauncher' `
+		-ZwiftGame 'ZwiftApp' `
+		-PrimaryDisplayZwift 4 `
+		-PrimaryDisplayDefault 2 `
+		-FreeFileSyncPath 'C:\Program Files\FreeFileSync\FreeFileSync.exe' `
+		-BatchJobPath 'C:\Users\Nick\Dropbox\Random Save\Task Scheduler Rules\ZwiftPics.ffs_batch'
 
-    This example sets the window transparency to 75% (default) and the sleep interval to 5 seconds (default).
-
-.EXAMPLE
-    .\MonitorZwift-v2.ps1 -Transparency 25 -SleepInterval 15
-
-    This example sets the window transparency to 25% and the sleep interval to 15 seconds.
+	This example sets the window transparency to 75%, the sleep interval to 5 seconds,
+	and customizes the paths and settings for PowerToys Workspaces, Zwift processes,
+	primary displays, FreeFileSync, and the batch job.
 #>
 
 param (
-	[int]$Transparency = 75, # Window transparency percentage (0-100) 100 = fully transparent, 0 = opaque
-	[int]$SleepInterval = 10, # Reduced interval for faster detection of Zwift launcher and game processes
-	[string]$ZwiftLauncher = 'ZwiftLauncher', # Zwift launcher process name
-	[string]$ZwiftGame = 'ZwiftApp', # Zwift game process name
-	[int]$PrimaryDisplayZwift = 4, # Zero-based index of the display to be used for Zwift
-	[int]$PrimaryDisplayDefault = 2, # Index of the default primary display
+	[int]$Transparency = 75,
+	# Window transparency percentage (0-100) 100 = fully transparent, 0 = opaque
+	[int]$SleepInterval = 10,
+	# Reduced interval for faster detection of Zwift launcher and game processes
+	[int]$WorkspacesSleepInterval = 5,
+	# Sleep interval after launching PowerToys Workspaces
+	[string]$ZwiftLauncher = 'ZwiftLauncher',
+	# Zwift launcher process name
+	[string]$ZwiftGame = 'ZwiftApp',
+	# Zwift game process name
+	[int]$PrimaryDisplayZwift = 4,
+	# Zero-based index of the display to be used for Zwift
+	[int]$PrimaryDisplayDefault = 2,
+	# Index of the default primary display
+	[string]$PowerToysPath = 'C:\Program Files\PowerToys\PowerToys.WorkspacesLauncher.exe',
+	# Path to PowerToys Workspaces
+	[string]$WorkspaceGuid = '{E2CDEA2A-6E33-4CFD-A26B-0C5CC2E55F40',
+	# GUID for the PowerToys Workspace
 	[string]$FreeFileSyncPath = 'C:\Program Files\FreeFileSync\FreeFileSync.exe',
+	# Path to FreeFileSync executable
 	[string]$BatchJobPath = 'C:\Users\Nick\Dropbox\Random Save\Task Scheduler Rules\ZwiftPics.ffs_batch'
+	# Path to FreeFileSync batch job
 )
 
 # Function to set window transparency using Win32 API functions
 # Define the Win32 class once if not already defined
+
+# The provided PowerShell script snippet checks if a type named 'Win32'
+# is already defined in the current session. If it is not, the script
+# defines a new class named Win32 using C# code embedded within the
+# PowerShell script. This is done using the Add-Type cmdlet, which allows
+# you to define and use .NET types directly within PowerShell.
+
+# The C# code defines a class Win32 that contains several methods and
+# constants related to Windows API functions. These methods are imported
+# from the user32.dll library using the DllImport attribute, which allows
+# managed code to call unmanaged functions from Windows DLLs. The methods
+# included are:
+
+# GetForegroundWindow: Retrieves a handle to the foreground window (the
+# window with which the user is currently interacting).
+# GetWindowLong: Retrieves information about the specified window.
+# SetWindowLong: Changes an attribute of the specified window.
+# SetLayeredWindowAttributes: Sets the opacity and transparency color key
+# of a layered window.
+# The class also defines three constants:
+
+# GWL_EXSTYLE: The offset of the extended window styles.
+# WS_EX_LAYERED: A style that allows a window to be transparent or
+# translucent.
+# LWA_ALPHA: A flag used to set the opacity of a layered window.
+# By embedding this C# code within the PowerShell script and using
+# Add-Type, the script ensures that these Windows API functions can be
+# called directly from PowerShell, enabling advanced window manipulation
+# capabilities.
+
 if (-not ([System.Management.Automation.PSTypeName]'Win32').Type) {
 	$win32Code = @'
 using System;
@@ -223,6 +296,18 @@ try {
 catch {
 	Write-Host "$(Get-Date): Error while waiting for Zwift launcher to start or switching primary display: $($_.Exception.Message)"
 }
+
+# Launch the PowerToys Workspaces for Zwift (if installed) after the Zwift launcher starts
+try {
+	Write-Host "$(Get-Date): Launching Zwift PowerToys Workspaces..."
+	Start-Process -FilePath $PowerToysPath -ArgumentList "$WorkspaceGuid 1"
+	Start-Sleep -Seconds $WorkspacesSleepInterval
+	Write-Host "$(Get-Date): Zwift PowerToys Workspaces launched successfully."
+}
+catch {
+	Write-Host "$(Get-Date): Error launching PowerToys Workspaces: $($_.Exception.Message)"
+}
+
 # Wait for Zwift game to start and monitor until it closes
 try {
 	Write-Host "$(Get-Date): Waiting for Zwift game to start (checking every $SleepInterval seconds)..."
