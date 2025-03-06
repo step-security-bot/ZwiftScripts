@@ -129,7 +129,7 @@ param (
 	# Index of the default primary display
 	[string]$PowerToysPath = 'C:\Program Files\PowerToys\PowerToys.WorkspacesLauncher.exe',
 	# Path to PowerToys Workspaces
-	[string]$WorkspaceGuid = '{E2CDEA2A-6E33-4CFD-A26B-0C5CC2E55F40',
+	[string]$WorkspaceGuid = '{E2CDEA2A-6E33-4CFD-A26B-0C5CC2E55F40}',
 	# GUID for the PowerToys Workspace
 	[string]$FreeFileSyncPath = 'C:\Program Files\FreeFileSync\FreeFileSync.exe',
 	# Path to FreeFileSync executable
