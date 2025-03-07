@@ -135,7 +135,7 @@ param (
 	# Path to PowerToys Workspaces executable file (default installation path)
 	[string]$WorkspaceGuid = '{E2CDEA2A-6E33-4CFD-A26B-0C5CC2E55F40}',
 	# GUID for the PowerToys Workspace for Zwift
-	[int]$WorkspacesSleepInterval = 5,
+	[int]$WorkspacesSleepInterval = 10,
 	# Sleep interval after launching PowerToys Workspaces
 	[string]$FreeFileSyncPath = 'C:\Program Files\FreeFileSync\FreeFileSync.exe',
 	# Path to FreeFileSync executable file (default installation path)
@@ -387,8 +387,8 @@ try {
 	while (-not (Get-ProcessRunning -ProcessName $ZwiftLauncher)) {
 		Wait-WithAnimation -Seconds 1 -Message "Waiting for $ZwiftLauncher"
 	}
-	Write-Host "$(Get-Date): Zwift launcher detected. Switching primary display to $PrimaryDisplayZwift" -ForegroundColor Green
-	Set-PrimaryDisplay $PrimaryDisplayZwift - 1 # Subtract 1 to make it zero-based
+	Write-Host "$(Get-Date): Zwift launcher detected. Switching primary display to $PrimaryDisplayZwift + 1" -ForegroundColor Green
+	Set-PrimaryDisplay ($PrimaryDisplayZwift + 1) # + 1 to make it one-based index for the DisplayConfig module (index: 4)
 }
 catch {
 	Write-Host "$(Get-Date): Error while waiting for Zwift launcher to start or switching primary display: $($_.Exception.Message)" -ForegroundColor Red
@@ -432,7 +432,7 @@ try {
 		Wait-WithAnimation -Seconds 1 -Message "Waiting for $ZwiftGame"
 	}
 	Write-Host "$(Get-Date): Zwift game closed. Restoring primary display to $PrimaryDisplayDefault" -ForegroundColor Green
-	Set-PrimaryDisplay $PrimaryDisplayDefault - 1 # Subtract 1 to make it zero-based
+	Set-PrimaryDisplay ($PrimaryDisplayDefault + 1) # + 1 to make it one-based index for the DisplayConfig module (index: 2)
 }
 catch {
 	Write-Host "$(Get-Date): Error monitoring Zwift game or restoring display: $($_.Exception.Message)" -ForegroundColor Red
