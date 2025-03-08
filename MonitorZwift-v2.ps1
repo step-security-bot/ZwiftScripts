@@ -141,6 +141,8 @@ param (
 	# Path to FreeFileSync executable file (default installation path)
 	[string]$BatchJobPath = 'C:\Users\Nick\Dropbox\Random Save\Task Scheduler Rules\ZwiftPics.ffs_batch',
 	# Path to FreeFileSync batch job file for synchronizing files after Zwift session
+	[string]$EdgeAppUrl = 'https://studio.youtube.com/channel/UCyYwMWui3Opy2yZyom2QM0g/videos/upload?filter=%5B%5D&sort=%7B%22columnType%22%3A%22date%22%2C%22sortOrder%22%3A%22DESCENDING%22%7D',
+	# URL to open in Microsoft Edge in app mode
 	[string[]]$AppsToCheck = @('Spotify', 'obs64', 'Sauce for Zwift™'),
 	# List of additional apps to check for and close when Zwift is detected
 	[string[]]$AnimationChars = @('|', '/', '-', '\', '|', '/', '-', '\'),
@@ -447,6 +449,16 @@ try {
 }
 catch {
 	Write-Host "$(Get-Date): Error running FreeFileSync batch job: $($_.Exception.Message)" -ForegroundColor Red
+}
+
+# Launch Microsoft Edge in app mode with the specified URL
+try {
+	Write-Host "$(Get-Date): Launching Microsoft Edge in app mode with the specified URL..." -ForegroundColor Cyan
+	Start-Process -FilePath 'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe' -ArgumentList "--app=`"$EdgeAppUrl`""
+	Write-Host "$(Get-Date): Microsoft Edge launched successfully." -ForegroundColor Green
+}
+catch {
+	Write-Host "$(Get-Date): Error launching Microsoft Edge: $($_.Exception.Message)" -ForegroundColor Red
 }
 
 # Close the script after all tasks are completed
