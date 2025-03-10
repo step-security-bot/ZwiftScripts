@@ -141,6 +141,8 @@ param (
 	# Path to FreeFileSync executable file (default installation path)
 	[string]$BatchJobPath = 'C:\Users\Nick\Dropbox\Random Save\Task Scheduler Rules\ZwiftPics.ffs_batch',
 	# Path to FreeFileSync batch job file for synchronizing files after Zwift session
+	[string]$EdgePath = 'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe',
+	# Path to Microsoft Edge executable file
 	[string]$EdgeAppUrl = 'https://studio.youtube.com/channel/UCyYwMWui3Opy2yZyom2QM0g/videos/upload?filter=%5B%5D&sort=%7B%22columnType%22%3A%22date%22%2C%22sortOrder%22%3A%22DESCENDING%22%7D',
 	# URL to open in Microsoft Edge in app mode
 	[string[]]$AppsToCheck = @('Spotify', 'obs64', 'Sauce for Zwift™'),
@@ -389,7 +391,7 @@ try {
 	while (-not (Get-ProcessRunning -ProcessName $ZwiftLauncher)) {
 		Wait-WithAnimation -Seconds 1 -Message "Waiting for $ZwiftLauncher"
 	}
-	Write-Host "$(Get-Date): Zwift launcher detected. Switching primary display to $PrimaryDisplayZwift + 1" -ForegroundColor Green
+	Write-Host "$(Get-Date): Zwift launcher detected. Switching primary display to $($PrimaryDisplayZwift + 1)" -ForegroundColor Green
 	Set-PrimaryDisplay ($PrimaryDisplayZwift + 1) # + 1 to make it one-based index for the DisplayConfig module (index: 4)
 }
 catch {
@@ -433,7 +435,7 @@ try {
 	while (Get-ProcessRunning -ProcessName $ZwiftGame) {
 		Wait-WithAnimation -Seconds 1 -Message "Waiting for $ZwiftGame"
 	}
-	Write-Host "$(Get-Date): Zwift game closed. Restoring primary display to $PrimaryDisplayDefault" -ForegroundColor Green
+	Write-Host "$(Get-Date): Zwift game closed. Restoring primary display to $($PrimaryDisplayDefault + 1)" -ForegroundColor Green
 	Set-PrimaryDisplay ($PrimaryDisplayDefault + 1) # + 1 to make it one-based index for the DisplayConfig module (index: 2)
 }
 catch {
@@ -454,7 +456,7 @@ catch {
 # Launch Microsoft Edge in app mode with the specified URL
 try {
 	Write-Host "$(Get-Date): Launching Microsoft Edge in app mode with the specified URL..." -ForegroundColor Cyan
-	Start-Process -FilePath 'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe' -ArgumentList "--app=`"$EdgeAppUrl`""
+	Start-Process -FilePath "$EdgePath" -ArgumentList "--app=`"$EdgeAppUrl`""
 	Write-Host "$(Get-Date): Microsoft Edge launched successfully." -ForegroundColor Green
 }
 catch {
