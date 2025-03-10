@@ -32,77 +32,77 @@ document.addEventListener("DOMContentLoaded", function() {
                     let file_list_html = '';
                     switch(contentId) {
                         case 'file-list-1':
-                            file_list_html = `<ul><h2 style="color: #9084ea;">Repo Root</h2>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.black" style="color: #57a3b3;">.black</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.editorconfig" style="color: #a78444;">.editorconfig</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.gitignore" style="color: #ec7374;">.gitignore</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.hintrc" style="color: #56cafe;">.hintrc</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.jsbeautifyrc" style="color: #b0ba01;">.jsbeautifyrc</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.jscsrc" style="color: #63b58b;">.jscsrc</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.pre-commit-config.yaml" style="color: #ba98b7;">.pre-commit-config.yaml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.pre-commit-hooks.yaml" style="color: #e8b740;">.pre-commit-hooks.yaml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.prettierignore" style="color: #f386c8;">.prettierignore</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.prettierrc" style="color: #42947a;">.prettierrc</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.stylelintrc.json" style="color: #bec839;">.stylelintrc.json</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.vale.ini" style="color: #d7afdf;">.vale.ini</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/CNAME" style="color: #d0ca0a;">CNAME</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/LaunchZwift.ps1" style="color: #eeb18c;">LaunchZwift.ps1</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/MonitorZwift-v2.ps1" style="color: #35c42a;">MonitorZwift-v2.ps1</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/MonitorZwift.ps1" style="color: #8e8188;">MonitorZwift.ps1</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/MoveZwiftCleanPhotos.ps1" style="color: #f9954b;">MoveZwiftCleanPhotos.ps1</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/README.md" style="color: #bb8758;">README.md</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/SetPrimaryDefault.ps1" style="color: #a3db11;">SetPrimaryDefault.ps1</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/SetPrimaryZwift.ps1" style="color: #77c625;">SetPrimaryZwift.ps1</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/Zwift-Bike-Combos.xlsx" style="color: #f08aa6;">Zwift-Bike-Combos.xlsx</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/Zwift-Setup.lnk" style="color: #9ea37e;">Zwift-Setup.lnk</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/ZwiftSetup.lnk" style="color: #e3a4b9;">ZwiftSetup.lnk</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/file_list.md" style="color: #b8982b;">file_list.md</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/filelist.html" style="color: #6e86c0;">filelist.html</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/filelist.md" style="color: #4aa7ea;">filelist.md</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/sitemap.xml" style="color: #83ba2a;">sitemap.xml</a></li>
-<h2 style="color: #4ee027;">JavaScript</h2>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.eslintrc.js" style="color: #97e040;">.eslintrc.js</a></li>
-<h2 style="color: #32e1ae;">YAML</h2>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/dependabot.yml" style="color: #2ae5e4;">.github/dependabot.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/labeler.yml" style="color: #c68721;">.github/labeler.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/ActionLint.yml" style="color: #90c4aa;">.github/workflows/ActionLint.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/codeql.yml" style="color: #63b3d7;">.github/workflows/codeql.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/defender.yml" style="color: #c762dd;">.github/workflows/defender.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/dependency-review.yml" style="color: #74e602;">.github/workflows/dependency-review.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/generate-file-list.yml" style="color: #4fad61;">.github/workflows/generate-file-list.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/greetings.yml" style="color: #5fdba9;">.github/workflows/greetings.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/label.yml" style="color: #86ca84;">.github/workflows/label.yml</a></li></ul>`;
+                            file_list_html = `<ul><h2 style="color: #68e3ae;">Repo Root</h2>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.black" style="color: #7ab39a;">.black</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.editorconfig" style="color: #32ecc5;">.editorconfig</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.gitignore" style="color: #e78442;">.gitignore</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.hintrc" style="color: #7d991b;">.hintrc</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.jsbeautifyrc" style="color: #30dced;">.jsbeautifyrc</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.jscsrc" style="color: #90cf23;">.jscsrc</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.pre-commit-config.yaml" style="color: #6dbb53;">.pre-commit-config.yaml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.pre-commit-hooks.yaml" style="color: #b480b3;">.pre-commit-hooks.yaml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.prettierignore" style="color: #b9d81e;">.prettierignore</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.prettierrc" style="color: #a081a2;">.prettierrc</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.stylelintrc.json" style="color: #c9940a;">.stylelintrc.json</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.vale.ini" style="color: #868d8d;">.vale.ini</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/CNAME" style="color: #559eca;">CNAME</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/LaunchZwift.ps1" style="color: #f99cf4;">LaunchZwift.ps1</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/MonitorZwift-v2.ps1" style="color: #a99152;">MonitorZwift-v2.ps1</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/MonitorZwift.ps1" style="color: #bca977;">MonitorZwift.ps1</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/MoveZwiftCleanPhotos.ps1" style="color: #2feb9c;">MoveZwiftCleanPhotos.ps1</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/README.md" style="color: #78d3d2;">README.md</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/SetPrimaryDefault.ps1" style="color: #bad346;">SetPrimaryDefault.ps1</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/SetPrimaryZwift.ps1" style="color: #9daec0;">SetPrimaryZwift.ps1</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/Zwift-Bike-Combos.xlsx" style="color: #65f40a;">Zwift-Bike-Combos.xlsx</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/Zwift-Setup.lnk" style="color: #6bcebb;">Zwift-Setup.lnk</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/ZwiftSetup.lnk" style="color: #75b016;">ZwiftSetup.lnk</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/file_list.md" style="color: #3a9ae5;">file_list.md</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/filelist.html" style="color: #979469;">filelist.html</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/filelist.md" style="color: #85cba2;">filelist.md</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/sitemap.xml" style="color: #d88b9f;">sitemap.xml</a></li>
+<h2 style="color: #918f78;">JavaScript</h2>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.eslintrc.js" style="color: #5abeac;">.eslintrc.js</a></li>
+<h2 style="color: #ced52c;">YAML</h2>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/dependabot.yml" style="color: #bbb28c;">.github/dependabot.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/labeler.yml" style="color: #f16479;">.github/labeler.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/ActionLint.yml" style="color: #9f912f;">.github/workflows/ActionLint.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/codeql.yml" style="color: #49983f;">.github/workflows/codeql.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/defender.yml" style="color: #28e87e;">.github/workflows/defender.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/dependency-review.yml" style="color: #3eff11;">.github/workflows/dependency-review.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/generate-file-list.yml" style="color: #c7c693;">.github/workflows/generate-file-list.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/greetings.yml" style="color: #a9a86b;">.github/workflows/greetings.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/label.yml" style="color: #4cc5f8;">.github/workflows/label.yml</a></li></ul>`;
                             break;
                         case 'file-list-2':
-                            file_list_html = `<ul><li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/ossar.yml" style="color: #a6af1e;">.github/workflows/ossar.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/osv-scanner.yml" style="color: #c072f8;">.github/workflows/osv-scanner.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/scorecards.yml" style="color: #ec80c1;">.github/workflows/scorecards.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/sitemap.yml" style="color: #58ea2e;">.github/workflows/sitemap.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/stale.yml" style="color: #3cbd5a;">.github/workflows/stale.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/static.yml" style="color: #ea7f3a;">.github/workflows/static.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/super-linter.yml" style="color: #bd7828;">.github/workflows/super-linter.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.markdownlint.yml" style="color: #24de42;">.markdownlint.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.scss-lint.yml" style="color: #98a369;">.scss-lint.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/_config.yml" style="color: #b6c69a;">_config.yml</a></li>
-<h2 style="color: #8ed890;">.vscode</h2>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.vscode/generate_file_list.py" style="color: #ca93e3;">.vscode/generate_file_list.py</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.vscode/launch.json" style="color: #a18245;">.vscode/launch.json</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.vscode/settings.json" style="color: #7ba161;">.vscode/settings.json</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.vscode/tasks.json" style="color: #a07a6e;">.vscode/tasks.json</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.vscode/test_generate_file_list.py" style="color: #ad799b;">.vscode/test_generate_file_list.py</a></li>
-<h2 style="color: #46d5c2;">src</h2>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/src/generate_file_list.py" style="color: #a2a3f0;">src/generate_file_list.py</a></li>
-<h2 style="color: #56db9d;">tests</h2>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_LaunchZwift.ps1" style="color: #83a90d;">tests/tests_LaunchZwift.ps1</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_LaunchZwift_2.ps1" style="color: #7cacdd;">tests/tests_LaunchZwift_2.ps1</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_MonitorZwift%20copy.ps1" style="color: #d8ac5b;">tests/tests_MonitorZwift copy.ps1</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_MonitorZwift-v2.ps1" style="color: #b3a4cd;">tests/tests_MonitorZwift-v2.ps1</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_MonitorZwift-v2_2.ps1" style="color: #8d7dbc;">tests/tests_MonitorZwift-v2_2.ps1</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_MonitorZwift.ps1" style="color: #c0b132;">tests/tests_MonitorZwift.ps1</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_MonitorZwift_2.ps1" style="color: #7ada5e;">tests/tests_MonitorZwift_2.ps1</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_MoveZwiftCleanPhotos.ps1" style="color: #3d9bdf;">tests/tests_MoveZwiftCleanPhotos.ps1</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_SetPrimaryDefault.ps1" style="color: #a18a91;">tests/tests_SetPrimaryDefault.ps1</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_SetPrimaryZwift.ps1" style="color: #fd7c4b;">tests/tests_SetPrimaryZwift.ps1</a></li></ul>`;
+                            file_list_html = `<ul><li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/ossar.yml" style="color: #d09015;">.github/workflows/ossar.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/osv-scanner.yml" style="color: #56a2a0;">.github/workflows/osv-scanner.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/scorecards.yml" style="color: #d98555;">.github/workflows/scorecards.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/sitemap.yml" style="color: #a87ff8;">.github/workflows/sitemap.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/stale.yml" style="color: #6b86fa;">.github/workflows/stale.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/static.yml" style="color: #49a000;">.github/workflows/static.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/super-linter.yml" style="color: #3dd7af;">.github/workflows/super-linter.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.markdownlint.yml" style="color: #5bce68;">.markdownlint.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.scss-lint.yml" style="color: #9f964f;">.scss-lint.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/_config.yml" style="color: #c5b59b;">_config.yml</a></li>
+<h2 style="color: #9988a2;">.vscode</h2>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.vscode/generate_file_list.py" style="color: #a274d3;">.vscode/generate_file_list.py</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.vscode/launch.json" style="color: #24c55b;">.vscode/launch.json</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.vscode/settings.json" style="color: #55a415;">.vscode/settings.json</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.vscode/tasks.json" style="color: #bb7f92;">.vscode/tasks.json</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.vscode/test_generate_file_list.py" style="color: #ed6e26;">.vscode/test_generate_file_list.py</a></li>
+<h2 style="color: #53c85d;">src</h2>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/src/generate_file_list.py" style="color: #f6b551;">src/generate_file_list.py</a></li>
+<h2 style="color: #928fb2;">tests</h2>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_LaunchZwift.ps1" style="color: #89a149;">tests/tests_LaunchZwift.ps1</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_LaunchZwift_2.ps1" style="color: #c8c272;">tests/tests_LaunchZwift_2.ps1</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_MonitorZwift%20copy.ps1" style="color: #68e175;">tests/tests_MonitorZwift copy.ps1</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_MonitorZwift-v2.ps1" style="color: #68dacf;">tests/tests_MonitorZwift-v2.ps1</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_MonitorZwift-v2_2.ps1" style="color: #9da0af;">tests/tests_MonitorZwift-v2_2.ps1</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_MonitorZwift.ps1" style="color: #5ea980;">tests/tests_MonitorZwift.ps1</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_MonitorZwift_2.ps1" style="color: #ab8596;">tests/tests_MonitorZwift_2.ps1</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_MoveZwiftCleanPhotos.ps1" style="color: #4ab66e;">tests/tests_MoveZwiftCleanPhotos.ps1</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_SetPrimaryDefault.ps1" style="color: #ed831d;">tests/tests_SetPrimaryDefault.ps1</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_SetPrimaryZwift.ps1" style="color: #8ed56d;">tests/tests_SetPrimaryZwift.ps1</a></li></ul>`;
                             break;
                     }
                     placeholder.innerHTML = file_list_html;
@@ -122,77 +122,77 @@ document.addEventListener("DOMContentLoaded", function() {
             let file_list_html = '';
             switch(contentId) {
                 case 'file-list-1':
-                    file_list_html = `<ul><h2 style="color: #9084ea;">Repo Root</h2>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.black" style="color: #57a3b3;">.black</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.editorconfig" style="color: #a78444;">.editorconfig</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.gitignore" style="color: #ec7374;">.gitignore</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.hintrc" style="color: #56cafe;">.hintrc</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.jsbeautifyrc" style="color: #b0ba01;">.jsbeautifyrc</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.jscsrc" style="color: #63b58b;">.jscsrc</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.pre-commit-config.yaml" style="color: #ba98b7;">.pre-commit-config.yaml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.pre-commit-hooks.yaml" style="color: #e8b740;">.pre-commit-hooks.yaml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.prettierignore" style="color: #f386c8;">.prettierignore</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.prettierrc" style="color: #42947a;">.prettierrc</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.stylelintrc.json" style="color: #bec839;">.stylelintrc.json</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.vale.ini" style="color: #d7afdf;">.vale.ini</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/CNAME" style="color: #d0ca0a;">CNAME</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/LaunchZwift.ps1" style="color: #eeb18c;">LaunchZwift.ps1</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/MonitorZwift-v2.ps1" style="color: #35c42a;">MonitorZwift-v2.ps1</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/MonitorZwift.ps1" style="color: #8e8188;">MonitorZwift.ps1</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/MoveZwiftCleanPhotos.ps1" style="color: #f9954b;">MoveZwiftCleanPhotos.ps1</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/README.md" style="color: #bb8758;">README.md</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/SetPrimaryDefault.ps1" style="color: #a3db11;">SetPrimaryDefault.ps1</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/SetPrimaryZwift.ps1" style="color: #77c625;">SetPrimaryZwift.ps1</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/Zwift-Bike-Combos.xlsx" style="color: #f08aa6;">Zwift-Bike-Combos.xlsx</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/Zwift-Setup.lnk" style="color: #9ea37e;">Zwift-Setup.lnk</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/ZwiftSetup.lnk" style="color: #e3a4b9;">ZwiftSetup.lnk</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/file_list.md" style="color: #b8982b;">file_list.md</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/filelist.html" style="color: #6e86c0;">filelist.html</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/filelist.md" style="color: #4aa7ea;">filelist.md</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/sitemap.xml" style="color: #83ba2a;">sitemap.xml</a></li>
-<h2 style="color: #4ee027;">JavaScript</h2>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.eslintrc.js" style="color: #97e040;">.eslintrc.js</a></li>
-<h2 style="color: #32e1ae;">YAML</h2>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/dependabot.yml" style="color: #2ae5e4;">.github/dependabot.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/labeler.yml" style="color: #c68721;">.github/labeler.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/ActionLint.yml" style="color: #90c4aa;">.github/workflows/ActionLint.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/codeql.yml" style="color: #63b3d7;">.github/workflows/codeql.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/defender.yml" style="color: #c762dd;">.github/workflows/defender.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/dependency-review.yml" style="color: #74e602;">.github/workflows/dependency-review.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/generate-file-list.yml" style="color: #4fad61;">.github/workflows/generate-file-list.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/greetings.yml" style="color: #5fdba9;">.github/workflows/greetings.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/label.yml" style="color: #86ca84;">.github/workflows/label.yml</a></li></ul>`;
+                    file_list_html = `<ul><h2 style="color: #68e3ae;">Repo Root</h2>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.black" style="color: #7ab39a;">.black</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.editorconfig" style="color: #32ecc5;">.editorconfig</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.gitignore" style="color: #e78442;">.gitignore</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.hintrc" style="color: #7d991b;">.hintrc</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.jsbeautifyrc" style="color: #30dced;">.jsbeautifyrc</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.jscsrc" style="color: #90cf23;">.jscsrc</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.pre-commit-config.yaml" style="color: #6dbb53;">.pre-commit-config.yaml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.pre-commit-hooks.yaml" style="color: #b480b3;">.pre-commit-hooks.yaml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.prettierignore" style="color: #b9d81e;">.prettierignore</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.prettierrc" style="color: #a081a2;">.prettierrc</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.stylelintrc.json" style="color: #c9940a;">.stylelintrc.json</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.vale.ini" style="color: #868d8d;">.vale.ini</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/CNAME" style="color: #559eca;">CNAME</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/LaunchZwift.ps1" style="color: #f99cf4;">LaunchZwift.ps1</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/MonitorZwift-v2.ps1" style="color: #a99152;">MonitorZwift-v2.ps1</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/MonitorZwift.ps1" style="color: #bca977;">MonitorZwift.ps1</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/MoveZwiftCleanPhotos.ps1" style="color: #2feb9c;">MoveZwiftCleanPhotos.ps1</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/README.md" style="color: #78d3d2;">README.md</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/SetPrimaryDefault.ps1" style="color: #bad346;">SetPrimaryDefault.ps1</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/SetPrimaryZwift.ps1" style="color: #9daec0;">SetPrimaryZwift.ps1</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/Zwift-Bike-Combos.xlsx" style="color: #65f40a;">Zwift-Bike-Combos.xlsx</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/Zwift-Setup.lnk" style="color: #6bcebb;">Zwift-Setup.lnk</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/ZwiftSetup.lnk" style="color: #75b016;">ZwiftSetup.lnk</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/file_list.md" style="color: #3a9ae5;">file_list.md</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/filelist.html" style="color: #979469;">filelist.html</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/filelist.md" style="color: #85cba2;">filelist.md</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/sitemap.xml" style="color: #d88b9f;">sitemap.xml</a></li>
+<h2 style="color: #918f78;">JavaScript</h2>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.eslintrc.js" style="color: #5abeac;">.eslintrc.js</a></li>
+<h2 style="color: #ced52c;">YAML</h2>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/dependabot.yml" style="color: #bbb28c;">.github/dependabot.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/labeler.yml" style="color: #f16479;">.github/labeler.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/ActionLint.yml" style="color: #9f912f;">.github/workflows/ActionLint.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/codeql.yml" style="color: #49983f;">.github/workflows/codeql.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/defender.yml" style="color: #28e87e;">.github/workflows/defender.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/dependency-review.yml" style="color: #3eff11;">.github/workflows/dependency-review.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/generate-file-list.yml" style="color: #c7c693;">.github/workflows/generate-file-list.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/greetings.yml" style="color: #a9a86b;">.github/workflows/greetings.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/label.yml" style="color: #4cc5f8;">.github/workflows/label.yml</a></li></ul>`;
                     break;
                 case 'file-list-2':
-                    file_list_html = `<ul><li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/ossar.yml" style="color: #a6af1e;">.github/workflows/ossar.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/osv-scanner.yml" style="color: #c072f8;">.github/workflows/osv-scanner.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/scorecards.yml" style="color: #ec80c1;">.github/workflows/scorecards.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/sitemap.yml" style="color: #58ea2e;">.github/workflows/sitemap.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/stale.yml" style="color: #3cbd5a;">.github/workflows/stale.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/static.yml" style="color: #ea7f3a;">.github/workflows/static.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/super-linter.yml" style="color: #bd7828;">.github/workflows/super-linter.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.markdownlint.yml" style="color: #24de42;">.markdownlint.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.scss-lint.yml" style="color: #98a369;">.scss-lint.yml</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/_config.yml" style="color: #b6c69a;">_config.yml</a></li>
-<h2 style="color: #8ed890;">.vscode</h2>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.vscode/generate_file_list.py" style="color: #ca93e3;">.vscode/generate_file_list.py</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.vscode/launch.json" style="color: #a18245;">.vscode/launch.json</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.vscode/settings.json" style="color: #7ba161;">.vscode/settings.json</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.vscode/tasks.json" style="color: #a07a6e;">.vscode/tasks.json</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.vscode/test_generate_file_list.py" style="color: #ad799b;">.vscode/test_generate_file_list.py</a></li>
-<h2 style="color: #46d5c2;">src</h2>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/src/generate_file_list.py" style="color: #a2a3f0;">src/generate_file_list.py</a></li>
-<h2 style="color: #56db9d;">tests</h2>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_LaunchZwift.ps1" style="color: #83a90d;">tests/tests_LaunchZwift.ps1</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_LaunchZwift_2.ps1" style="color: #7cacdd;">tests/tests_LaunchZwift_2.ps1</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_MonitorZwift%20copy.ps1" style="color: #d8ac5b;">tests/tests_MonitorZwift copy.ps1</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_MonitorZwift-v2.ps1" style="color: #b3a4cd;">tests/tests_MonitorZwift-v2.ps1</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_MonitorZwift-v2_2.ps1" style="color: #8d7dbc;">tests/tests_MonitorZwift-v2_2.ps1</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_MonitorZwift.ps1" style="color: #c0b132;">tests/tests_MonitorZwift.ps1</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_MonitorZwift_2.ps1" style="color: #7ada5e;">tests/tests_MonitorZwift_2.ps1</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_MoveZwiftCleanPhotos.ps1" style="color: #3d9bdf;">tests/tests_MoveZwiftCleanPhotos.ps1</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_SetPrimaryDefault.ps1" style="color: #a18a91;">tests/tests_SetPrimaryDefault.ps1</a></li>
-<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_SetPrimaryZwift.ps1" style="color: #fd7c4b;">tests/tests_SetPrimaryZwift.ps1</a></li></ul>`;
+                    file_list_html = `<ul><li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/ossar.yml" style="color: #d09015;">.github/workflows/ossar.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/osv-scanner.yml" style="color: #56a2a0;">.github/workflows/osv-scanner.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/scorecards.yml" style="color: #d98555;">.github/workflows/scorecards.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/sitemap.yml" style="color: #a87ff8;">.github/workflows/sitemap.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/stale.yml" style="color: #6b86fa;">.github/workflows/stale.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/static.yml" style="color: #49a000;">.github/workflows/static.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.github/workflows/super-linter.yml" style="color: #3dd7af;">.github/workflows/super-linter.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.markdownlint.yml" style="color: #5bce68;">.markdownlint.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.scss-lint.yml" style="color: #9f964f;">.scss-lint.yml</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/_config.yml" style="color: #c5b59b;">_config.yml</a></li>
+<h2 style="color: #9988a2;">.vscode</h2>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.vscode/generate_file_list.py" style="color: #a274d3;">.vscode/generate_file_list.py</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.vscode/launch.json" style="color: #24c55b;">.vscode/launch.json</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.vscode/settings.json" style="color: #55a415;">.vscode/settings.json</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.vscode/tasks.json" style="color: #bb7f92;">.vscode/tasks.json</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/.vscode/test_generate_file_list.py" style="color: #ed6e26;">.vscode/test_generate_file_list.py</a></li>
+<h2 style="color: #53c85d;">src</h2>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/src/generate_file_list.py" style="color: #f6b551;">src/generate_file_list.py</a></li>
+<h2 style="color: #928fb2;">tests</h2>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_LaunchZwift.ps1" style="color: #89a149;">tests/tests_LaunchZwift.ps1</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_LaunchZwift_2.ps1" style="color: #c8c272;">tests/tests_LaunchZwift_2.ps1</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_MonitorZwift%20copy.ps1" style="color: #68e175;">tests/tests_MonitorZwift copy.ps1</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_MonitorZwift-v2.ps1" style="color: #68dacf;">tests/tests_MonitorZwift-v2.ps1</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_MonitorZwift-v2_2.ps1" style="color: #9da0af;">tests/tests_MonitorZwift-v2_2.ps1</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_MonitorZwift.ps1" style="color: #5ea980;">tests/tests_MonitorZwift.ps1</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_MonitorZwift_2.ps1" style="color: #ab8596;">tests/tests_MonitorZwift_2.ps1</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_MoveZwiftCleanPhotos.ps1" style="color: #4ab66e;">tests/tests_MoveZwiftCleanPhotos.ps1</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_SetPrimaryDefault.ps1" style="color: #ed831d;">tests/tests_SetPrimaryDefault.ps1</a></li>
+<li><a href="https://github.com/Nick2bad4u/ZwiftScripts/blob/main/tests/tests_SetPrimaryZwift.ps1" style="color: #8ed56d;">tests/tests_SetPrimaryZwift.ps1</a></li></ul>`;
                     break;
             }
             placeholder.innerHTML = file_list_html;
