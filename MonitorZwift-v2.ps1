@@ -456,7 +456,7 @@ catch {
 # Launch Microsoft Edge in app mode with the specified URL
 try {
 	Write-Host "$(Get-Date): Launching Microsoft Edge in app mode with the specified URL..." -ForegroundColor Cyan
-	Start-Process -FilePath "$EdgePath" -ArgumentList "--app=`"$EdgeAppUrl`""
+	Start-Process -FilePath "$EdgePath" -ArgumentList "$EdgeAppUrl"
 	Write-Host "$(Get-Date): Microsoft Edge launched successfully." -ForegroundColor Green
 }
 catch {
