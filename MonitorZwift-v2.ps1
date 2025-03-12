@@ -26,10 +26,6 @@
 	The GUID for the PowerToys Workspace. Default is
 	'{E2CDEA2A-6E33-4CFD-A26B-0C5CC2E55F40'.
 
-.PARAMETER WorkspacesSleepInterval
-	The interval in seconds to wait after launching PowerToys Workspaces.
-	Default is 5 seconds.
-
 .PARAMETER ZwiftLauncher
 	The process name of the Zwift launcher. Default is 'ZwiftLauncher'.
 
@@ -99,7 +95,6 @@
 		-SleepInterval 5 `
 		-PowerToysPath 'C:\Program Files\PowerToys\PowerToys.WorkspacesLauncher.exe' `
 		-WorkspaceGuid '{E2CDEA2A-6E33-4CFD-A26B-0C5CC2E55F40' `
-		-WorkspacesSleepInterval 5 `
 		-ZwiftLauncher 'ZwiftLauncher' `
 		-ZwiftGame 'ZwiftApp' `
 		-PrimaryDisplayZwift 3 `
@@ -135,8 +130,6 @@ param (
 	# Path to PowerToys Workspaces executable file (default installation path)
 	[string]$WorkspaceGuid = '{E2CDEA2A-6E33-4CFD-A26B-0C5CC2E55F40}',
 	# GUID for the PowerToys Workspace for Zwift
-	[int]$WorkspacesSleepInterval = 10,
-	# Sleep interval after launching PowerToys Workspaces
 	[string]$FreeFileSyncPath = 'C:\Program Files\FreeFileSync\FreeFileSync.exe',
 	# Path to FreeFileSync executable file (default installation path)
 	[string]$BatchJobPath = 'C:\Users\Nick\Dropbox\Random Save\Task Scheduler Rules\ZwiftPics.ffs_batch',
@@ -157,8 +150,14 @@ param (
 	# List of colors for the waiting animation
 	[string]$RandomColor = ($Colors | Get-Random),
 	# Random color for the waiting animation
-	[int]$AnimIndex = 0
+	[int]$AnimIndex = 0,
 	# Animation index for the waiting animation
+	[string]$ObsProcessName = 'obs64',
+	# OBS process name (default: obs64)
+	[string]$StopRecordingHotkey = '^{F11}',
+	# Hotkey to stop recording in OBS (default: Ctrl+F11)
+	[string]$CloseObsHotkey = '%{F4}'
+	# Hotkey to close OBS gracefully (default: Alt+F4
 )
 
 # Function to set window transparency using Win32 API functions
@@ -402,24 +401,22 @@ catch {
 try {
 	# Check if all of the specified applications are running
 	Write-Host "$(Get-Date): Checking if all specified applications are running..." -ForegroundColor Cyan
-	while ($true) {
+	$allAppsRunning = $true
+	foreach ($app in $AppsToCheck) {
 		try {
-			$allAppsRunning = $AppsToCheck | ForEach-Object { Get-Process -Name $_ -ErrorAction SilentlyContinue } | Measure-Object | Select-Object -ExpandProperty Count
-			if ($allAppsRunning -eq $AppsToCheck.Count) {
-				Write-Host "$(Get-Date): All specified applications are running. Skipping PowerToys Workspaces launch." -ForegroundColor Yellow
+			if (-not (Get-Process -Name $app -ErrorAction SilentlyContinue)) {
+				$allAppsRunning = $false
 				break
-			}
-			else {
-				Write-Host "$(Get-Date): Waiting for all specified applications to run..." -ForegroundColor Cyan
-				Start-Sleep -Seconds 1
 			}
 		}
 		catch {
-			Write-Host "$(Get-Date): Error checking specified applications: $($_.Exception.Message)" -ForegroundColor Red
+			Write-Host "$(Get-Date): Error checking process ${app}: $($_.Exception.Message)" -ForegroundColor Red
+			$allAppsRunning = $false
+			break
 		}
 	}
 
-	if ($allAppsRunning -ne $AppsToCheck.Count) {
+	if (-not $allAppsRunning) {
 		try {
 			Write-Host "$(Get-Date): Launching Zwift PowerToys Workspaces..." -ForegroundColor Cyan
 			Start-Process -FilePath $PowerToysPath -ArgumentList "$WorkspaceGuid 1"
@@ -429,9 +426,12 @@ try {
 			Write-Host "$(Get-Date): Error launching PowerToys Workspaces: $($_.Exception.Message)" -ForegroundColor Red
 		}
 	}
+	else {
+		Write-Host "$(Get-Date): All specified applications are running. Skipping PowerToys Workspaces launch." -ForegroundColor Yellow
+	}
 }
 catch {
-	Write-Host "$(Get-Date): Error in the application check and launch process: $($_.Exception.Message)" -ForegroundColor Red
+	Write-Host "$(Get-Date): Error in checking or launching applications: $($_.Exception.Message)" -ForegroundColor Red
 }
 
 # Wait for Zwift game to start and monitor until it closes
@@ -468,6 +468,94 @@ try {
 }
 catch {
 	Write-Host "$(Get-Date): Error running FreeFileSync batch job: $($_.Exception.Message)" -ForegroundColor Red
+}
+
+# Stop and save OBS recording, then close OBS
+try {
+	Write-Host "$(Get-Date): Checking for OBS..." -ForegroundColor Cyan
+	$obsProcess = Get-Process -Name $ObsProcessName -ErrorAction SilentlyContinue
+
+	if ($obsProcess) {
+		Write-Host "$(Get-Date): OBS is running. Stopping recording and closing OBS..." -ForegroundColor Yellow
+
+		try {
+			# Send hotkey to stop recording
+			$wshell = New-Object -ComObject WScript.Shell
+			$obsProcess | ForEach-Object {
+				[void]$wshell.AppActivate($_.MainWindowTitle)
+				Start-Sleep -Milliseconds 500
+				$wshell.SendKeys($StopRecordingHotkey) # Send hotkey to stop recording
+			}
+			Write-Host "$(Get-Date): Sent stop recording command to OBS" -ForegroundColor Green
+		}
+		catch {
+			Write-Host "$(Get-Date): Error sending stop recording command to OBS: $($_.Exception.Message)" -ForegroundColor Red
+		}
+
+		try {
+			# Give OBS time to save the recording
+			Write-Host "$(Get-Date): Waiting for recording to save..." -ForegroundColor Cyan
+			Start-Sleep -Seconds 5
+		}
+		catch {
+			Write-Host "$(Get-Date): Error while waiting for recording to save: $($_.Exception.Message)" -ForegroundColor Red
+		}
+
+		try {
+			# Close OBS gracefully with hotkey instead of force-killing it
+			$obsProcess | ForEach-Object {
+				[void]$wshell.AppActivate($_.MainWindowTitle)
+				Start-Sleep -Milliseconds 500
+				$wshell.SendKeys($CloseObsHotkey) # Send hotkey to close OBS gracefully
+			}
+		}
+		catch {
+			Write-Host "$(Get-Date): Error sending close command to OBS: $($_.Exception.Message)" -ForegroundColor Red
+		}
+
+		try {
+			# Wait for OBS to close naturally (up to 10 seconds)
+			$timeout = 10
+			$timeWaited = 0
+			while (Get-Process -Name $ObsProcessName -ErrorAction SilentlyContinue) {
+				if ($timeWaited -ge $timeout) {
+					Write-Host "$(Get-Date): OBS didn't close after $timeout seconds, closing forcefully" -ForegroundColor Yellow
+					Get-Process -Name $ObsProcessName -ErrorAction SilentlyContinue | Stop-Process
+					break
+				}
+				Start-Sleep -Seconds 1
+				$timeWaited++
+			}
+			Write-Host "$(Get-Date): OBS closed successfully" -ForegroundColor Green
+		}
+		catch {
+			Write-Host "$(Get-Date): Error while waiting for OBS to close: $($_.Exception.Message)" -ForegroundColor Red
+		}
+	}
+	else {
+		Write-Host "$(Get-Date): OBS is not running" -ForegroundColor Yellow
+	}
+}
+catch {
+	Write-Host "$(Get-Date): Error stopping OBS recording or closing OBS: $($_.Exception.Message)" -ForegroundColor Red
+}
+
+# Close Spotify if it's running
+try {
+	Write-Host "$(Get-Date): Checking for Spotify..." -ForegroundColor Cyan
+	$spotifyProcess = Get-Process -Name 'Spotify' -ErrorAction SilentlyContinue
+
+	if ($spotifyProcess) {
+		Write-Host "$(Get-Date): Spotify is running. Closing Spotify..." -ForegroundColor Yellow
+		$spotifyProcess | Stop-Process -Force
+		Write-Host "$(Get-Date): Spotify closed successfully." -ForegroundColor Green
+	}
+	else {
+		Write-Host "$(Get-Date): Spotify is not running." -ForegroundColor Yellow
+	}
+}
+catch {
+	Write-Host "$(Get-Date): Error closing Spotify: $($_.Exception.Message)" -ForegroundColor Red
 }
 
 # Launch Microsoft Edge in app mode with the specified URL

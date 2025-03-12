@@ -69,7 +69,7 @@ else {
 	Write-Error "Zwift Monitor Script path not found: $MonitorZwiftScriptPath"
 }
 
-if ($zwiftAppRunning -or $zwiftLauncherRunning) {
+if ($zwiftAppRunning) {
 	Write-Output "ZwiftApp.exe or ZwiftLauncher.exe is already running. Skipping start."
 }
 else {
