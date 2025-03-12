@@ -401,20 +401,37 @@ catch {
 # Launch the PowerToys Workspaces for Zwift (if installed) after the Zwift launcher starts
 try {
 	# Check if all of the specified applications are running
-	$allAppsRunning = $AppsToCheck | ForEach-Object { Get-Process -Name $_ -ErrorAction SilentlyContinue } | Measure-Object | Select-Object -ExpandProperty Count
-
-	if ($allAppsRunning -eq $AppsToCheck.Count) {
-		Write-Host "$(Get-Date): All specified applications are running. Skipping PowerToys Workspaces launch." -ForegroundColor Yellow
+	Write-Host "$(Get-Date): Checking if all specified applications are running..." -ForegroundColor Cyan
+	while ($true) {
+		try {
+			$allAppsRunning = $AppsToCheck | ForEach-Object { Get-Process -Name $_ -ErrorAction SilentlyContinue } | Measure-Object | Select-Object -ExpandProperty Count
+			if ($allAppsRunning -eq $AppsToCheck.Count) {
+				Write-Host "$(Get-Date): All specified applications are running. Skipping PowerToys Workspaces launch." -ForegroundColor Yellow
+				break
+			}
+			else {
+				Write-Host "$(Get-Date): Waiting for all specified applications to run..." -ForegroundColor Cyan
+				Start-Sleep -Seconds 1
+			}
+		}
+		catch {
+			Write-Host "$(Get-Date): Error checking specified applications: $($_.Exception.Message)" -ForegroundColor Red
+		}
 	}
-	else {
-		Write-Host "$(Get-Date): Launching Zwift PowerToys Workspaces..." -ForegroundColor Cyan
-		Start-Process -FilePath $PowerToysPath -ArgumentList "$WorkspaceGuid 1"
-		Start-Sleep -Seconds $WorkspacesSleepInterval
-		Write-Host "$(Get-Date): Zwift PowerToys Workspaces launched successfully." -ForegroundColor Green
+
+	if ($allAppsRunning -ne $AppsToCheck.Count) {
+		try {
+			Write-Host "$(Get-Date): Launching Zwift PowerToys Workspaces..." -ForegroundColor Cyan
+			Start-Process -FilePath $PowerToysPath -ArgumentList "$WorkspaceGuid 1"
+			Write-Host "$(Get-Date): Zwift PowerToys Workspaces launched successfully." -ForegroundColor Green
+		}
+		catch {
+			Write-Host "$(Get-Date): Error launching PowerToys Workspaces: $($_.Exception.Message)" -ForegroundColor Red
+		}
 	}
 }
 catch {
-	Write-Host "$(Get-Date): Error launching PowerToys Workspaces: $($_.Exception.Message)" -ForegroundColor Red
+	Write-Host "$(Get-Date): Error in the application check and launch process: $($_.Exception.Message)" -ForegroundColor Red
 }
 
 # Wait for Zwift game to start and monitor until it closes
