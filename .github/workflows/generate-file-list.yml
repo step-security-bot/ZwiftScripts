@@ -1,12 +1,8 @@
 name: Generate and Update README.MD File List
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  schedule:
+    - cron: "0 0 */14 * *" # Runs every 14 days
   workflow_dispatch: # Allows manual triggering
 
 permissions:
