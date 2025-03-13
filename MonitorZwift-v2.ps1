@@ -24,7 +24,7 @@
 
 .PARAMETER WorkspaceGuid
 	The GUID for the PowerToys Workspace. Default is
-	'{E2CDEA2A-6E33-4CFD-A26B-0C5CC2E55F40'.
+	'{E2CDEA2A-6E33-4CFD-A26B-0C5CC2E55F40}'
 
 .PARAMETER ZwiftLauncher
 	The process name of the Zwift launcher. Default is 'ZwiftLauncher'.
@@ -94,7 +94,7 @@
 		-Transparency 75 `
 		-SleepInterval 5 `
 		-PowerToysPath 'C:\Program Files\PowerToys\PowerToys.WorkspacesLauncher.exe' `
-		-WorkspaceGuid '{E2CDEA2A-6E33-4CFD-A26B-0C5CC2E55F40' `
+		-WorkspaceGuid '{E2CDEA2A-6E33-4CFD-A26B-0C5CC2E55F40}' `
 		-ZwiftLauncher 'ZwiftLauncher' `
 		-ZwiftGame 'ZwiftApp' `
 		-PrimaryDisplayZwift 3 `
@@ -148,7 +148,7 @@ param (
 	# Reduced interval for faster detection of Zwift launcher and game processes
 	[string[]]$Colors = @('Black', 'DarkBlue', 'DarkGreen', 'DarkCyan', 'DarkRed', 'DarkMagenta', 'DarkYellow', 'Gray', 'DarkGray', 'Blue', 'Green', 'Cyan', 'Red', 'Magenta', 'Yellow', 'White'),
 	# List of colors for the waiting animation
-	[string]$RandomColor = ($Colors | Get-Random),
+	[string]$randomColor = ($Colors | Get-Random),
 	# Random color for the waiting animation
 	[int]$AnimIndex = 0,
 	# Animation index for the waiting animation
@@ -157,7 +157,7 @@ param (
 	[string]$StopRecordingHotkey = '^{F11}',
 	# Hotkey to stop recording in OBS (default: Ctrl+F11)
 	[string]$CloseObsHotkey = '%{F4}'
-	# Hotkey to close OBS gracefully (default: Alt+F4
+	# Hotkey to close OBS gracefully (default: Alt+F4)
 )
 
 # Function to set window transparency using Win32 API functions
