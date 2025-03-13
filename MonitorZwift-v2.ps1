@@ -1,110 +1,105 @@
 <#
 .SYNOPSIS
-	Monitors the Zwift launcher and game processes, adjusts window transparency,
-	and switches primary display.
+	This script automates the process of managing the Zwift application and related tasks, including setting display configurations, managing window transparency, launching and closing applications, and synchronizing files.
 
 .DESCRIPTION
-	This script monitors the Zwift launcher and game processes, adjusts the
-	transparency of the current PowerShell or Windows Terminal window, switches
-	the primary display to a specified display when Zwift starts, and restores
-	the primary display to the default display when Zwift closes. It also runs
-	a FreeFileSync batch job after Zwift closes.
-
-.PARAMETER Transparency
-	The transparency percentage for the PowerShell or Windows Terminal window
-	(0-100). Default is 75.
-
-.PARAMETER SleepInterval
-	The interval in seconds for checking the Zwift launcher and game processes.
-	Default is 5 seconds.
-
-.PARAMETER PowerToysPath
-	The file path to the PowerToys Workspaces executable. Default is
-	'C:\Program Files\PowerToys\PowerToys.WorkspacesLauncher.exe'.
-
-.PARAMETER WorkspaceGuid
-	The GUID for the PowerToys Workspace. Default is
-	'{E2CDEA2A-6E33-4CFD-A26B-0C5CC2E55F40}'
+	The script performs the following tasks:
+	- Sets the primary display for Zwift and restores it after the session.
+	- Adjusts the transparency of the PowerShell window.
+	- Launches and monitors the Zwift launcher and game.
+	- Manages the PowerToys Workspaces for Zwift.
+	- Runs a FreeFileSync batch job to synchronize files after the Zwift session.
+	- Stops and saves OBS recordings, then closes OBS.
+	- Closes Spotify if it is running.
+	- Launches Microsoft Edge in app mode with specified URLs.
 
 .PARAMETER ZwiftLauncher
-	The process name of the Zwift launcher. Default is 'ZwiftLauncher'.
+	The process name of the Zwift launcher (default: 'ZwiftLauncher').
 
 .PARAMETER ZwiftGame
-	The process name of the Zwift game. Default is 'ZwiftApp'.
+	The process name of the Zwift game (default: 'ZwiftApp').
 
 .PARAMETER PrimaryDisplayZwift
-	The zero-based index of the display to be used for Zwift. Default is 4.
+	The zero-based index of the display to be used for Zwift (default: 3).
 
 .PARAMETER PrimaryDisplayDefault
-	The index of the default primary display. Default is 2.
+	The zero-based index of the default primary display (default: 1).
+
+.PARAMETER TargetDisplayIndex
+	The zero-based index of the target display for positioning the PowerShell window (default: 1).
+
+.PARAMETER WindowPositionX
+	The X-coordinate for the PowerShell window position (default: 0).
+
+.PARAMETER WindowPositionY
+	The Y-coordinate for the PowerShell window position (default: 50).
+
+.PARAMETER WindowWidth
+	The width of the PowerShell window in pixels (default: 300).
+
+.PARAMETER WindowHeight
+	The height of the PowerShell window in pixels (default: 600).
+
+.PARAMETER PowerToysPath
+	The path to the PowerToys Workspaces executable file (default: 'C:\Program Files\PowerToys\PowerToys.WorkspacesLauncher.exe').
+
+.PARAMETER WorkspaceGuid
+	The GUID for the PowerToys Workspace for Zwift (default: '{E2CDEA2A-6E33-4CFD-A26B-0C5CC2E55F40}').
 
 .PARAMETER FreeFileSyncPath
-	The file path to the FreeFileSync executable. Default is
-	'C:\Program Files\FreeFileSync\FreeFileSync.exe'.
+	The path to the FreeFileSync executable file (default: 'C:\Program Files\FreeFileSync\FreeFileSync.exe').
 
 .PARAMETER BatchJobPath
-	The file path to the FreeFileSync batch job. Default is
-	'C:\Users\Nick\Dropbox\Random Save\Task Scheduler Rules\ZwiftPics.ffs_batch'.
+	The path to the FreeFileSync batch job file for synchronizing files after the Zwift session (default: 'C:\Users\Nick\Dropbox\Random Save\Task Scheduler Rules\ZwiftPics.ffs_batch').
 
-.FUNCTIONS
-    Import-DisplayConfigModule
-        Imports the DisplayConfig module or installs it if not available.
+.PARAMETER EdgePath
+	The path to the Microsoft Edge executable file (default: 'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe').
 
-    Get-ProcessRunning
-        Checks if a process is running by name (case-insensitive).
+.PARAMETER EdgeUrl1
+	The first URL to open in Microsoft Edge in app mode (default: YouTube Studio URL).
 
-    Set-WindowTransparencyUWP
-        Sets the transparency of the current PowerShell or Windows Terminal window.
+.PARAMETER EdgeUrl2
+	The second URL to open in Microsoft Edge in app mode (default: Strava URL).
 
-    Set-PrimaryDisplay
-        Sets the primary display using the DisplayConfig module.
+.PARAMETER EdgeUrl3
+	The third URL to open in Microsoft Edge in app mode (default: Garmin Connect URL).
+
+.PARAMETER AppsToCheck
+	A list of additional apps to check for and close when Zwift is detected (default: 'Spotify', 'obs64', 'Sauce for Zwift™').
+
+.PARAMETER AnimationChars
+	A list of characters for the waiting animation (default: '|', '/', '-', '\', '|', '/', '-', '\').
+
+.PARAMETER Transparency
+	The window transparency percentage (0-100) (default: 75).
+
+.PARAMETER SleepInterval
+	The interval for faster detection of Zwift launcher and game processes (default: 10).
+
+.PARAMETER Colors
+	A list of colors for the waiting animation (default: various colors).
+
+.PARAMETER randomColor
+	A random color for the waiting animation (default: randomly selected from Colors).
+
+.PARAMETER AnimIndex
+	The animation index for the waiting animation (default: 0).
+
+.PARAMETER ObsProcessName
+	The process name of OBS (default: 'obs64').
+
+.PARAMETER StopRecordingHotkey
+	The hotkey to stop recording in OBS (default: '^{F11}').
+
+.PARAMETER CloseObsHotkey
+	The hotkey to close OBS gracefully (default: '%{F4}').
+
+.EXAMPLE
+	# Example usage of the script
+	.\MonitorZwift-v2.ps1 -ZwiftLauncher 'ZwiftLauncher' -ZwiftGame 'ZwiftApp' -PrimaryDisplayZwift 3 -PrimaryDisplayDefault 1
 
 .NOTES
-    Author: Nick
-    Date: 2025-03-01
-		Version: 2.0
-		Updated: 2025-03-01
-		Tested on: Windows 11 Pro
-		Requires: PowerShell 5.1 or later
-		This script requires the DisplayConfig module and FreeFileSync to be installed.
-		- DisplayConfig module: https://www.powershellgallery.com/packages/DisplayConfig
-		- FreeFileSync: https://freefilesync.org/
-
-.LINK
-		Github Repo: https://github.com/Nick2bad4u/ZwiftScripts
-		Open an issue: https://github.com/Nick2bad4u/ZwiftScripts/issues
-.LINK
-		Download the required modules and software:
-		DisplayConfig module: https://www.powershellgallery.com/packages/DisplayConfig
-		FreeFileSync: https://freefilesync.org/
-
-.INPUTS
-    None. You cannot pipe objects to this script.
-
-.OUTPUTS
-    None. This script does not produce any output objects.
-
-.EXAMPLE
-    .\MonitorZwift-v2.ps1 -Transparency 50 -SleepInterval 10
-
-    This example sets the window transparency to 50% and the sleep interval to 10 seconds.
-
-.EXAMPLE
-	.\MonitorZwift-v2.ps1 `
-		-Transparency 75 `
-		-SleepInterval 5 `
-		-PowerToysPath 'C:\Program Files\PowerToys\PowerToys.WorkspacesLauncher.exe' `
-		-WorkspaceGuid '{E2CDEA2A-6E33-4CFD-A26B-0C5CC2E55F40}' `
-		-ZwiftLauncher 'ZwiftLauncher' `
-		-ZwiftGame 'ZwiftApp' `
-		-PrimaryDisplayZwift 3 `
-		-PrimaryDisplayDefault 1 `
-		-FreeFileSyncPath 'C:\Program Files\FreeFileSync\FreeFileSync.exe' `
-		-BatchJobPath 'C:\Users\Nick\Dropbox\Random Save\Task Scheduler Rules\ZwiftPics.ffs_batch'
-
-	This example sets the window transparency to 75%, the sleep interval to 5 seconds,
-	and customizes the paths and settings for PowerToys Workspaces, Zwift processes,
-	primary displays, FreeFileSync, and the batch job.
+	This script requires the DisplayConfig module for setting the primary display. It will attempt to install and import the module if not already available.
 #>
 
 param (
@@ -136,8 +131,12 @@ param (
 	# Path to FreeFileSync batch job file for synchronizing files after Zwift session
 	[string]$EdgePath = 'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe',
 	# Path to Microsoft Edge executable file
-	[string]$EdgeAppUrl = 'https://studio.youtube.com/channel/UCyYwMWui3Opy2yZyom2QM0g/videos/upload?filter=%5B%5D&sort=%7B%22columnType%22%3A%22date%22%2C%22sortOrder%22%3A%22DESCENDING%22%7D',
-	# URL to open in Microsoft Edge in app mode
+	[string]$EdgeUrl1 = 'https://studio.youtube.com/channel/UCyYwMWui3Opy2yZyom2QM0g/videos/upload?filter=%5B%5D&sort=%7B%22columnType%22%3A%22date%22%2C%22sortOrder%22%3A%22DESCENDING%22%7D',
+	# URL to open in Microsoft Edge in app mode (YouTube Studio) Opens Edge URL 1
+	[string]$EdgeUrl2 = 'https://www.strava.com/athlete/training',
+	# URL to open in Microsoft Edge in app mode (Strava) Opens Edge URL 2
+	[string]$EdgeUrl3 = 'https://connect.garmin.com/modern/home',
+	# URL to open in Microsoft Edge in app mode (Garmin Connect) Opens Edge URL 3
 	[string[]]$AppsToCheck = @('Spotify', 'obs64', 'Sauce for Zwift™'),
 	# List of additional apps to check for and close when Zwift is detected
 	[string[]]$AnimationChars = @('|', '/', '-', '\', '|', '/', '-', '\'),
@@ -557,12 +556,11 @@ try {
 catch {
 	Write-Host "$(Get-Date): Error closing Spotify: $($_.Exception.Message)" -ForegroundColor Red
 }
-
-# Launch Microsoft Edge in app mode with the specified URL
+# Launch Microsoft Edge in app mode with the specified URLs
 try {
-	Write-Host "$(Get-Date): Launching Microsoft Edge in app mode with the specified URL..." -ForegroundColor Cyan
-	Start-Process -FilePath "$EdgePath" -ArgumentList "$EdgeAppUrl"
-	Write-Host "$(Get-Date): Microsoft Edge launched successfully." -ForegroundColor Green
+	Write-Host "$(Get-Date): Launching Microsoft Edge in app mode with the specified URLs..." -ForegroundColor Cyan
+	Start-Process -FilePath "$EdgePath" -ArgumentList "$EdgeUrl1", "$EdgeUrl2", "$EdgeUrl3"
+	Write-Host "$(Get-Date): Microsoft Edge launched successfully with the specified URLs." -ForegroundColor Green
 }
 catch {
 	Write-Host "$(Get-Date): Error launching Microsoft Edge: $($_.Exception.Message)" -ForegroundColor Red
