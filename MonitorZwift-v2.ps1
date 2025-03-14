@@ -94,6 +94,9 @@
 .PARAMETER CloseObsHotkey
 	The hotkey to close OBS gracefully (default: '%{F4}').
 
+.PARAMETER tasksCompleted
+	A list of tasks that should be completed by the script (default: various tasks).
+
 .EXAMPLE
 	# Example usage of the script
 	.\MonitorZwift-v2.ps1 -ZwiftLauncher 'ZwiftLauncher' -ZwiftGame 'ZwiftApp' -PrimaryDisplayZwift 3 -PrimaryDisplayDefault 1
@@ -155,9 +158,27 @@ param (
 	# OBS process name (default: obs64)
 	[string]$StopRecordingHotkey = '^{F11}',
 	# Hotkey to stop recording in OBS (default: Ctrl+F11)
-	[string]$CloseObsHotkey = '%{F4}'
+	[string]$CloseObsHotkey = '%{F4}',
 	# Hotkey to close OBS gracefully (default: Alt+F4)
+	[string[]]$tasksCompleted = @(
+		'Resized and positioned PowerShell window',
+		'Imported DisplayConfig module',
+		'Set Window Transparency',
+		'Zwift launcher started',
+		'Primary display set for Zwift',
+		'PowerToys Workspaces launched or skipped',
+		'Zwift game started',
+		'Zwift game closed',
+		'Primary display restored',
+		'FreeFileSync batch job completed',
+		'OBS recording stopped and closed',
+		'Spotify closed',
+		'Microsoft Edge launched'
+	)
 )
+
+# Initialize the global variable to track completed tasks
+$global:completedTasks = @()
 
 # Function to set window transparency using Win32 API functions
 # Define the Win32 class once if not already defined
@@ -356,6 +377,7 @@ try {
 		# Set the window position to display 3
 		[Win32]::SetWindowPos($hwnd, [IntPtr]::Zero, $x + $WindowPositionX, $y + $WindowPositionY, $WindowWidth, $WindowHeight, [Win32]::SWP_NOZORDER -bor [Win32]::SWP_SHOWWINDOW)
 		Write-Host "$(Get-Date): Successfully resized and positioned the PowerShell window on display $TargetDisplayIndex." -ForegroundColor Green
+		$global:completedTasks += 'Resized and positioned PowerShell window'
 	}
 	else {
 		Write-Host "$(Get-Date): Display 3 not found.  Resizing in current display." -ForegroundColor Yellow
@@ -370,6 +392,7 @@ catch {
 try {
 	Write-Host "$(Get-Date): Attempting to import DisplayConfig module..." -ForegroundColor Cyan
 	Import-DisplayConfigModule
+	$global:completedTasks += 'Imported DisplayConfig module'
 }
 catch {
 	Write-Host "$(Get-Date): Error importing DisplayConfig module: $($_.Exception.Message)" -ForegroundColor Red
@@ -378,6 +401,7 @@ catch {
 # Set PowerShell window transparency to the specified value (default: 25)
 try {
 	Set-WindowTransparencyUWP -Transparency $Transparency
+	$global:completedTasks += 'Set Window Transparency'
 }
 catch {
 	Write-Host "$(Get-Date): Error setting window transparency: $($_.Exception.Message)" -ForegroundColor Red
@@ -391,6 +415,8 @@ try {
 	}
 	Write-Host "$(Get-Date): Zwift launcher detected. Switching primary display to $($PrimaryDisplayZwift + 1)" -ForegroundColor Green
 	Set-PrimaryDisplay ($PrimaryDisplayZwift + 1) # + 1 to make it one-based index for the DisplayConfig module (index: 4)
+	$global:completedTasks += 'Zwift launcher started'
+	$global:completedTasks += 'Primary display set for Zwift'
 }
 catch {
 	Write-Host "$(Get-Date): Error while waiting for Zwift launcher to start or switching primary display: $($_.Exception.Message)" -ForegroundColor Red
@@ -420,6 +446,7 @@ try {
 			Write-Host "$(Get-Date): Launching Zwift PowerToys Workspaces..." -ForegroundColor Cyan
 			Start-Process -FilePath $PowerToysPath -ArgumentList "$WorkspaceGuid 1"
 			Write-Host "$(Get-Date): Zwift PowerToys Workspaces launched successfully." -ForegroundColor Green
+			$global:completedTasks += 'PowerToys Workspaces launched or skipped'
 		}
 		catch {
 			Write-Host "$(Get-Date): Error launching PowerToys Workspaces: $($_.Exception.Message)" -ForegroundColor Red
@@ -440,6 +467,7 @@ try {
 		Wait-WithAnimation -Seconds 1 -Message "Waiting for $ZwiftGame"
 	}
 	Write-Host "$(Get-Date): Zwift game detected." -ForegroundColor Green
+	$global:completedTasks += 'Zwift game started'
 }
 catch {
 	Write-Host "$(Get-Date): Error while waiting for or detecting Zwift game: $($_.Exception.Message)" -ForegroundColor Red
@@ -453,6 +481,8 @@ try {
 	}
 	Write-Host "$(Get-Date): Zwift game closed. Restoring primary display to $($PrimaryDisplayDefault + 1)" -ForegroundColor Green
 	Set-PrimaryDisplay ($PrimaryDisplayDefault + 1) # + 1 to make it one-based index for the DisplayConfig module (index: 2)
+	$global:completedTasks += 'Zwift game closed'
+	$global:completedTasks += 'Primary display restored'
 }
 catch {
 	Write-Host "$(Get-Date): Error monitoring Zwift game or restoring display: $($_.Exception.Message)" -ForegroundColor Red
@@ -464,6 +494,7 @@ try {
 	Write-Host "$(Get-Date): Running FreeFileSync batch job..." -ForegroundColor Cyan
 	Start-Process -FilePath $FreeFileSyncPath -ArgumentList "`"$BatchJobPath`"" -Wait
 	Write-Host "$(Get-Date): FreeFileSync batch job completed." -ForegroundColor Green
+	$global:completedTasks += 'FreeFileSync batch job completed'
 }
 catch {
 	Write-Host "$(Get-Date): Error running FreeFileSync batch job: $($_.Exception.Message)" -ForegroundColor Red
@@ -526,6 +557,7 @@ try {
 				$timeWaited++
 			}
 			Write-Host "$(Get-Date): OBS closed successfully" -ForegroundColor Green
+			$global:completedTasks += 'OBS recording stopped and closed'
 		}
 		catch {
 			Write-Host "$(Get-Date): Error while waiting for OBS to close: $($_.Exception.Message)" -ForegroundColor Red
@@ -548,6 +580,7 @@ try {
 		Write-Host "$(Get-Date): Spotify is running. Closing Spotify..." -ForegroundColor Yellow
 		$spotifyProcess | Stop-Process -Force
 		Write-Host "$(Get-Date): Spotify closed successfully." -ForegroundColor Green
+		$global:completedTasks += 'Spotify closed'
 	}
 	else {
 		Write-Host "$(Get-Date): Spotify is not running." -ForegroundColor Yellow
@@ -561,16 +594,27 @@ try {
 	Write-Host "$(Get-Date): Launching Microsoft Edge in app mode with the specified URLs..." -ForegroundColor Cyan
 	Start-Process -FilePath "$EdgePath" -ArgumentList "$EdgeUrl1", "$EdgeUrl2", "$EdgeUrl3"
 	Write-Host "$(Get-Date): Microsoft Edge launched successfully with the specified URLs." -ForegroundColor Green
+	$global:completedTasks += 'Microsoft Edge launched'
 }
 catch {
 	Write-Host "$(Get-Date): Error launching Microsoft Edge: $($_.Exception.Message)" -ForegroundColor Red
 }
 
-# Close the script after all tasks are completed
+# Validate that all required tasks have been completed successfully
 try {
-	Write-Host "$(Get-Date): Closing the script." -ForegroundColor Cyan
+	$tasksFailed = $tasksCompleted | Where-Object { $_ -notin $global:completedTasks }
+
+	if ($tasksFailed.Count -eq 0) {
+		Write-Host "$(Get-Date): All tasks completed successfully." -ForegroundColor Green
+	}
+	else {
+		Write-Host "$(Get-Date): The following tasks failed or were not completed:" -ForegroundColor Red
+		$tasksFailed | ForEach-Object { Write-Host "- $_" -ForegroundColor Red }
+	}
 }
 catch {
-	Write-Host "$(Get-Date): Error while closing the script: $($_.Exception.Message)" -ForegroundColor Red
+	Write-Host "$(Get-Date): Error during task validation: $($_.Exception.Message)" -ForegroundColor Red
 }
-exit
+finally {
+	exit 0
+}
