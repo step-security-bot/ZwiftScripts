@@ -132,6 +132,8 @@ param (
 	# Path to FreeFileSync executable file (default installation path)
 	[string]$BatchJobPath = 'C:\Users\Nick\Dropbox\Random Save\Task Scheduler Rules\ZwiftPics.ffs_batch',
 	# Path to FreeFileSync batch job file for synchronizing files after Zwift session
+	[string]$ZwiftMediaPath = 'C:\Users\Nick\Dropbox\Cycling\ZwiftMedia',
+	[string]$ZwiftPicturesPath = 'C:\Users\Nick\Dropbox\PC (2)\Pictures\Zwift',
 	[string]$EdgePath = 'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe',
 	# Path to Microsoft Edge executable file
 	[string]$EdgeUrl1 = 'https://studio.youtube.com/channel/UCyYwMWui3Opy2yZyom2QM0g/videos/upload?filter=%5B%5D&sort=%7B%22columnType%22%3A%22date%22%2C%22sortOrder%22%3A%22DESCENDING%22%7D',
@@ -169,11 +171,14 @@ param (
 		'PowerToys Workspaces launched or skipped',
 		'Zwift game started',
 		'Zwift game closed',
+		'Sauce for Zwift™ closed',
 		'Primary display restored',
 		'FreeFileSync batch job completed',
 		'OBS recording stopped and closed',
 		'Spotify closed',
-		'Microsoft Edge launched'
+		'Microsoft Edge launched',
+		'Opened File Explorer for ZwiftMediaPath',
+		'Opened File Explorer for ZwiftPicturesPath'
 	)
 )
 
@@ -472,20 +477,46 @@ try {
 catch {
 	Write-Host "$(Get-Date): Error while waiting for or detecting Zwift game: $($_.Exception.Message)" -ForegroundColor Red
 }
-
-# Wait for Zwift game to close and restore primary display to default display (index: 2)
+# Step 1: Wait for Zwift game to close
 try {
 	Write-Host "$(Get-Date): Zwift game is running. Waiting for it to close..." -ForegroundColor Cyan
 	while (Get-ProcessRunning -ProcessName $ZwiftGame) {
 		Wait-WithAnimation -Seconds 1 -Message "Waiting for $ZwiftGame"
 	}
-	Write-Host "$(Get-Date): Zwift game closed. Restoring primary display to $($PrimaryDisplayDefault + 1)" -ForegroundColor Green
-	Set-PrimaryDisplay ($PrimaryDisplayDefault + 1) # + 1 to make it one-based index for the DisplayConfig module (index: 2)
+	Write-Host "$(Get-Date): Zwift game closed." -ForegroundColor Green
 	$global:completedTasks += 'Zwift game closed'
+}
+catch {
+	Write-Host "$(Get-Date): Error monitoring Zwift game: $($_.Exception.Message)" -ForegroundColor Red
+}
+
+# Step 2: Ensure Sauce for Zwift™ is closed
+try {
+	Write-Host "$(Get-Date): Checking for Sauce for Zwift™..." -ForegroundColor Cyan
+	$sauceProcess = Get-Process -Name 'Sauce for Zwift™' -ErrorAction SilentlyContinue
+	if ($sauceProcess) {
+		Write-Host "$(Get-Date): Sauce for Zwift™ is running. Closing Sauce for Zwift™..." -ForegroundColor Yellow
+		$sauceProcess | Stop-Process -Force
+		Write-Host "$(Get-Date): Sauce for Zwift™ closed successfully." -ForegroundColor Green
+		$global:completedTasks += 'Sauce for Zwift™ closed'
+	}
+	else {
+		Write-Host "$(Get-Date): Sauce for Zwift™ is not running." -ForegroundColor Yellow
+	}
+}
+catch {
+	Write-Host "$(Get-Date): Error closing Sauce for Zwift™: $($_.Exception.Message)" -ForegroundColor Red
+}
+
+# Step 3: Restore primary display to default display
+try {
+	Write-Host "$(Get-Date): Restoring primary display to $($PrimaryDisplayDefault + 1)..." -ForegroundColor Cyan
+	Set-PrimaryDisplay ($PrimaryDisplayDefault + 1) # + 1 to make it one-based index for the DisplayConfig module (index: 2)
+	Write-Host "$(Get-Date): Primary display restored to $($PrimaryDisplayDefault + 1)." -ForegroundColor Green
 	$global:completedTasks += 'Primary display restored'
 }
 catch {
-	Write-Host "$(Get-Date): Error monitoring Zwift game or restoring display: $($_.Exception.Message)" -ForegroundColor Red
+	Write-Host "$(Get-Date): Error restoring primary display: $($_.Exception.Message)" -ForegroundColor Red
 }
 
 # Run FreeFileSync batch job after Zwift game closes and display is restored to default display (index: 2)
@@ -598,6 +629,43 @@ try {
 }
 catch {
 	Write-Host "$(Get-Date): Error launching Microsoft Edge: $($_.Exception.Message)" -ForegroundColor Red
+}
+
+# Open File Explorer with two separate windows for the specified directories
+try {
+	Write-Host "$(Get-Date): Opening File Explorer with specified directories..." -ForegroundColor Cyan
+	if (Test-Path -Path $ZwiftMediaPath) {
+		Start-Process -FilePath 'explorer.exe' -ArgumentList "`"$ZwiftMediaPath`""
+		$global:completedTasks += 'Opened File Explorer for ZwiftMediaPath'
+	}
+	else {
+		Write-Host "$(Get-Date): Path $ZwiftMediaPath does not exist. Skipping opening File Explorer for this path." -ForegroundColor Yellow
+	}
+
+	if (Test-Path -Path $ZwiftPicturesPath) {
+		Start-Process -FilePath 'explorer.exe' -ArgumentList "`"$ZwiftPicturesPath`""
+		$global:completedTasks += 'Opened File Explorer for ZwiftPicturesPath'
+	}
+	else {
+		Write-Host "$(Get-Date): Path $ZwiftPicturesPath does not exist. Skipping the opening of File Explorer for this path." -ForegroundColor Yellow
+	}
+
+	$openedPaths = @()
+	if (Test-Path -Path $ZwiftMediaPath) {
+		$openedPaths += $ZwiftMediaPath
+	}
+	if (Test-Path -Path $ZwiftPicturesPath) {
+		$openedPaths += $ZwiftPicturesPath
+	}
+	if ($openedPaths.Count -gt 0) {
+		Write-Host "$(Get-Date): File Explorer opened successfully with the following directories: $($openedPaths -join ', ')." -ForegroundColor Green
+	}
+	else {
+		Write-Host "$(Get-Date): No directories were opened as none of the specified paths exist." -ForegroundColor Yellow
+	}
+}
+catch {
+	Write-Host "$(Get-Date): Error opening File Explorer: $($_.Exception.Message)" -ForegroundColor Red
 }
 
 # Validate that all required tasks have been completed successfully
