@@ -65,7 +65,7 @@
 	The third URL to open in Microsoft Edge in app mode (default: Garmin Connect URL).
 
 .PARAMETER AppsToCheck
-	A list of additional apps to check for and close when Zwift is detected (default: 'Spotify', 'obs64', 'Sauce for Zwift™').
+	A list of additional apps to check for and close when Zwift is detected (default: 'Spotify', 'obs64', 'Sauce for Zwift').
 
 .PARAMETER AnimationChars
 	A list of characters for the waiting animation (default: '|', '/', '-', '\', '|', '/', '-', '\').
@@ -142,7 +142,7 @@ param (
 	# URL to open in Microsoft Edge in app mode (Strava) Opens Edge URL 2
 	[string]$EdgeUrl3 = 'https://connect.garmin.com/modern/home',
 	# URL to open in Microsoft Edge in app mode (Garmin Connect) Opens Edge URL 3
-	[string[]]$AppsToCheck = @('Spotify', 'obs64', 'Sauce for Zwift™'),
+	[string[]]$AppsToCheck = @('Spotify', 'obs64', 'Sauce for Zwift'),
 	# List of additional apps to check for and close when Zwift is detected
 	[string[]]$AnimationChars = @('|', '/', '-', '\', '|', '/', '-', '\'),
 	# Animation characters for waiting animation
@@ -171,7 +171,7 @@ param (
 		'PowerToys Workspaces launched or skipped',
 		'Zwift game started',
 		'Zwift game closed',
-		'Sauce for Zwift™ closed',
+		'Sauce for Zwift closed',
 		'Primary display restored',
 		'FreeFileSync batch job completed',
 		'OBS recording stopped and closed',
@@ -477,6 +477,7 @@ try {
 catch {
 	Write-Host "$(Get-Date): Error while waiting for or detecting Zwift game: $($_.Exception.Message)" -ForegroundColor Red
 }
+
 # Step 1: Wait for Zwift game to close
 try {
 	Write-Host "$(Get-Date): Zwift game is running. Waiting for it to close..." -ForegroundColor Cyan
@@ -490,22 +491,23 @@ catch {
 	Write-Host "$(Get-Date): Error monitoring Zwift game: $($_.Exception.Message)" -ForegroundColor Red
 }
 
-# Step 2: Ensure Sauce for Zwift™ is closed
+# Ensure Sauce for Zwift process is closed before restoring primary display
 try {
-	Write-Host "$(Get-Date): Checking for Sauce for Zwift™..." -ForegroundColor Cyan
-	$sauceProcess = Get-Process -Name 'Sauce for Zwift™' -ErrorAction SilentlyContinue
+	Write-Host "$(Get-Date): Checking for Sauce for Zwift process..." -ForegroundColor Cyan
+	$sauceProcess = Get-Process | Where-Object { $_.Name -like 'Sauce for Zwift*' }
+
 	if ($sauceProcess) {
-		Write-Host "$(Get-Date): Sauce for Zwift™ is running. Closing Sauce for Zwift™..." -ForegroundColor Yellow
+		Write-Host "$(Get-Date): Sauce for Zwift is running. Closing it..." -ForegroundColor Yellow
 		$sauceProcess | Stop-Process -Force
-		Write-Host "$(Get-Date): Sauce for Zwift™ closed successfully." -ForegroundColor Green
-		$global:completedTasks += 'Sauce for Zwift™ closed'
+		Write-Host "$(Get-Date): Sauce for Zwift closed successfully." -ForegroundColor Green
+		$global:completedTasks += 'Sauce for Zwift closed'
 	}
 	else {
-		Write-Host "$(Get-Date): Sauce for Zwift™ is not running." -ForegroundColor Yellow
+		Write-Host "$(Get-Date): Sauce for Zwift is not running." -ForegroundColor Yellow
 	}
 }
 catch {
-	Write-Host "$(Get-Date): Error closing Sauce for Zwift™: $($_.Exception.Message)" -ForegroundColor Red
+	Write-Host "$(Get-Date): Error closing Sauce for Zwift: $($_.Exception.Message)" -ForegroundColor Red
 }
 
 # Step 3: Restore primary display to default display
@@ -573,7 +575,6 @@ try {
 		catch {
 			Write-Host "$(Get-Date): Error sending close command to OBS: $($_.Exception.Message)" -ForegroundColor Red
 		}
-
 		try {
 			# Wait for OBS to close naturally (up to 10 seconds)
 			$timeout = 10
