@@ -1,110 +1,128 @@
 <#
 .SYNOPSIS
-	This script automates the process of managing the Zwift application and related tasks, including setting display configurations, managing window transparency, launching and closing applications, and synchronizing files.
+	Automates the setup and teardown of a Zwift gaming session, including window management, application monitoring, and file synchronization.
 
 .DESCRIPTION
-	The script performs the following tasks:
-	- Sets the primary display for Zwift and restores it after the session.
-	- Adjusts the transparency of the PowerShell window.
-	- Launches and monitors the Zwift launcher and game.
-	- Manages the PowerToys Workspaces for Zwift.
-	- Runs a FreeFileSync batch job to synchronize files after the Zwift session.
-	- Stops and saves OBS recordings, then closes OBS.
-	- Closes Spotify if it is running.
+	This script is designed to streamline the process of starting and ending a Zwift gaming session. It performs the following tasks:
+	- Resizes and positions the PowerShell window.
+	- Sets window transparency for the PowerShell window.
+	- Monitors and manages the primary display for Zwift.
+	- Launches or skips PowerToys Workspaces for Zwift.
+	- Waits for Zwift launcher and game processes to start and monitors them until they close.
+	- Closes additional applications like Sauce for Zwift, OBS, and Spotify.
+	- Restores the primary display to its default configuration after the session.
+	- Synchronizes Zwift-related files using FreeFileSync.
 	- Launches Microsoft Edge in app mode with specified URLs.
+	- Opens File Explorer for Zwift media and pictures directories.
+	- Validates that all tasks have been completed successfully.
 
 .PARAMETER ZwiftLauncher
-	The process name of the Zwift launcher (default: 'ZwiftLauncher').
+	The process name of the Zwift launcher. Default is 'ZwiftLauncher'.
 
 .PARAMETER ZwiftGame
-	The process name of the Zwift game (default: 'ZwiftApp').
+	The process name of the Zwift game. Default is 'ZwiftApp'.
 
 .PARAMETER PrimaryDisplayZwift
-	The zero-based index of the display to be used for Zwift (default: 3).
+	The zero-based index of the display to be used for Zwift. Default is 3.
 
 .PARAMETER PrimaryDisplayDefault
-	The zero-based index of the default primary display (default: 1).
+	The zero-based index of the default primary display. Default is 1.
 
 .PARAMETER TargetDisplayIndex
-	The zero-based index of the target display for positioning the PowerShell window (default: 1).
+	The zero-based index of the target display for positioning the PowerShell window. Default is 1.
 
 .PARAMETER WindowPositionX
-	The X-coordinate for the PowerShell window position (default: 0).
+	The X-coordinate offset for the PowerShell window position. Default is 0.
 
 .PARAMETER WindowPositionY
-	The Y-coordinate for the PowerShell window position (default: 50).
+	The Y-coordinate offset for the PowerShell window position. Default is 50.
 
 .PARAMETER WindowWidth
-	The width of the PowerShell window in pixels (default: 300).
+	The width of the PowerShell window in pixels. Default is 300.
 
 .PARAMETER WindowHeight
-	The height of the PowerShell window in pixels (default: 600).
+	The height of the PowerShell window in pixels. Default is 600.
 
 .PARAMETER PowerToysPath
-	The path to the PowerToys Workspaces executable file (default: 'C:\Program Files\PowerToys\PowerToys.WorkspacesLauncher.exe').
+	The file path to the PowerToys Workspaces executable. Default is the default installation path.
 
 .PARAMETER WorkspaceGuid
-	The GUID for the PowerToys Workspace for Zwift (default: '{E2CDEA2A-6E33-4CFD-A26B-0C5CC2E55F40}').
+	The GUID for the PowerToys Workspace for Zwift.
 
 .PARAMETER FreeFileSyncPath
-	The path to the FreeFileSync executable file (default: 'C:\Program Files\FreeFileSync\FreeFileSync.exe').
+	The file path to the FreeFileSync executable. Default is the default installation path.
 
 .PARAMETER BatchJobPath
-	The path to the FreeFileSync batch job file for synchronizing files after the Zwift session (default: 'C:\Users\Nick\Dropbox\Random Save\Task Scheduler Rules\ZwiftPics.ffs_batch').
+	The file path to the FreeFileSync batch job for synchronizing Zwift-related files.
+
+.PARAMETER ZwiftMediaPath
+	The file path to the Zwift media directory.
+
+.PARAMETER ZwiftPicturesPath
+	The file path to the Zwift pictures directory.
 
 .PARAMETER EdgePath
-	The path to the Microsoft Edge executable file (default: 'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe').
+	The file path to the Microsoft Edge executable. Default is the default installation path.
 
 .PARAMETER EdgeUrl1
-	The first URL to open in Microsoft Edge in app mode (default: YouTube Studio URL).
+	The first URL to open in Microsoft Edge in app mode. Default is a YouTube Studio URL.
 
 .PARAMETER EdgeUrl2
-	The second URL to open in Microsoft Edge in app mode (default: Strava URL).
+	The second URL to open in Microsoft Edge in app mode. Default is a Strava training URL.
 
 .PARAMETER EdgeUrl3
-	The third URL to open in Microsoft Edge in app mode (default: Garmin Connect URL).
+	The third URL to open in Microsoft Edge in app mode. Default is a Garmin Connect URL.
 
 .PARAMETER AppsToCheck
-	A list of additional apps to check for and close when Zwift is detected (default: 'Spotify', 'obs64', 'Sauce for Zwift').
+	A list of additional applications to check for and close when Zwift is detected. Default includes 'Spotify', 'obs64', and 'Sauce for Zwift'.
 
 .PARAMETER AnimationChars
-	A list of characters for the waiting animation (default: '|', '/', '-', '\', '|', '/', '-', '\').
+	A list of characters used for the waiting animation. Default is a rotating set of characters.
 
 .PARAMETER Transparency
-	The window transparency percentage (0-100) (default: 75).
+	The transparency percentage for the PowerShell window (0-100). Default is 75.
 
 .PARAMETER SleepInterval
-	The interval for faster detection of Zwift launcher and game processes (default: 10).
+	The interval in seconds for checking Zwift launcher and game processes. Default is 10.
 
 .PARAMETER Colors
-	A list of colors for the waiting animation (default: various colors).
+	A list of colors for the waiting animation. Default includes various console colors.
 
 .PARAMETER randomColor
-	A random color for the waiting animation (default: randomly selected from Colors).
+	A randomly selected color for the waiting animation.
 
 .PARAMETER AnimIndex
-	The animation index for the waiting animation (default: 0).
+	The animation index for the waiting animation. Default is 0.
 
 .PARAMETER ObsProcessName
-	The process name of OBS (default: 'obs64').
+	The process name of OBS. Default is 'obs64'.
 
 .PARAMETER StopRecordingHotkey
-	The hotkey to stop recording in OBS (default: '^{F11}').
+	The hotkey to stop recording in OBS. Default is '^{F11}' (Ctrl+F11).
 
 .PARAMETER CloseObsHotkey
-	The hotkey to close OBS gracefully (default: '%{F4}').
+	The hotkey to close OBS gracefully. Default is '%{F4}' (Alt+F4).
 
 .PARAMETER tasksCompleted
-	A list of tasks that should be completed by the script (default: various tasks).
-
-.EXAMPLE
-	# Example usage of the script
-	.\MonitorZwift-v2.ps1 -ZwiftLauncher 'ZwiftLauncher' -ZwiftGame 'ZwiftApp' -PrimaryDisplayZwift 3 -PrimaryDisplayDefault 1
+	A list of tasks to track the progress of the script.
 
 .NOTES
-	This script requires the DisplayConfig module for setting the primary display. It will attempt to install and import the module if not already available.
-#>
+	- This script requires the DisplayConfig PowerShell module for managing display configurations.
+	- The script uses Win32 API functions for window management tasks.
+	- Ensure that all specified paths and applications are correctly configured before running the script.
 
+.EXAMPLE
+	# Run the script with default parameters
+	.\MonitorZwift-v2.ps1
+
+	# Run the script with custom parameters
+	.\MonitorZwift-v2.ps1 -ZwiftLauncher 'CustomLauncher' -ZwiftGame 'CustomGame' -PrimaryDisplayZwift 2
+
+.LINK
+	For more information about Zwift, visit: https://www.zwift.com/
+	For more information about PowerToys, visit: https://github.com/microsoft/PowerToys
+	For more information about FreeFileSync, visit: https://freefilesync.org/
+#>
 param (
 	[string]$ZwiftLauncher = 'ZwiftLauncher',
 	# Zwift launcher process name
