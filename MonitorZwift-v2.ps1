@@ -686,5 +686,8 @@ catch {
 	Write-Host "$(Get-Date): Error during task validation: $($_.Exception.Message)" -ForegroundColor Red
 }
 finally {
-	exit 0
+	Write-Host "$(Get-Date): Script execution completed. The window will remain open for review for 1 hour." -ForegroundColor Yellow
+	Start-Sleep -Seconds 3600 # Keeps the window open for 1 hour
+	Write-Host "$(Get-Date): 1 hour has passed since the script ended - Closing the script now." -ForegroundColor Yellow
+	exit
 }
