@@ -35,7 +35,7 @@ param (
 )
 
 $zwiftAppRunning = $null -ne (Get-Process -Name 'ZwiftApp' -ErrorAction SilentlyContinue)
-$zwiftLauncherRunning = $null -ne (Get-Process -Name 'ZwiftLauncher' -ErrorAction SilentlyContinue)
+# $zwiftLauncherRunning = $null -ne (Get-Process -Name 'ZwiftLauncher' -ErrorAction SilentlyContinue)
 
 # Resolve paths
 try {
@@ -47,8 +47,8 @@ catch {
   exit 1
 }
 
-if ($zwiftAppRunning -or $zwiftLauncherRunning) {
-  Write-Output 'ZwiftApp.exe or ZwiftLauncher.exe is already running. Skipping start.'
+if ($zwiftAppRunning) {
+  Write-Output 'ZwiftApp.exe is already running. Skipping ZwiftLauncher.exe start.'
 }
 else {
   # Start Zwift Launcher
