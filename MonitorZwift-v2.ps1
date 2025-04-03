@@ -188,6 +188,7 @@ param (
 		'Primary display set for Zwift',
 		'PowerToys Workspaces launched or skipped',
 		'Zwift game started',
+		'Zwift game window maximized',
 		'Zwift game closed',
 		'Sauce for Zwift closed or skipped',
 		'Primary display restored',
@@ -245,33 +246,37 @@ $global:completedTasks = @()
 # Check if the 'Win32' type is already defined
 if (-not ([System.Management.Automation.PSTypeName]'Win32').Type) {
 	$win32Code = @'
-using System;
-using System.Runtime.InteropServices;
-public class Win32 {
-	[DllImport("user32.dll", SetLastError = true)]
-	public static extern IntPtr GetForegroundWindow();
+	using System;
+	using System.Runtime.InteropServices;
+	public class Win32 {
+		[DllImport("user32.dll", SetLastError = true)]
+		public static extern IntPtr GetForegroundWindow();
 
-	[DllImport("user32.dll", SetLastError = true)]
-	public static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+		[DllImport("user32.dll", SetLastError = true)]
+		public static extern int GetWindowLong(IntPtr hWnd, int nIndex);
 
-	[DllImport("user32.dll")]
-	public static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+		[DllImport("user32.dll")]
+		public static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
-	[DllImport("user32.dll", SetLastError = true)]
-	[return: MarshalAs(UnmanagedType.Bool)]
-	public static extern bool SetLayeredWindowAttributes(IntPtr hwnd, uint crKey, byte bAlpha, uint dwFlags);
+		[DllImport("user32.dll", SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool SetLayeredWindowAttributes(IntPtr hwnd, uint crKey, byte bAlpha, uint dwFlags);
 
-	[DllImport("user32.dll", SetLastError = true)]
-	public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+		[DllImport("user32.dll", SetLastError = true)]
+		public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 
-	public const int GWL_EXSTYLE = -20;
-	public const int WS_EX_LAYERED = 0x80000;
-	public const int LWA_ALPHA = 0x2;
-	public const uint SWP_NOSIZE = 0x0001;
-	public const uint SWP_NOMOVE = 0x0002;
-	public const uint SWP_NOZORDER = 0x0004;
-	public const uint SWP_SHOWWINDOW = 0x0040;
-}
+		[DllImport("user32.dll", SetLastError = true)]
+		public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+		public const int GWL_EXSTYLE = -20;
+		public const int WS_EX_LAYERED = 0x80000;
+		public const int LWA_ALPHA = 0x2;
+		public const uint SWP_NOSIZE = 0x0001;
+		public const uint SWP_NOMOVE = 0x0002;
+		public const uint SWP_NOZORDER = 0x0004;
+		public const uint SWP_SHOWWINDOW = 0x0040;
+		public const int SW_MAXIMIZE = 3;
+	}
 '@
 	Add-Type -TypeDefinition $win32Code
 }
@@ -494,6 +499,34 @@ try {
 }
 catch {
 	Write-Host "$(Get-Date): Error while waiting for or detecting Zwift game: $($_.Exception.Message)" -ForegroundColor Red
+}
+
+# Wait for 60 seconds before maximizing the Zwift game window
+try {
+	Write-Host "$(Get-Date): Waiting for 180 (3 minutes) seconds before maximizing the Zwift game window..." -ForegroundColor Cyan
+	Start-Sleep -Seconds 180
+
+	$zwiftProcess = Get-Process -Name $ZwiftGame -ErrorAction SilentlyContinue
+	if ($zwiftProcess) {
+		# Get the main window handle of the Zwift game process
+		$zwiftHwnd = $zwiftProcess.MainWindowHandle
+		Write-Host "Zwift MainWindowHandle: $zwiftHwnd"
+		# If the handle is valid, maximize the window
+		if ($zwiftHwnd -ne [IntPtr]::Zero) {
+			[Win32]::ShowWindow($zwiftHwnd, [Win32]::SW_MAXIMIZE)
+			Write-Host "$(Get-Date): Zwift game window maximized successfully." -ForegroundColor Green
+			$global:completedTasks += 'Zwift game window maximized'
+		}
+		else {
+			Write-Host "$(Get-Date): Zwift game window handle not found. Unable to maximize." -ForegroundColor Yellow
+		}
+	}
+	else {
+		Write-Host "$(Get-Date): Zwift game process not found. Unable to maximize window." -ForegroundColor Yellow
+	}
+}
+catch {
+	Write-Host "$(Get-Date): Error maximizing Zwift game window: $($_.Exception.Message)" -ForegroundColor Red
 }
 
 # Step 1: Wait for Zwift game to close
