@@ -16,6 +16,12 @@
 	- Opens File Explorer for Zwift media and pictures directories.
 	- Validates that all tasks have been completed successfully.
 
+.PARAMETER ZwiftLauncherPath
+Specifies the file path to the Zwift Launcher executable. Defaults to 'C:\Program Files (x86)\Zwift\ZwiftLauncher.exe'.
+
+.PARAMETER MonitorZwiftScriptPath
+Specifies the file path to the Zwift monitoring script. Defaults to 'C:\Users\Nick\Dropbox\Cycling\ZwiftScripts\MonitorZwift-v2.ps1'.
+
 .PARAMETER ZwiftLauncher
 	The process name of the Zwift launcher. Default is 'ZwiftLauncher'.
 
@@ -124,6 +130,8 @@
 	For more information about FreeFileSync, visit: https://freefilesync.org/
 #>
 param (
+	[string]$ZwiftLauncherPath = 'C:\Program Files (x86)\Zwift\ZwiftLauncher.exe',
+	[string]$MonitorZwiftScriptPath = 'C:\Users\Nick\Dropbox\Cycling\ZwiftScripts\MonitorZwift-v2.ps1',
 	[string]$ZwiftLauncher = 'ZwiftLauncher',
 	# Zwift launcher process name
 	[string]$ZwiftGame = 'ZwiftApp',
@@ -433,6 +441,43 @@ try {
 }
 catch {
 	Write-Host "$(Get-Date): Error setting window transparency: $($_.Exception.Message)" -ForegroundColor Red
+}
+
+# Resolve paths for Zwift Launcher and Monitor Script
+try {
+	$MonitorZwiftScriptPath = Resolve-Path -LiteralPath $MonitorZwiftScriptPath -ErrorAction Stop
+	$ZwiftLauncherPath = Resolve-Path -LiteralPath $ZwiftLauncherPath -ErrorAction Stop
+}
+catch {
+	Write-Error "Failed to resolve paths: $($_.Exception.Message)"
+	exit 1
+}
+
+# Check if Zwift is already running
+$zwiftAppRunning = $null -ne (Get-Process -Name $ZwiftGame -ErrorAction SilentlyContinue)
+
+if ($zwiftAppRunning) {
+	Write-Output 'ZwiftApp.exe is already running. Skipping ZwiftLauncher.exe start.'
+}
+else {
+	# Start Zwift Launcher
+	if (Test-Path -LiteralPath $ZwiftLauncherPath) {
+		try {
+			$zwiftProcess = Start-Process -FilePath $ZwiftLauncherPath -NoNewWindow -PassThru -ErrorAction Stop
+			if ($zwiftProcess) {
+				Write-Output "Zwift Launcher started successfully from path: $ZwiftLauncherPath"
+			}
+			else {
+				Write-Error 'Zwift Launcher process did not start.'
+			}
+		}
+		catch {
+			Write-Error "Failed to start Zwift Launcher: $($_.Exception.Message)"
+		}
+	}
+	else {
+		Write-Error "Zwift Launcher path not found: $ZwiftLauncherPath"
+	}
 }
 
 # Wait for Zwift launcher to start and set primary display to Zwift display (index: 4)
