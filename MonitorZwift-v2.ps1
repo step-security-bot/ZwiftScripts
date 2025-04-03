@@ -192,7 +192,9 @@ param (
 		'Resized and positioned PowerShell window',
 		'Imported DisplayConfig module',
 		'Set Window Transparency',
-		'Zwift launcher started',
+		'Zwift Launcher path resolved',
+		'ZwiftApp already running or Zwift Launcher started',
+		'Zwift launcher running',
 		'Primary display set for Zwift',
 		'PowerToys Workspaces launched or skipped',
 		'Zwift game started',
@@ -447,6 +449,7 @@ catch {
 try {
 	$MonitorZwiftScriptPath = Resolve-Path -LiteralPath $MonitorZwiftScriptPath -ErrorAction Stop
 	$ZwiftLauncherPath = Resolve-Path -LiteralPath $ZwiftLauncherPath -ErrorAction Stop
+	$global:completedTasks += 'Zwift Launcher path resolved'
 }
 catch {
 	Write-Error "Failed to resolve paths: $($_.Exception.Message)"
@@ -458,6 +461,7 @@ $zwiftAppRunning = $null -ne (Get-Process -Name $ZwiftGame -ErrorAction Silently
 
 if ($zwiftAppRunning) {
 	Write-Output 'ZwiftApp.exe is already running. Skipping ZwiftLauncher.exe start.'
+	$global:completedTasks += 'ZwiftApp already running or Zwift Launcher started'
 }
 else {
 	# Start Zwift Launcher
@@ -466,6 +470,7 @@ else {
 			$zwiftProcess = Start-Process -FilePath $ZwiftLauncherPath -NoNewWindow -PassThru -ErrorAction Stop
 			if ($zwiftProcess) {
 				Write-Output "Zwift Launcher started successfully from path: $ZwiftLauncherPath"
+				$global:completedTasks += 'ZwiftApp already running or Zwift Launcher started'
 			}
 			else {
 				Write-Error 'Zwift Launcher process did not start.'
@@ -488,7 +493,7 @@ try {
 	}
 	Write-Host "$(Get-Date): Zwift launcher detected. Switching primary display to $($PrimaryDisplayZwift + 1)" -ForegroundColor Green
 	Set-PrimaryDisplay ($PrimaryDisplayZwift + 1) # + 1 to make it one-based index for the DisplayConfig module (index: 4)
-	$global:completedTasks += 'Zwift launcher started'
+	$global:completedTasks += 'Zwift launcher running'
 	$global:completedTasks += 'Primary display set for Zwift'
 }
 catch {
