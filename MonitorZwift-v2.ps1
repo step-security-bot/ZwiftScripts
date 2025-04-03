@@ -189,7 +189,7 @@ param (
 		'PowerToys Workspaces launched or skipped',
 		'Zwift game started',
 		'Zwift game closed',
-		'Sauce for Zwift closed',
+		'Sauce for Zwift closed or skipped',
 		'Primary display restored',
 		'FreeFileSync batch job completed',
 		'OBS recording stopped and closed',
@@ -518,10 +518,11 @@ try {
 		Write-Host "$(Get-Date): Sauce for Zwift is running. Closing it..." -ForegroundColor Yellow
 		$sauceProcess | Stop-Process -Force
 		Write-Host "$(Get-Date): Sauce for Zwift closed successfully." -ForegroundColor Green
-		$global:completedTasks += 'Sauce for Zwift closed'
+		$global:completedTasks += 'Sauce for Zwift closed or skipped'
 	}
 	else {
-		Write-Host "$(Get-Date): Sauce for Zwift is not running." -ForegroundColor Yellow
+		Write-Host "$(Get-Date): Sauce for Zwift is not running. Skipping..." -ForegroundColor Yellow
+		$global:completedTasks += 'Sauce for Zwift closed or skipped'
 	}
 }
 catch {
