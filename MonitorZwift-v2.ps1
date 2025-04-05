@@ -136,6 +136,8 @@ param (
 	# Zwift launcher process name
 	[string]$ZwiftGame = 'ZwiftApp',
 	# Zwift game process name
+	[int]$ZwiftGameMaximizeDelay = 180,
+	# Delay before maximizing the Zwift game window (in seconds)
 	[int]$PrimaryDisplayZwift = 3,
 	# Zero-based index of the display to be used for Zwift (Zero-based)
 	[int]$PrimaryDisplayDefault = 1,
@@ -551,10 +553,16 @@ catch {
 	Write-Host "$(Get-Date): Error while waiting for or detecting Zwift game: $($_.Exception.Message)" -ForegroundColor Red
 }
 
-# Wait for 60 seconds before maximizing the Zwift game window
+# Wait for a specified amount of time before maximizing the Zwift game window
 try {
-	Write-Host "$(Get-Date): Waiting for 180 (3 minutes) seconds before maximizing the Zwift game window..." -ForegroundColor Cyan
-	Start-Sleep -Seconds 180
+	Write-Host "$(Get-Date): Waiting for $ZwiftGameMaximizeDelay seconds before maximizing the Zwift game window..." -ForegroundColor Cyan
+
+	# Countdown animation
+	for ($i = $ZwiftGameMaximizeDelay; $i -gt 0; $i--) {
+		Write-Host "`rWaiting: $i seconds remaining..." -NoNewline -ForegroundColor Yellow
+		Start-Sleep -Seconds 1
+	}
+	Write-Host "`rCountdown complete. Proceeding..." -ForegroundColor Green
 
 	$zwiftProcess = Get-Process -Name $ZwiftGame -ErrorAction SilentlyContinue
 	if ($zwiftProcess) {
