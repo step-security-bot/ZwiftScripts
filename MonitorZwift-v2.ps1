@@ -655,20 +655,25 @@ try {
 			# Send hotkey to stop recording
 			$wshell = New-Object -ComObject WScript.Shell
 			$obsProcess | ForEach-Object {
-				[void]$wshell.AppActivate($_.MainWindowTitle)
-				Start-Sleep -Milliseconds 500
-				$wshell.SendKeys($StopRecordingHotkey) # Send hotkey to stop recording
+				try {
+					[void]$wshell.AppActivate($_.MainWindowTitle)
+					Start-Sleep -Milliseconds 500
+					$wshell.SendKeys($StopRecordingHotkey) # Send hotkey to stop recording
+				}
+				catch {
+					Write-Host "$(Get-Date): Error activating OBS window or sending stop recording hotkey: $($_.Exception.Message)" -ForegroundColor Red
+				}
 			}
 			Write-Host "$(Get-Date): Sent stop recording command to OBS" -ForegroundColor Green
 		}
 		catch {
-			Write-Host "$(Get-Date): Error sending stop recording command to OBS: $($_.Exception.Message)" -ForegroundColor Red
+			Write-Host "$(Get-Date): Error initializing WScript.Shell or sending stop recording command: $($_.Exception.Message)" -ForegroundColor Red
 		}
 
 		try {
 			# Give OBS time to save the recording
 			Write-Host "$(Get-Date): Waiting for recording to save..." -ForegroundColor Cyan
-			Start-Sleep -Seconds 5
+			Wait-WithAnimation -Seconds 5 -Message 'Saving recording...'
 		}
 		catch {
 			Write-Host "$(Get-Date): Error while waiting for recording to save: $($_.Exception.Message)" -ForegroundColor Red
@@ -677,29 +682,48 @@ try {
 		try {
 			# Close OBS gracefully with hotkey instead of force-killing it
 			$obsProcess | ForEach-Object {
-				[void]$wshell.AppActivate($_.MainWindowTitle)
-				Start-Sleep -Milliseconds 500
-				$wshell.SendKeys($CloseObsHotkey) # Send hotkey to close OBS gracefully
+				try {
+					# Attempt to activate the OBS window
+					if ([void]$wshell.AppActivate($_.MainWindowTitle)) {
+						Write-Host "$(Get-Date): Activated OBS window: $($_.MainWindowTitle)" -ForegroundColor Green
+						Wait-WithAnimation -Seconds 2 -Message 'Activating OBS Window...'
+
+						# Send the hotkey to close OBS
+						$wshell.SendKeys($CloseObsHotkey)
+						Write-Host "$(Get-Date): Sent close hotkey to OBS window: $($_.MainWindowTitle)" -ForegroundColor Green
+					}
+					else {
+						Write-Host "$(Get-Date): Failed to activate OBS window: $($_.MainWindowTitle)" -ForegroundColor Yellow
+					}
+				}
+				catch {
+					Write-Host "$(Get-Date): Error activating OBS window or sending close hotkey: $($_.Exception.Message)" -ForegroundColor Red
+				}
 			}
 		}
 		catch {
-			Write-Host "$(Get-Date): Error sending close command to OBS: $($_.Exception.Message)" -ForegroundColor Red
+			Write-Host "$(Get-Date): Error initializing WScript.Shell or sending close command to OBS: $($_.Exception.Message)" -ForegroundColor Red
 		}
+
 		try {
 			# Wait for OBS to close naturally (up to 10 seconds)
 			$timeout = 10
-			$timeWaited = 0
-			while (Get-Process -Name $ObsProcessName -ErrorAction SilentlyContinue) {
-				if ($timeWaited -ge $timeout) {
-					Write-Host "$(Get-Date): OBS didn't close after $timeout seconds, closing forcefully" -ForegroundColor Yellow
+			Write-Host "$(Get-Date): Waiting for OBS to close..." -ForegroundColor Cyan
+			Wait-WithAnimation -Seconds $timeout -Message 'Waiting for OBS to close'
+
+			if (Get-Process -Name $ObsProcessName -ErrorAction SilentlyContinue) {
+				Write-Host "$(Get-Date): OBS didn't close after $timeout seconds, closing forcefully" -ForegroundColor Yellow
+				try {
 					Get-Process -Name $ObsProcessName -ErrorAction SilentlyContinue | Stop-Process
-					break
 				}
-				Start-Sleep -Seconds 1
-				$timeWaited++
+				catch {
+					Write-Host "$(Get-Date): Error forcefully closing OBS: $($_.Exception.Message)" -ForegroundColor Red
+				}
 			}
-			Write-Host "$(Get-Date): OBS closed successfully" -ForegroundColor Green
-			$global:completedTasks += 'OBS recording stopped and closed'
+			else {
+				Write-Host "$(Get-Date): OBS closed successfully" -ForegroundColor Green
+				$global:completedTasks += 'OBS recording stopped and closed'
+			}
 		}
 		catch {
 			Write-Host "$(Get-Date): Error while waiting for OBS to close: $($_.Exception.Message)" -ForegroundColor Red
