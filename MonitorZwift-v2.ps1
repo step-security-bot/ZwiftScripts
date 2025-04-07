@@ -210,7 +210,14 @@ param (
 		'Microsoft Edge launched',
 		'Opened File Explorer for ZwiftMediaPath',
 		'Opened File Explorer for ZwiftPicturesPath'
-	)
+	),
+	[int]$remainingTimeinHours = 3
+	# Remaining time in hours for the script to run before closing
+
+	# Uncomment the following variables if you prefer to specify the remaining time in minutes or seconds
+	# [int]$remainingTimeinMinutes = 180 # Time in minutes for the script to remain open for review
+	# [int]$remainingTimeinSeconds = 10800 # Time in seconds for the script to remain open for review
+	## If you uncomment any of the above lines, make sure to comment out the other two variables
 )
 
 # Initialize the global variable to track completed tasks
@@ -832,8 +839,31 @@ catch {
 	Write-Host "$(Get-Date): Error during task validation: $($_.Exception.Message)" -ForegroundColor Red
 }
 finally {
-	Write-Host "$(Get-Date): Script execution completed. The window will remain open for review for 1 hour." -ForegroundColor Yellow
-	Start-Sleep -Seconds 3600 # Keeps the window open for 1 hour
-	Write-Host "$(Get-Date): 1 hour has passed since the script ended - Closing the script now." -ForegroundColor Yellow
+	# Calculate the remaining time in seconds based on the provided input
+	if ($null -ne $remainingTimeinHours) {
+		$remainingTime = $remainingTimeinHours * 3600
+	}
+ elseif ($null -ne $remainingTimeinMinutes) {
+		$remainingTime = $remainingTimeinMinutes * 60
+	}
+ elseif ($null -ne $remainingTimeinSeconds) {
+		$remainingTime = $remainingTimeinSeconds
+	}
+ else {
+		Write-Host "$(Get-Date): No valid remaining time parameter provided. Exiting script." -ForegroundColor Red
+		exit
+	}
+
+	Write-Host "$(Get-Date): Script execution completed. The window will remain open for review for $([TimeSpan]::FromSeconds($remainingTime).ToString('hh\:mm\:ss'))." -ForegroundColor Yellow
+	# Store the original remaining time for accurate display
+	$originalRemainingTime = $remainingTime
+	# In-place countdown timer using Wait-WithAnimation
+	while ($remainingTime -gt 0) {
+		$formattedTime = [TimeSpan]::FromSeconds($remainingTime).ToString('hh\:mm\:ss')
+		Wait-WithAnimation -Seconds 1 -Message "Time remaining: $formattedTime"
+		$remainingTime--
+	}
+	Write-Host "`n$(Get-Date): Script review time over. $([TimeSpan]::FromSeconds($originalRemainingTime).ToString('hh\:mm\:ss')) has passed since the script ended." -ForegroundColor Yellow
+	Write-Host "$(Get-Date): Closing the script now." -ForegroundColor Yellow
 	exit
 }
