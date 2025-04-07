@@ -683,18 +683,30 @@ try {
 			# Close OBS gracefully with hotkey instead of force-killing it
 			$obsProcess | ForEach-Object {
 				try {
-					# Attempt to activate the OBS window
-					if ([void]$wshell.AppActivate($_.MainWindowTitle)) {
-						Write-Host "$(Get-Date): Activated OBS window: $($_.MainWindowTitle)" -ForegroundColor Green
-						Wait-WithAnimation -Seconds 2 -Message 'Activating OBS Window...'
-
-						# Send the hotkey to close OBS
-						$wshell.SendKeys($CloseObsHotkey)
-						Write-Host "$(Get-Date): Sent close hotkey to OBS window: $($_.MainWindowTitle)" -ForegroundColor Green
+					# Check if the OBS window is already active
+					if ($_.MainWindowTitle -and $wshell.AppActivate($_.MainWindowTitle)) {
+						Write-Host "$(Get-Date): OBS window is already active: $($_.MainWindowTitle)" -ForegroundColor Yellow
 					}
 					else {
-						Write-Host "$(Get-Date): Failed to activate OBS window: $($_.MainWindowTitle)" -ForegroundColor Yellow
+						# Attempt to activate the OBS window
+						if ($_.MainWindowTitle) {
+							$activated = $wshell.AppActivate($_.MainWindowTitle)
+							if ($activated) {
+								Write-Host "$(Get-Date): Activated OBS window: $($_.MainWindowTitle)" -ForegroundColor Green
+								Wait-WithAnimation -Seconds 2 -Message 'Activating OBS Window...'
+							}
+							else {
+								Write-Host "$(Get-Date): Failed to activate OBS window: $($_.MainWindowTitle)" -ForegroundColor Yellow
+							}
+						}
+						else {
+							Write-Host "$(Get-Date): OBS process has no MainWindowTitle. Skipping activation." -ForegroundColor Yellow
+						}
 					}
+
+					# Send the hotkey to close OBS
+					$wshell.SendKeys($CloseObsHotkey)
+					Write-Host "$(Get-Date): Sent close hotkey to OBS window: $($_.MainWindowTitle)" -ForegroundColor Green
 				}
 				catch {
 					Write-Host "$(Get-Date): Error activating OBS window or sending close hotkey: $($_.Exception.Message)" -ForegroundColor Red
