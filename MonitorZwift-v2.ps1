@@ -843,13 +843,13 @@ finally {
 	if ($null -ne $remainingTimeinHours) {
 		$remainingTime = $remainingTimeinHours * 3600
 	}
- elseif ($null -ne $remainingTimeinMinutes) {
+	elseif ($null -ne $remainingTimeinMinutes) {
 		$remainingTime = $remainingTimeinMinutes * 60
 	}
- elseif ($null -ne $remainingTimeinSeconds) {
+	elseif ($null -ne $remainingTimeinSeconds) {
 		$remainingTime = $remainingTimeinSeconds
 	}
- else {
+	else {
 		Write-Host "$(Get-Date): No valid remaining time parameter provided. Exiting script." -ForegroundColor Red
 		exit
 	}
