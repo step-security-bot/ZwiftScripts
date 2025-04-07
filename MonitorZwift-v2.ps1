@@ -1,3 +1,129 @@
+<#PSScriptInfo
+
+.VERSION 1.7.4
+
+.GUID 4296fcf1-a13d-4d31-afdc-bcbd4e05506d
+
+.AUTHOR Nick2bad4u
+
+.COMPANYNAME Personal Project
+
+.COPYRIGHT © 2025 Nick. All rights reserved.
+
+.TAGS Zwift, Automation, PowerShell, OBS, FileSync, Display Management, Edge, Spotify, Sauce for Zwift
+
+.LICENSEURI https://opensource.org/licenses/MIT
+
+.PROJECTURI https://github.com/Nick2bad4u/ZwiftScripts
+
+.ICONURI https://www.google.com/s2/favicons?sz=256&domain=zwift.com
+
+.EXTERNALMODULEDEPENDENCIES DisplayConfig
+
+.REQUIREDSCRIPTS
+
+.EXTERNALSCRIPTDEPENDENCIES
+- PowerToys: https://github.com/microsoft/PowerToys
+- FreeFileSync: https://freefilesync.org/
+- OBS Studio: https://obsproject.com/
+- Sauce for Zwift: https://sauce.llc/
+- Spotify: https://www.spotify.com/
+- Microsoft Edge: https://www.microsoft.com/edge
+
+.RELEASENOTES
+- Initial release of MonitorZwift-v2.
+- Automates Zwift session setup, monitoring, and teardown.
+- Includes display management, OBS integration, file synchronization, and application handling.
+- Added support for Microsoft Edge in app mode and Sauce for Zwift.
+
+.PRIVATEDATA
+# No private data included in this script.
+
+#>
+
+<#
+.DESCRIPTION
+### Main Script Function
+
+This script performs the following tasks:
+
+- **Window Management**:
+	- Resizes and positions the PowerShell window.
+	- Sets window transparency for the PowerShell window.
+- **Path Resolution**:
+	- Resolves paths for Zwift Launcher and Monitor Script.
+- **Application Automation**:
+	- Starts Zwift Launcher and monitors Zwift game processes.
+	- Sets the primary display for Zwift and restores it after the session.
+	- Launches PowerToys Workspaces for Zwift if required.
+- **Zwift Game Monitoring**:
+	- Waits for Zwift game to start, maximizes its window, and monitors until it closes.
+- **Application Cleanup**:
+	- Closes additional applications like Sauce for Zwift, OBS, and Spotify.
+- **File Synchronization**:
+	- Synchronizes Zwift-related files using FreeFileSync.
+- **Browser Automation**:
+	- Launches Microsoft Edge in app mode with specified URLs.
+- **File Explorer Integration**:
+	- Opens File Explorer for Zwift media and pictures directories.
+- **Task Validation**:
+	- Validates task completion and provides a review window before closing.
+
+---
+
+### Features
+
+- **Display Management**:
+	- Automatically sets the primary display for Zwift and restores it after the session.
+- **Application Automation**:
+	- Launches Zwift Launcher and monitors Zwift game processes.
+	- Closes additional applications like Sauce for Zwift, OBS, and Spotify.
+	- Launches PowerToys Workspaces for Zwift if required.
+- **OBS Integration**:
+	- Stops OBS recording using a configurable hotkey.
+	- Closes OBS gracefully or forcefully if needed.
+- **File Synchronization**:
+	- Runs a FreeFileSync batch job to synchronize Zwift-related files after the session.
+- **Browser Automation**:
+	- Launches Microsoft Edge in app mode with specified URLs (e.g., YouTube Studio, Strava, Garmin Connect).
+- **File Explorer Integration**:
+	- Opens File Explorer for Zwift media and pictures directories.
+- **Customizable Settings**:
+	- Configurable display indices, window positions, and dimensions.
+	- Adjustable transparency for the PowerShell window.
+	- Customizable hotkeys for OBS recording and closing.
+- **Task Validation**:
+	- Tracks and validates the completion of all tasks, providing a summary at the end.
+- **User-Friendly Animations**:
+	- Includes waiting animations and countdown timers for a better user experience.
+
+---
+
+### Requirements
+
+- **PowerShell**: Version 5.1 or later.
+- **External Dependencies**:
+	- DisplayConfig module (automatically installed if missing).
+	- Applications like PowerToys, FreeFileSync, and OBS (optional but recommended).
+- **Configuration**:
+	- Ensure all paths and parameters are correctly configured before running the script.
+
+---
+
+### Examples
+
+1. **Run with default settings**:
+````powershell
+	.\MonitorZwift-v2.ps1
+
+2. **Run with custom Zwift Launcher path and display settings**:
+	.\MonitorZwift-v2.ps1 -ZwiftLauncherPath "C:\Zwift\ZwiftLauncher.exe" -PrimaryDisplayZwift 2
+
+3. **Run with custom window transparency and dimensions**:
+	.\MonitorZwift-v2.ps1 -Transparency 50 -WindowWidth 400 -WindowHeight 800
+	```
+#>
+
 <#
 .SYNOPSIS
 	A PowerShell script to automate the setup, monitoring, and teardown of a Zwift session, including managing displays, applications, and file synchronization.
