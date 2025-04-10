@@ -345,7 +345,8 @@ param (
 		'Sauce for Zwift closed or skipped',
 		'Primary display restored',
 		'FreeFileSync batch job completed',
-		'OBS recording stopped and closed',
+		'OBS recording stopped',
+		'OBS closed',
 		'Spotify closed',
 		'Microsoft Edge launched',
 		'Opened File Explorer for ZwiftMediaPath',
@@ -857,6 +858,8 @@ try {
 					# Send the hotkey to close OBS
 					$wshell.SendKeys($CloseObsHotkey)
 					Write-Host "$(Get-Date): Sent close hotkey to OBS window: $($_.MainWindowTitle)" -ForegroundColor Green
+					$global:completedTasks += 'OBS recording stopped'
+
 				}
 				catch {
 					Write-Host "$(Get-Date): Error activating OBS window or sending close hotkey: $($_.Exception.Message)" -ForegroundColor Red
@@ -884,7 +887,7 @@ try {
 			}
 			else {
 				Write-Host "$(Get-Date): OBS closed successfully" -ForegroundColor Green
-				$global:completedTasks += 'OBS recording stopped and closed'
+				$global:completedTasks += 'OBS closed'
 			}
 		}
 		catch {
