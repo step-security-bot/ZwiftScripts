@@ -1037,6 +1037,12 @@ try {
 		# Countdown timer with a decreasing progress bar
 		while ($remainingTime -gt 0) {
 			try {
+				# Check for any key press to stop the script
+				if ([Console]::KeyAvailable) {
+					Write-Host "`n$(Get-Date): Key press detected. Stopping the script." -ForegroundColor Yellow
+					exit
+				}
+
 				$formattedTime = [TimeSpan]::FromSeconds($remainingTime).ToString('hh\:mm\:ss')
 				$progress = [int]($remainingTime / $totalTime * 50) # Progress bar length (50 characters)
 				$loadingBar = ('#' * $progress).PadRight(50, '-')
