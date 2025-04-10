@@ -349,7 +349,8 @@ param (
 		'Spotify closed',
 		'Microsoft Edge launched',
 		'Opened File Explorer for ZwiftMediaPath',
-		'Opened File Explorer for ZwiftPicturesPath'
+		'Opened File Explorer for ZwiftPicturesPath',
+		'Window transparency reset to fully opaque'
 	),
 	[int]$remainingTimeinHours = 3
 	# Remaining time in hours for the script to run before closing
@@ -513,7 +514,9 @@ function Set-WindowTransparencyUWP {
 		if ($allowedProcesses -contains $processName) {
 			Write-Host "$(Get-Date): Trying to set window transparency to $Transparency%..." -ForegroundColor Cyan
 			$null = [Win32]::SetWindowLong($hwnd, [Win32]::GWL_EXSTYLE, $style -bor [Win32]::WS_EX_LAYERED)
-			$null = [Win32]::SetLayeredWindowAttributes($hwnd, 0, [byte]((100 - $Transparency) * 255 / 100), [Win32]::LWA_ALPHA)
+			# Ensure transparency value of 0 sets the window to fully opaque
+			$opacity = if ($Transparency -eq 0) { 255 } else { [byte]((100 - $Transparency) * 255 / 100) }
+			$null = [Win32]::SetLayeredWindowAttributes($hwnd, 0, $opacity, [Win32]::LWA_ALPHA)
 			Write-Host "$(Get-Date): Successfully set window transparency to $Transparency%" -ForegroundColor Green
 		}
 		else {
@@ -963,47 +966,96 @@ catch {
 	Write-Host "$(Get-Date): Error opening File Explorer: $($_.Exception.Message)" -ForegroundColor Red
 }
 
-# Validate that all required tasks have been completed successfully
 try {
-	$tasksFailed = $tasksCompleted | Where-Object { $_ -notin $global:completedTasks }
-
-	if ($tasksFailed.Count -eq 0) {
-		Write-Host "$(Get-Date): All tasks completed successfully." -ForegroundColor Green
-	}
-	else {
-		Write-Host "$(Get-Date): The following tasks failed or were not completed:" -ForegroundColor Red
-		$tasksFailed | ForEach-Object { Write-Host "- $_" -ForegroundColor Red }
-	}
+	Set-WindowTransparencyUWP -Transparency 0
+	Write-Host "$(Get-Date): Window transparency reset to fully opaque." -ForegroundColor Green
+	$global:completedTasks += 'Window transparency reset to fully opaque'
 }
 catch {
-	Write-Host "$(Get-Date): Error during task validation: $($_.Exception.Message)" -ForegroundColor Red
+	Write-Host "$(Get-Date): Error resetting window transparency: $($_.Exception.Message)" -ForegroundColor Red
+	Write-Host "$(Get-Date): Attempting fallback by resetting transparency using default Win32 API..." -ForegroundColor Yellow
+	try {
+		$hwnd = [Win32]::GetForegroundWindow()
+		$style = [Win32]::GetWindowLong($hwnd, [Win32]::GWL_EXSTYLE)
+		[Win32]::SetWindowLong($hwnd, [Win32]::GWL_EXSTYLE, $style -bor [Win32]::WS_EX_LAYERED)
+		[Win32]::SetLayeredWindowAttributes($hwnd, 0, 255, [Win32]::LWA_ALPHA)
+		Write-Host "$(Get-Date): Fallback succeeded. Window transparency reset to fully opaque using Win32 API." -ForegroundColor Green
+		$global:completedTasks += 'Window transparency reset to fully opaque'
+	}
+	catch {
+		Write-Host "$(Get-Date): Fallback failed: $($_.Exception.Message). Continuing script execution regardless." -ForegroundColor Red
+	}
 }
-finally {
-	# Calculate the remaining time in seconds based on the provided input
-	if ($null -ne $remainingTimeinHours) {
-		$remainingTime = $remainingTimeinHours * 3600
+
+# Validate that all required tasks have been completed successfully
+try {
+	try {
+		$tasksFailed = $tasksCompleted | Where-Object { $_ -notin $global:completedTasks }
+
+		if ($tasksFailed.Count -eq 0) {
+			Write-Host "$(Get-Date): All tasks completed successfully." -ForegroundColor Green
+		}
+		else {
+			Write-Host "$(Get-Date): The following tasks failed or were not completed:" -ForegroundColor Red
+			$tasksFailed | ForEach-Object { Write-Host "- $_" -ForegroundColor Red }
+		}
 	}
-	elseif ($null -ne $remainingTimeinMinutes) {
-		$remainingTime = $remainingTimeinMinutes * 60
+	catch {
+		Write-Host "$(Get-Date): Error during task validation: $($_.Exception.Message)" -ForegroundColor Red
 	}
-	elseif ($null -ne $remainingTimeinSeconds) {
-		$remainingTime = $remainingTimeinSeconds
+
+	try {
+		# Calculate the remaining time in seconds based on the provided input
+		if ($null -ne $remainingTimeinHours) {
+			$remainingTime = $remainingTimeinHours * 3600
+		}
+		elseif ($null -ne $remainingTimeinMinutes) {
+			$remainingTime = $remainingTimeinMinutes * 60
+		}
+		elseif ($null -ne $remainingTimeinSeconds) {
+			$remainingTime = $remainingTimeinSeconds
+		}
+		else {
+			Write-Host "$(Get-Date): No valid remaining time parameter provided. Exiting script." -ForegroundColor Red
+			exit
+		}
 	}
-	else {
-		Write-Host "$(Get-Date): No valid remaining time parameter provided. Exiting script." -ForegroundColor Red
+	catch {
+		Write-Host "$(Get-Date): Error calculating remaining time: $($_.Exception.Message)" -ForegroundColor Red
 		exit
 	}
 
-	Write-Host "$(Get-Date): Script execution completed. The window will remain open for review for $([TimeSpan]::FromSeconds($remainingTime).ToString('hh\:mm\:ss'))." -ForegroundColor Yellow
-	# Store the original remaining time for accurate display
-	$originalRemainingTime = $remainingTime
-	# In-place countdown timer using Wait-WithAnimation
-	while ($remainingTime -gt 0) {
-		$formattedTime = [TimeSpan]::FromSeconds($remainingTime).ToString('hh\:mm\:ss')
-		Wait-WithAnimation -Seconds 1 -Message "Time remaining: $formattedTime"
-		$remainingTime--
+	try {
+		Write-Host "$(Get-Date): Script execution completed. The window will remain open for review for $([TimeSpan]::FromSeconds($remainingTime).ToString('hh\:mm\:ss'))." -ForegroundColor Yellow
+		# Store the original remaining time for accurate display
+		$originalRemainingTime = $remainingTime
+		$totalTime = $remainingTime
+
+		# Countdown timer with a decreasing progress bar
+		while ($remainingTime -gt 0) {
+			try {
+				$formattedTime = [TimeSpan]::FromSeconds($remainingTime).ToString('hh\:mm\:ss')
+				$progress = [int]($remainingTime / $totalTime * 50) # Progress bar length (50 characters)
+				$loadingBar = ('#' * $progress).PadRight(50, '-')
+				Write-Host "`rTime remaining: $formattedTime [$loadingBar]" -NoNewline
+				Wait-WithAnimation -Seconds 1 -Message "Time remaining: $formattedTime"
+				$remainingTime--
+			}
+			catch {
+				Write-Host "$(Get-Date): Error during countdown timer: $($_.Exception.Message)" -ForegroundColor Red
+				break
+			}
+		}
+		Write-Host "`n$(Get-Date): Script review time over. $([TimeSpan]::FromSeconds($originalRemainingTime).ToString('hh\:mm\:ss')) has passed since the script ended." -ForegroundColor Yellow
+		Write-Host "$(Get-Date): Closing the script now." -ForegroundColor Yellow
+		exit
 	}
-	Write-Host "`n$(Get-Date): Script review time over. $([TimeSpan]::FromSeconds($originalRemainingTime).ToString('hh\:mm\:ss')) has passed since the script ended." -ForegroundColor Yellow
-	Write-Host "$(Get-Date): Closing the script now." -ForegroundColor Yellow
+	catch {
+		Write-Host "$(Get-Date): Error during script review countdown: $($_.Exception.Message)" -ForegroundColor Red
+		exit
+	}
+}
+catch {
+	Write-Host "$(Get-Date): Unexpected error in the final validation and review process: $($_.Exception.Message)" -ForegroundColor Red
 	exit
 }
