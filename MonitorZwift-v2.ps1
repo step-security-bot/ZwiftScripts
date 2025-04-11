@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 1.7.5
+.VERSION 1.8.1
 
 .GUID 4296fcf1-a13d-4d31-afdc-bcbd4e05506d
 
@@ -269,6 +269,7 @@ This script performs the following tasks:
 	Runs the script with 50% window transparency and custom window dimensions.
 
 #>
+[CmdletBinding()]
 param (
 	[string]$ZwiftLauncherPath = 'C:\Program Files (x86)\Zwift\ZwiftLauncher.exe',
 	[string]$MonitorZwiftScriptPath = 'C:\Users\Nick\Dropbox\Cycling\ZwiftScripts\MonitorZwift-v2.ps1',
