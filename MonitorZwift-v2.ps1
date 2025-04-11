@@ -331,7 +331,7 @@ param (
 	# Hotkey to stop recording in OBS (default: Ctrl+F11)
 	[string]$CloseObsHotkey = '%{F4}',
 	# Hotkey to close OBS gracefully (default: Alt+F4)
-	[int]$remainingTimeinHours = 3,
+	[int]$remainingTimeinHours = 3
 	# Remaining time in hours for the script to run before closing
 
 	# Uncomment the following variables if you prefer to specify the remaining time in minutes or seconds
@@ -339,47 +339,6 @@ param (
 	# [int]$remainingTimeinSeconds = 10800 # Time in seconds for the script to remain open for review
 	## If you uncomment any of the above lines, make sure to comment out the other two variables
 )
-
-# Initialize a hashtable to track completed tasks
-$taskTracker = @{
-	CompletedTasks = @()
-}
-
-# Function to add a completed task
-function Add-CompletedTask {
-	param (
-		[hashtable]$Tracker,
-		[string]$TaskName
-	)
-	$Tracker.CompletedTasks += $TaskName
-}
-
-# Function to check if a task is completed
-function Is-TaskCompleted {
-	param (
-		[hashtable]$Tracker,
-		[string]$TaskName
-	)
-	return $TaskName -in $Tracker.CompletedTasks
-}
-
-# Function to list all completed tasks
-function Get-CompletedTasks {
-	param (
-		[hashtable]$Tracker
-	)
-	return $Tracker.CompletedTasks
-}
-
-# Function to set window transparency using Win32 API functions
-# Define the Win32 class once if not already defined
-
-# Check if the Win32 class is already defined and define it if not
-# This code snippet defines a Win32 class with various Win32 API functions
-# for working with windows. It checks if the Win32 class is already defined
-# and defines it if it is not. The class includes functions for getting the
-# foreground window, getting and setting window styles, setting layered
-# window attributes for transparency, and setting window position.
 
 <#
 .SYNOPSIS
@@ -448,6 +407,96 @@ if (-not ([System.Management.Automation.PSTypeName]'Win32').Type) {
 	Add-Type -TypeDefinition $win32Code
 }
 
+# Variables for the current PowerShell window and process
+$hwnd = [Win32]::GetForegroundWindow()
+$process = Get-Process -Id ([System.Diagnostics.Process]::GetCurrentProcess().Id)
+$processName = $process.ProcessName.ToLower()
+$allowedProcesses = @('powershell', 'pwsh', 'windowsterminal', 'wt')
+$style = [Win32]::GetWindowLong($hwnd, [Win32]::GWL_EXSTYLE)
+
+# Ensure the transparency is applied only to the current PowerShell window or Windows Terminal
+
+# Initialize a hashtable to track completed tasks
+$taskTracker = @{
+	CompletedTasks = @()
+}
+
+# Function to add a completed task
+<#+
+.SYNOPSIS
+		Adds a completed task to the tracker.
+.DESCRIPTION
+		This function adds a task name to the list of completed tasks in the tracker.
+.PARAMETER Tracker
+		The hashtable tracking completed tasks.
+.PARAMETER TaskName
+		The name of the task to add to the completed tasks list.
+.EXAMPLE
+		Add-CompletedTask -Tracker $taskTracker -TaskName "Task 1"
+		Adds "Task 1" to the completed tasks list in the task tracker.
+#>
+function Add-CompletedTask {
+	param (
+		[hashtable]$Tracker,
+		[string]$TaskName
+	)
+	$Tracker.CompletedTasks += $TaskName
+}
+
+# Function to check if a task is completed
+<#+
+.SYNOPSIS
+	Checks if a task is completed.
+.DESCRIPTION
+	This function checks if a task name is present in the list of completed tasks in the tracker.
+.PARAMETER Tracker
+		The hashtable tracking completed tasks.
+.PARAMETER TaskName
+		The name of the task to check for completion.
+.EXAMPLE
+		Is-TaskCompleted -Tracker $taskTracker -TaskName "Task 1"
+		Returns $true if "Task 1" is in the completed tasks list, otherwise $false.
+#>
+function Is-TaskCompleted {
+	param (
+		[hashtable]$Tracker,
+		[string]$TaskName
+	)
+	return $TaskName -in $Tracker.CompletedTasks
+}
+
+# Function to get the list of completed tasks
+<#+
+.SYNOPSIS
+	Returns the list of completed tasks.
+.DESCRIPTION
+	This function retrieves the list of completed tasks from the tracker.
+.PARAMETER Tracker
+		The hashtable tracking completed tasks.
+.EXAMPLE
+		Get-CompletedTasks -Tracker $taskTracker
+		Returns the list of completed tasks from the task tracker.
+#>
+function Get-CompletedTasks {
+	param (
+		[hashtable]$Tracker
+	)
+	return $Tracker.CompletedTasks
+}
+
+# Function: Show-WaitingAnimation
+<#+
+.SYNOPSIS
+    Displays a waiting animation with a message.
+.DESCRIPTION
+    This function shows a rotating animation (e.g., '|', '/', '-', '\') alongside a custom message.
+.PARAMETER Message
+    The message to display alongside the animation.
+.PARAMETER Continue
+    A boolean indicating whether to continue the animation.
+.EXAMPLE
+    Show-WaitingAnimation -Message "Loading..." -Continue $true
+#>
 # Function to display a waiting animation with a message
 function Show-WaitingAnimation {
 	param (
@@ -458,6 +507,19 @@ function Show-WaitingAnimation {
 	Write-Host "`r$Message $($AnimationChars[$script:animIndex])" -NoNewline -ForegroundColor $script:randomColor
 }
 
+# Function: Wait-WithAnimation
+<#+
+.SYNOPSIS
+    Waits for a specified duration while displaying an animation.
+.DESCRIPTION
+    This function waits for a given number of seconds and displays a rotating animation with a custom message.
+.PARAMETER Seconds
+    The number of seconds to wait.
+.PARAMETER Message
+    The message to display alongside the animation.
+.EXAMPLE
+    Wait-WithAnimation -Seconds 5 -Message "Processing..."
+#>
 # Function to wait with an animation and a message
 function Wait-WithAnimation {
 	param (
@@ -471,6 +533,15 @@ function Wait-WithAnimation {
 	}
 }
 
+# Function: Import-DisplayConfigModule
+<#+
+.SYNOPSIS
+    Imports the DisplayConfig module or installs it if not available.
+.DESCRIPTION
+    This function checks for the availability of the DisplayConfig module, installs it if missing, and imports it.
+.EXAMPLE
+    Import-DisplayConfigModule
+#>
 # Function to Import the DisplayConfig module or install it if not available (requires PowerShellGet) and handle exceptions
 function Import-DisplayConfigModule {
 	try {
@@ -492,6 +563,18 @@ function Import-DisplayConfigModule {
 		Write-Error "$(Get-Date): Failed to import DisplayConfig module: $($_.Exception.Message). Continuing without it."
 	}
 }
+
+# Function: Get-ProcessRunning
+<#+
+.SYNOPSIS
+    Checks if a process is running by name.
+.DESCRIPTION
+    This function checks if a process with the specified name is currently running.
+.PARAMETER ProcessName
+    The name of the process to check.
+.EXAMPLE
+    Get-ProcessRunning -ProcessName "notepad"
+#>
 # Function to check if a process is running by name (case-insensitive) and handle exceptions
 function Get-ProcessRunning {
 	param ([string]$ProcessName)
@@ -504,14 +587,17 @@ function Get-ProcessRunning {
 	}
 }
 
-# Variables for the current PowerShell window and process
-$hwnd = [Win32]::GetForegroundWindow()
-$process = Get-Process -Id ([System.Diagnostics.Process]::GetCurrentProcess().Id)
-$processName = $process.ProcessName.ToLower()
-$allowedProcesses = @('powershell', 'pwsh', 'windowsterminal', 'wt')
-$style = [Win32]::GetWindowLong($hwnd, [Win32]::GWL_EXSTYLE)
-
-# Ensure the transparency is applied only to the current PowerShell window or Windows Terminal
+# Function: Set-WindowTransparencyUWP
+<#+
+.SYNOPSIS
+    Sets the transparency of the current PowerShell or Windows Terminal window.
+.DESCRIPTION
+    This function adjusts the transparency of the current window using the Win32 API.
+.PARAMETER Transparency
+    The transparency percentage (0-100) to apply to the window.
+.EXAMPLE
+    Set-WindowTransparencyUWP -Transparency 50
+#>
 # Function to set window transparency using UWP API
 function Set-WindowTransparencyUWP {
 	param (
@@ -535,6 +621,17 @@ function Set-WindowTransparencyUWP {
 	}
 }
 
+# Function: Set-PrimaryDisplay
+<#+
+.SYNOPSIS
+    Sets the primary display to the specified index.
+.DESCRIPTION
+    This function uses the DisplayConfig module to set the primary display to the given index.
+.PARAMETER DisplayIndex
+    The zero-based index of the display to set as primary.
+.EXAMPLE
+    Set-PrimaryDisplay -DisplayIndex 2
+#>
 # Function to set the primary display using the DisplayConfig module and handle exceptions
 function Set-PrimaryDisplay {
 	param ([int]$DisplayIndex)
