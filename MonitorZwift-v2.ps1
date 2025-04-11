@@ -476,7 +476,7 @@ function Import-DisplayConfigModule {
 		}
 	}
 	catch {
-		Write-Host "$(Get-Date): Failed to download and install module: $($_.Exception.Message). Continuing without it." -ForegroundColor Red
+		Write-Error "$(Get-Date): Failed to download and install module: $($_.Exception.Message). Continuing without it."
 	}
 
 	try {
@@ -484,7 +484,7 @@ function Import-DisplayConfigModule {
 		Write-Host "$(Get-Date): Successfully imported DisplayConfig module." -ForegroundColor Green
 	}
 	catch {
-		Write-Host "$(Get-Date): Failed to import DisplayConfig module: $($_.Exception.Message). Continuing without it." -ForegroundColor Red
+		Write-Error "$(Get-Date): Failed to import DisplayConfig module: $($_.Exception.Message). Continuing without it."
 	}
 }
 # Function to check if a process is running by name (case-insensitive) and handle exceptions
@@ -494,7 +494,7 @@ function Get-ProcessRunning {
 		return $null -ne (Get-Process -Name $ProcessName -ErrorAction SilentlyContinue)
 	}
 	catch {
-		Write-Host "$(Get-Date): Error checking process ${ProcessName}: $($_.Exception.Message)" -ForegroundColor Red
+		Write-Error "$(Get-Date): Error checking process ${ProcessName}: $($_.Exception.Message)"
 		return $false
 	}
 }
@@ -526,7 +526,7 @@ function Set-WindowTransparencyUWP {
 		}
 	}
 	catch {
-		Write-Host "$(Get-Date): Failed to set window transparency: $($_.Exception.Message)" -ForegroundColor Red
+		Write-Error "$(Get-Date): Failed to set window transparency: $($_.Exception.Message)"
 	}
 }
 
@@ -538,7 +538,7 @@ function Set-PrimaryDisplay {
 		Write-Host "$(Get-Date): Primary display set to $DisplayIndex" -ForegroundColor Green
 	}
 	catch {
-		Write-Host "$(Get-Date): Failed to set primary display to ${DisplayIndex}: $($_.Exception.Message)" -ForegroundColor Red
+		Write-Error "$(Get-Date): Failed to set primary display to ${DisplayIndex}: $($_.Exception.Message)"
 	}
 }
 
@@ -577,7 +577,7 @@ try {
 	}
 }
 catch {
-	Write-Host "$(Get-Date): Error resizing or positioning the PowerShell window: $($_.Exception.Message)" -ForegroundColor Red
+	Write-Error "$(Get-Date): Error resizing or positioning the PowerShell window: $($_.Exception.Message)"
 }
 
 # Import DisplayConfig module for setting the primary display
@@ -587,7 +587,7 @@ try {
 	$global:completedTasks += 'Imported DisplayConfig module'
 }
 catch {
-	Write-Host "$(Get-Date): Error importing DisplayConfig module: $($_.Exception.Message)" -ForegroundColor Red
+	Write-Error "$(Get-Date): Error importing DisplayConfig module: $($_.Exception.Message)"
 }
 
 # Set PowerShell window transparency to the specified value (default: 25)
@@ -596,7 +596,7 @@ try {
 	$global:completedTasks += 'Set Window Transparency'
 }
 catch {
-	Write-Host "$(Get-Date): Error setting window transparency: $($_.Exception.Message)" -ForegroundColor Red
+	Write-Error "$(Get-Date): Error setting window transparency: $($_.Exception.Message)"
 }
 
 # Resolve paths for Zwift Launcher and Monitor Script
@@ -651,7 +651,7 @@ try {
 	$global:completedTasks += 'Primary display set for Zwift'
 }
 catch {
-	Write-Host "$(Get-Date): Error while waiting for Zwift launcher to start or switching primary display: $($_.Exception.Message)" -ForegroundColor Red
+	Write-Error "$(Get-Date): Error while waiting for Zwift launcher to start or switching primary display: $($_.Exception.Message)"
 }
 
 # Launch the PowerToys Workspaces for Zwift (if installed) after the Zwift launcher starts
@@ -667,7 +667,7 @@ try {
 			}
 		}
 		catch {
-			Write-Host "$(Get-Date): Error checking process ${app}: $($_.Exception.Message)" -ForegroundColor Red
+			Write-Error "$(Get-Date): Error checking process ${app}: $($_.Exception.Message)"
 			$allAppsRunning = $false
 			break
 		}
@@ -681,7 +681,7 @@ try {
 			$global:completedTasks += 'PowerToys Workspaces launched or skipped'
 		}
 		catch {
-			Write-Host "$(Get-Date): Error launching PowerToys Workspaces: $($_.Exception.Message)" -ForegroundColor Red
+			Write-Error "$(Get-Date): Error launching PowerToys Workspaces: $($_.Exception.Message)"
 		}
 	}
 	else {
@@ -689,7 +689,7 @@ try {
 	}
 }
 catch {
-	Write-Host "$(Get-Date): Error in checking or launching applications: $($_.Exception.Message)" -ForegroundColor Red
+	Write-Error "$(Get-Date): Error in checking or launching applications: $($_.Exception.Message)"
 }
 
 # Wait for Zwift game to start and monitor until it closes
@@ -702,7 +702,7 @@ try {
 	$global:completedTasks += 'Zwift game started'
 }
 catch {
-	Write-Host "$(Get-Date): Error while waiting for or detecting Zwift game: $($_.Exception.Message)" -ForegroundColor Red
+	Write-Error "$(Get-Date): Error while waiting for or detecting Zwift game: $($_.Exception.Message)"
 }
 
 # Wait for a specified amount of time before maximizing the Zwift game window
@@ -736,7 +736,7 @@ try {
 	}
 }
 catch {
-	Write-Host "$(Get-Date): Error maximizing Zwift game window: $($_.Exception.Message)" -ForegroundColor Red
+	Write-Error "$(Get-Date): Error maximizing Zwift game window: $($_.Exception.Message)"
 }
 
 # Step 1: Wait for Zwift game to close
@@ -749,7 +749,7 @@ try {
 	$global:completedTasks += 'Zwift game closed'
 }
 catch {
-	Write-Host "$(Get-Date): Error monitoring Zwift game: $($_.Exception.Message)" -ForegroundColor Red
+	Write-Error "$(Get-Date): Error monitoring Zwift game: $($_.Exception.Message)"
 }
 
 # Ensure Sauce for Zwift process is closed before restoring primary display
@@ -769,7 +769,7 @@ try {
 	}
 }
 catch {
-	Write-Host "$(Get-Date): Error closing Sauce for Zwift: $($_.Exception.Message)" -ForegroundColor Red
+	Write-Error "$(Get-Date): Error closing Sauce for Zwift: $($_.Exception.Message)"
 }
 
 # Step 3: Restore primary display to default display
@@ -780,7 +780,7 @@ try {
 	$global:completedTasks += 'Primary display restored'
 }
 catch {
-	Write-Host "$(Get-Date): Error restoring primary display: $($_.Exception.Message)" -ForegroundColor Red
+	Write-Error "$(Get-Date): Error restoring primary display: $($_.Exception.Message)"
 }
 
 # Run FreeFileSync batch job after Zwift game closes and display is restored to default display (index: 2)
@@ -792,7 +792,7 @@ try {
 	$global:completedTasks += 'FreeFileSync batch job completed'
 }
 catch {
-	Write-Host "$(Get-Date): Error running FreeFileSync batch job: $($_.Exception.Message)" -ForegroundColor Red
+	Write-Error "$(Get-Date): Error running FreeFileSync batch job: $($_.Exception.Message)"
 }
 
 # Stop and save OBS recording, then close OBS
@@ -813,13 +813,13 @@ try {
 					$wshell.SendKeys($StopRecordingHotkey) # Send hotkey to stop recording
 				}
 				catch {
-					Write-Host "$(Get-Date): Error activating OBS window or sending stop recording hotkey: $($_.Exception.Message)" -ForegroundColor Red
+					Write-Error "$(Get-Date): Error activating OBS window or sending stop recording hotkey: $($_.Exception.Message)"
 				}
 			}
 			Write-Host "$(Get-Date): Sent stop recording command to OBS" -ForegroundColor Green
 		}
 		catch {
-			Write-Host "$(Get-Date): Error initializing WScript.Shell or sending stop recording command: $($_.Exception.Message)" -ForegroundColor Red
+			Write-Error "$(Get-Date): Error initializing WScript.Shell or sending stop recording command: $($_.Exception.Message)"
 		}
 
 		try {
@@ -828,7 +828,7 @@ try {
 			Wait-WithAnimation -Seconds 5 -Message 'Saving recording...'
 		}
 		catch {
-			Write-Host "$(Get-Date): Error while waiting for recording to save: $($_.Exception.Message)" -ForegroundColor Red
+			Write-Error "$(Get-Date): Error while waiting for recording to save: $($_.Exception.Message)"
 		}
 
 		try {
@@ -863,12 +863,12 @@ try {
 
 				}
 				catch {
-					Write-Host "$(Get-Date): Error activating OBS window or sending close hotkey: $($_.Exception.Message)" -ForegroundColor Red
+					Write-Error "$(Get-Date): Error activating OBS window or sending close hotkey: $($_.Exception.Message)"
 				}
 			}
 		}
 		catch {
-			Write-Host "$(Get-Date): Error initializing WScript.Shell or sending close command to OBS: $($_.Exception.Message)" -ForegroundColor Red
+			Write-Error "$(Get-Date): Error initializing WScript.Shell or sending close command to OBS: $($_.Exception.Message)"
 		}
 
 		try {
@@ -883,7 +883,7 @@ try {
 					Get-Process -Name $ObsProcessName -ErrorAction SilentlyContinue | Stop-Process
 				}
 				catch {
-					Write-Host "$(Get-Date): Error forcefully closing OBS: $($_.Exception.Message)" -ForegroundColor Red
+					Write-Error "$(Get-Date): Error forcefully closing OBS: $($_.Exception.Message)"
 				}
 			}
 			else {
@@ -892,7 +892,7 @@ try {
 			}
 		}
 		catch {
-			Write-Host "$(Get-Date): Error while waiting for OBS to close: $($_.Exception.Message)" -ForegroundColor Red
+			Write-Error "$(Get-Date): Error while waiting for OBS to close: $($_.Exception.Message)"
 		}
 	}
 	else {
@@ -900,7 +900,7 @@ try {
 	}
 }
 catch {
-	Write-Host "$(Get-Date): Error stopping OBS recording or closing OBS: $($_.Exception.Message)" -ForegroundColor Red
+	Write-Error "$(Get-Date): Error stopping OBS recording or closing OBS: $($_.Exception.Message)"
 }
 
 # Close Spotify if it's running
@@ -919,7 +919,7 @@ try {
 	}
 }
 catch {
-	Write-Host "$(Get-Date): Error closing Spotify: $($_.Exception.Message)" -ForegroundColor Red
+	Write-Error "$(Get-Date): Error closing Spotify: $($_.Exception.Message)"
 }
 
 # Launch Microsoft Edge in app mode with the specified URLs
@@ -930,7 +930,7 @@ try {
 	$global:completedTasks += 'Microsoft Edge launched'
 }
 catch {
-	Write-Host "$(Get-Date): Error launching Microsoft Edge: $($_.Exception.Message)" -ForegroundColor Red
+	Write-Error "$(Get-Date): Error launching Microsoft Edge: $($_.Exception.Message)"
 }
 
 # Open File Explorer with two separate windows for the specified directories
@@ -967,7 +967,7 @@ try {
 	}
 }
 catch {
-	Write-Host "$(Get-Date): Error opening File Explorer: $($_.Exception.Message)" -ForegroundColor Red
+	Write-Error "$(Get-Date): Error opening File Explorer: $($_.Exception.Message)"
 }
 
 try {
@@ -976,7 +976,7 @@ try {
 	$global:completedTasks += 'Window transparency reset to fully opaque'
 }
 catch {
-	Write-Host "$(Get-Date): Error resetting window transparency: $($_.Exception.Message)" -ForegroundColor Red
+	Write-Error "$(Get-Date): Error resetting window transparency: $($_.Exception.Message)"
 	Write-Host "$(Get-Date): Attempting fallback by resetting transparency using default Win32 API..." -ForegroundColor Yellow
 	try {
 		$hwnd = [Win32]::GetForegroundWindow()
@@ -987,7 +987,7 @@ catch {
 		$global:completedTasks += 'Window transparency reset to fully opaque'
 	}
 	catch {
-		Write-Host "$(Get-Date): Fallback failed: $($_.Exception.Message). Continuing script execution regardless." -ForegroundColor Red
+		Write-Error "$(Get-Date): Fallback failed: $($_.Exception.Message). Continuing script execution regardless."
 	}
 }
 
@@ -1005,7 +1005,7 @@ try {
 		}
 	}
 	catch {
-		Write-Host "$(Get-Date): Error during task validation: $($_.Exception.Message)" -ForegroundColor Red
+		Write-Error "$(Get-Date): Error during task validation: $($_.Exception.Message)"
 	}
 
 	try {
@@ -1025,7 +1025,7 @@ try {
 		}
 	}
 	catch {
-		Write-Host "$(Get-Date): Error calculating remaining time: $($_.Exception.Message)" -ForegroundColor Red
+		Write-Error "$(Get-Date): Error calculating remaining time: $($_.Exception.Message)"
 		exit
 	}
 
@@ -1047,7 +1047,7 @@ try {
 				$remainingTime--
 			}
 			catch {
-				Write-Host "$(Get-Date): Error during countdown timer: $($_.Exception.Message)" -ForegroundColor Red
+				Write-Error "$(Get-Date): Error during countdown timer: $($_.Exception.Message)"
 				break
 			}
 		}
@@ -1056,11 +1056,11 @@ try {
 		exit
 	}
 	catch {
-		Write-Host "$(Get-Date): Error during script review countdown: $($_.Exception.Message)" -ForegroundColor Red
+		Write-Error "$(Get-Date): Error during script review countdown: $($_.Exception.Message)"
 		exit
 	}
 }
 catch {
-	Write-Host "$(Get-Date): Unexpected error in the final validation and review process: $($_.Exception.Message)" -ForegroundColor Red
+	Write-Error "$(Get-Date): Unexpected error in the final validation and review process: $($_.Exception.Message)"
 	exit
 }
