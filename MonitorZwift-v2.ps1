@@ -331,30 +331,7 @@ param (
 	# Hotkey to stop recording in OBS (default: Ctrl+F11)
 	[string]$CloseObsHotkey = '%{F4}',
 	# Hotkey to close OBS gracefully (default: Alt+F4)
-	[string[]]$tasksCompleted = @(
-		'Resized and positioned PowerShell window',
-		'Imported DisplayConfig module',
-		'Set Window Transparency',
-		'Zwift Launcher path resolved',
-		'ZwiftApp already running or Zwift Launcher started',
-		'Zwift launcher running',
-		'Primary display set for Zwift',
-		'PowerToys Workspaces launched or skipped',
-		'Zwift game started',
-		'Zwift game window maximized',
-		'Zwift game closed',
-		'Sauce for Zwift closed or skipped',
-		'Primary display restored',
-		'FreeFileSync batch job completed',
-		'OBS recording stopped',
-		'OBS closed',
-		'Spotify closed',
-		'Microsoft Edge launched',
-		'Opened File Explorer for ZwiftMediaPath',
-		'Opened File Explorer for ZwiftPicturesPath',
-		'Window transparency reset to fully opaque'
-	),
-	[int]$remainingTimeinHours = 3
+	[int]$remainingTimeinHours = 3,
 	# Remaining time in hours for the script to run before closing
 
 	# Uncomment the following variables if you prefer to specify the remaining time in minutes or seconds
@@ -363,8 +340,36 @@ param (
 	## If you uncomment any of the above lines, make sure to comment out the other two variables
 )
 
-# Initialize the global variable to track completed tasks
-$global:completedTasks = @()
+# Initialize a hashtable to track completed tasks
+$taskTracker = @{
+	CompletedTasks = @()
+}
+
+# Function to add a completed task
+function Add-CompletedTask {
+	param (
+		[hashtable]$Tracker,
+		[string]$TaskName
+	)
+	$Tracker.CompletedTasks += $TaskName
+}
+
+# Function to check if a task is completed
+function Is-TaskCompleted {
+	param (
+		[hashtable]$Tracker,
+		[string]$TaskName
+	)
+	return $TaskName -in $Tracker.CompletedTasks
+}
+
+# Function to list all completed tasks
+function Get-CompletedTasks {
+	param (
+		[hashtable]$Tracker
+	)
+	return $Tracker.CompletedTasks
+}
 
 # Function to set window transparency using Win32 API functions
 # Define the Win32 class once if not already defined
@@ -569,7 +574,7 @@ try {
 		# Set the window position to display 3
 		[Win32]::SetWindowPos($hwnd, [IntPtr]::Zero, $x + $WindowPositionX, $y + $WindowPositionY, $WindowWidth, $WindowHeight, [Win32]::SWP_NOZORDER -bor [Win32]::SWP_SHOWWINDOW)
 		Write-Host "$(Get-Date): Successfully resized and positioned the PowerShell window on display $TargetDisplayIndex." -ForegroundColor Green
-		$global:completedTasks += 'Resized and positioned PowerShell window'
+		Add-CompletedTask -Tracker $taskTracker -TaskName 'Resized and positioned PowerShell window'
 	}
 	else {
 		Write-Host "$(Get-Date): Display 3 not found.  Resizing in current display." -ForegroundColor Yellow
@@ -584,7 +589,7 @@ catch {
 try {
 	Write-Host "$(Get-Date): Attempting to import DisplayConfig module..." -ForegroundColor Cyan
 	Import-DisplayConfigModule
-	$global:completedTasks += 'Imported DisplayConfig module'
+	Add-CompletedTask -Tracker $taskTracker -TaskName 'Imported DisplayConfig module'
 }
 catch {
 	Write-Error "$(Get-Date): Error importing DisplayConfig module: $($_.Exception.Message)"
@@ -593,7 +598,7 @@ catch {
 # Set PowerShell window transparency to the specified value (default: 25)
 try {
 	Set-WindowTransparencyUWP -Transparency $Transparency
-	$global:completedTasks += 'Set Window Transparency'
+	Add-CompletedTask -Tracker $taskTracker -TaskName 'Set Window Transparency'
 }
 catch {
 	Write-Error "$(Get-Date): Error setting window transparency: $($_.Exception.Message)"
@@ -603,7 +608,7 @@ catch {
 try {
 	$MonitorZwiftScriptPath = Resolve-Path -LiteralPath $MonitorZwiftScriptPath -ErrorAction Stop
 	$ZwiftLauncherPath = Resolve-Path -LiteralPath $ZwiftLauncherPath -ErrorAction Stop
-	$global:completedTasks += 'Zwift Launcher path resolved'
+	Add-CompletedTask -Tracker $taskTracker -TaskName 'Zwift Launcher path resolved'
 }
 catch {
 	Write-Error "Failed to resolve paths: $($_.Exception.Message)"
@@ -615,7 +620,7 @@ $zwiftAppRunning = $null -ne (Get-Process -Name $ZwiftGame -ErrorAction Silently
 
 if ($zwiftAppRunning) {
 	Write-Output 'ZwiftApp.exe is already running. Skipping ZwiftLauncher.exe start.'
-	$global:completedTasks += 'ZwiftApp already running or Zwift Launcher started'
+	Add-CompletedTask -Tracker $taskTracker -TaskName 'ZwiftApp already running or Zwift Launcher started'
 }
 else {
 	# Start Zwift Launcher
@@ -624,7 +629,7 @@ else {
 			$zwiftProcess = Start-Process -FilePath $ZwiftLauncherPath -NoNewWindow -PassThru -ErrorAction Stop
 			if ($zwiftProcess) {
 				Write-Output "Zwift Launcher started successfully from path: $ZwiftLauncherPath"
-				$global:completedTasks += 'ZwiftApp already running or Zwift Launcher started'
+				Add-CompletedTask -Tracker $taskTracker -TaskName 'ZwiftApp already running or Zwift Launcher started'
 			}
 			else {
 				Write-Error 'Zwift Launcher process did not start.'
@@ -647,8 +652,8 @@ try {
 	}
 	Write-Host "$(Get-Date): Zwift launcher detected. Switching primary display to $($PrimaryDisplayZwift + 1)" -ForegroundColor Green
 	Set-PrimaryDisplay ($PrimaryDisplayZwift + 1) # + 1 to make it one-based index for the DisplayConfig module (index: 4)
-	$global:completedTasks += 'Zwift launcher running'
-	$global:completedTasks += 'Primary display set for Zwift'
+	Add-CompletedTask -Tracker $taskTracker -TaskName 'Zwift launcher running'
+	Add-CompletedTask -Tracker $taskTracker -TaskName 'Primary display set for Zwift'
 }
 catch {
 	Write-Error "$(Get-Date): Error while waiting for Zwift launcher to start or switching primary display: $($_.Exception.Message)"
@@ -678,7 +683,7 @@ try {
 			Write-Host "$(Get-Date): Launching Zwift PowerToys Workspaces..." -ForegroundColor Cyan
 			Start-Process -FilePath $PowerToysPath -ArgumentList "$WorkspaceGuid 1"
 			Write-Host "$(Get-Date): Zwift PowerToys Workspaces launched successfully." -ForegroundColor Green
-			$global:completedTasks += 'PowerToys Workspaces launched or skipped'
+			Add-CompletedTask -Tracker $taskTracker -TaskName 'PowerToys Workspaces launched or skipped'
 		}
 		catch {
 			Write-Error "$(Get-Date): Error launching PowerToys Workspaces: $($_.Exception.Message)"
@@ -699,7 +704,7 @@ try {
 		Wait-WithAnimation -Seconds 1 -Message "Waiting for $ZwiftGame"
 	}
 	Write-Host "$(Get-Date): Zwift game detected." -ForegroundColor Green
-	$global:completedTasks += 'Zwift game started'
+	Add-CompletedTask -Tracker $taskTracker -TaskName 'Zwift game started'
 }
 catch {
 	Write-Error "$(Get-Date): Error while waiting for or detecting Zwift game: $($_.Exception.Message)"
@@ -725,7 +730,7 @@ try {
 		if ($zwiftHwnd -ne [IntPtr]::Zero) {
 			[Win32]::ShowWindow($zwiftHwnd, [Win32]::SW_MAXIMIZE)
 			Write-Host "$(Get-Date): Zwift game window maximized successfully." -ForegroundColor Green
-			$global:completedTasks += 'Zwift game window maximized'
+			Add-CompletedTask -Tracker $taskTracker -TaskName 'Zwift game window maximized'
 		}
 		else {
 			Write-Host "$(Get-Date): Zwift game window handle not found. Unable to maximize." -ForegroundColor Yellow
@@ -746,7 +751,7 @@ try {
 		Wait-WithAnimation -Seconds 1 -Message "Waiting for $ZwiftGame"
 	}
 	Write-Host "$(Get-Date): Zwift game closed." -ForegroundColor Green
-	$global:completedTasks += 'Zwift game closed'
+	Add-CompletedTask -Tracker $taskTracker -TaskName 'Zwift game closed'
 }
 catch {
 	Write-Error "$(Get-Date): Error monitoring Zwift game: $($_.Exception.Message)"
@@ -761,11 +766,11 @@ try {
 		Write-Host "$(Get-Date): Sauce for Zwift is running. Closing it..." -ForegroundColor Yellow
 		$sauceProcess | Stop-Process -Force
 		Write-Host "$(Get-Date): Sauce for Zwift closed successfully." -ForegroundColor Green
-		$global:completedTasks += 'Sauce for Zwift closed or skipped'
+		Add-CompletedTask -Tracker $taskTracker -TaskName 'Sauce for Zwift closed or skipped'
 	}
 	else {
 		Write-Host "$(Get-Date): Sauce for Zwift is not running. Skipping..." -ForegroundColor Yellow
-		$global:completedTasks += 'Sauce for Zwift closed or skipped'
+		Add-CompletedTask -Tracker $taskTracker -TaskName 'Sauce for Zwift closed or skipped'
 	}
 }
 catch {
@@ -777,7 +782,7 @@ try {
 	Write-Host "$(Get-Date): Restoring primary display to $($PrimaryDisplayDefault + 1)..." -ForegroundColor Cyan
 	Set-PrimaryDisplay ($PrimaryDisplayDefault + 1) # + 1 to make it one-based index for the DisplayConfig module (index: 2)
 	Write-Host "$(Get-Date): Primary display restored to $($PrimaryDisplayDefault + 1)." -ForegroundColor Green
-	$global:completedTasks += 'Primary display restored'
+	Add-CompletedTask -Tracker $taskTracker -TaskName 'Primary display restored'
 }
 catch {
 	Write-Error "$(Get-Date): Error restoring primary display: $($_.Exception.Message)"
@@ -789,7 +794,7 @@ try {
 	Write-Host "$(Get-Date): Running FreeFileSync batch job..." -ForegroundColor Cyan
 	Start-Process -FilePath $FreeFileSyncPath -ArgumentList "`"$BatchJobPath`"" -Wait
 	Write-Host "$(Get-Date): FreeFileSync batch job completed." -ForegroundColor Green
-	$global:completedTasks += 'FreeFileSync batch job completed'
+	Add-CompletedTask -Tracker $taskTracker -TaskName 'FreeFileSync batch job completed'
 }
 catch {
 	Write-Error "$(Get-Date): Error running FreeFileSync batch job: $($_.Exception.Message)"
@@ -859,7 +864,7 @@ try {
 					# Send the hotkey to close OBS
 					$wshell.SendKeys($CloseObsHotkey)
 					Write-Host "$(Get-Date): Sent close hotkey to OBS window: $($_.MainWindowTitle)" -ForegroundColor Green
-					$global:completedTasks += 'OBS recording stopped'
+					Add-CompletedTask -Tracker $taskTracker -TaskName 'OBS recording stopped'
 
 				}
 				catch {
@@ -888,7 +893,7 @@ try {
 			}
 			else {
 				Write-Host "$(Get-Date): OBS closed successfully" -ForegroundColor Green
-				$global:completedTasks += 'OBS closed'
+				Add-CompletedTask -Tracker $taskTracker -TaskName 'OBS closed'
 			}
 		}
 		catch {
@@ -912,7 +917,7 @@ try {
 		Write-Host "$(Get-Date): Spotify is running. Closing Spotify..." -ForegroundColor Yellow
 		$spotifyProcess | Stop-Process -Force
 		Write-Host "$(Get-Date): Spotify closed successfully." -ForegroundColor Green
-		$global:completedTasks += 'Spotify closed'
+		Add-CompletedTask -Tracker $taskTracker -TaskName 'Spotify closed'
 	}
 	else {
 		Write-Host "$(Get-Date): Spotify is not running." -ForegroundColor Yellow
@@ -927,7 +932,7 @@ try {
 	Write-Host "$(Get-Date): Launching Microsoft Edge in app mode with the specified URLs..." -ForegroundColor Cyan
 	Start-Process -FilePath "$EdgePath" -ArgumentList @("$EdgeUrl1", "$EdgeUrl2", "$EdgeUrl3")
 	Write-Host "$(Get-Date): Microsoft Edge launched successfully with the specified URLs." -ForegroundColor Green
-	$global:completedTasks += 'Microsoft Edge launched'
+	Add-CompletedTask -Tracker $taskTracker -TaskName 'Microsoft Edge launched'
 }
 catch {
 	Write-Error "$(Get-Date): Error launching Microsoft Edge: $($_.Exception.Message)"
@@ -938,7 +943,7 @@ try {
 	Write-Host "$(Get-Date): Opening File Explorer with specified directories..." -ForegroundColor Cyan
 	if (Test-Path -Path $ZwiftMediaPath) {
 		Start-Process -FilePath 'explorer.exe' -ArgumentList "`"$ZwiftMediaPath`""
-		$global:completedTasks += 'Opened File Explorer for ZwiftMediaPath'
+		Add-CompletedTask -Tracker $taskTracker -TaskName 'Opened File Explorer for ZwiftMediaPath'
 	}
 	else {
 		Write-Host "$(Get-Date): Path $ZwiftMediaPath does not exist. Skipping opening File Explorer for this path." -ForegroundColor Yellow
@@ -946,7 +951,7 @@ try {
 
 	if (Test-Path -Path $ZwiftPicturesPath) {
 		Start-Process -FilePath 'explorer.exe' -ArgumentList "`"$ZwiftPicturesPath`""
-		$global:completedTasks += 'Opened File Explorer for ZwiftPicturesPath'
+		Add-CompletedTask -Tracker $taskTracker -TaskName 'Opened File Explorer for ZwiftPicturesPath'
 	}
 	else {
 		Write-Host "$(Get-Date): Path $ZwiftPicturesPath does not exist. Skipping the opening of File Explorer for this path." -ForegroundColor Yellow
@@ -973,7 +978,7 @@ catch {
 try {
 	Set-WindowTransparencyUWP -Transparency 0
 	Write-Host "$(Get-Date): Window transparency reset to fully opaque." -ForegroundColor Green
-	$global:completedTasks += 'Window transparency reset to fully opaque'
+	Add-CompletedTask -Tracker $taskTracker -TaskName 'Window transparency reset to fully opaque'
 }
 catch {
 	Write-Error "$(Get-Date): Error resetting window transparency: $($_.Exception.Message)"
@@ -984,7 +989,7 @@ catch {
 		[Win32]::SetWindowLong($hwnd, [Win32]::GWL_EXSTYLE, $style -bor [Win32]::WS_EX_LAYERED)
 		[Win32]::SetLayeredWindowAttributes($hwnd, 0, 255, [Win32]::LWA_ALPHA)
 		Write-Host "$(Get-Date): Fallback succeeded. Window transparency reset to fully opaque using Win32 API." -ForegroundColor Green
-		$global:completedTasks += 'Window transparency reset to fully opaque'
+		Add-CompletedTask -Tracker $taskTracker -TaskName 'Window transparency reset to fully opaque'
 	}
 	catch {
 		Write-Error "$(Get-Date): Fallback failed: $($_.Exception.Message). Continuing script execution regardless."
@@ -994,7 +999,7 @@ catch {
 # Validate that all required tasks have been completed successfully
 try {
 	try {
-		$tasksFailed = $tasksCompleted | Where-Object { $_ -notin $global:completedTasks }
+		$tasksFailed = $tasksCompleted | Where-Object { $_ -notin (Get-CompletedTasks -Tracker $taskTracker) }
 
 		if ($tasksFailed.Count -eq 0) {
 			Write-Host "$(Get-Date): All tasks completed successfully." -ForegroundColor Green
