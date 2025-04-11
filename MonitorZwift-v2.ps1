@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 1.8.2
+.VERSION 1.8.3
 
 .GUID 4296fcf1-a13d-4d31-afdc-bcbd4e05506d
 
@@ -454,10 +454,10 @@ function Add-CompletedTask {
 .PARAMETER TaskName
 		The name of the task to check for completion.
 .EXAMPLE
-		Is-TaskCompleted -Tracker $taskTracker -TaskName "Task 1"
+		Test-TaskCompletion -Tracker $taskTracker -TaskName "Task 1"
 		Returns $true if "Task 1" is in the completed tasks list, otherwise $false.
 #>
-function Is-TaskCompleted {
+function Test-TaskCompletion {
 	param (
 		[hashtable]$Tracker,
 		[string]$TaskName
