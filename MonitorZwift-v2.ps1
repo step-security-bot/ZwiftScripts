@@ -1032,9 +1032,7 @@ try {
 		Write-Host "$(Get-Date): Script execution completed. The window will remain open for review for $([TimeSpan]::FromSeconds($remainingTime).ToString('hh\:mm\:ss'))." -ForegroundColor Yellow
 		# Store the original remaining time for accurate display
 		$originalRemainingTime = $remainingTime
-		$totalTime = $remainingTime
-
-		# Countdown timer with a decreasing progress bar
+		# Countdown timer using Wait-WithAnimation
 		while ($remainingTime -gt 0) {
 			try {
 				# Check for any key press to stop the script
@@ -1044,9 +1042,6 @@ try {
 				}
 
 				$formattedTime = [TimeSpan]::FromSeconds($remainingTime).ToString('hh\:mm\:ss')
-				$progress = [int]($remainingTime / $totalTime * 50) # Progress bar length (50 characters)
-				$loadingBar = ('#' * $progress).PadRight(50, '-')
-				Write-Host "`rTime remaining: $formattedTime [$loadingBar]" -NoNewline
 				Wait-WithAnimation -Seconds 1 -Message "Time remaining: $formattedTime"
 				$remainingTime--
 			}
