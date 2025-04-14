@@ -187,6 +187,12 @@ This script performs the following tasks:
 	Height of the PowerShell window in pixels. Default: 600.
 
 .PARAMETER PowerToysPath
+	Path to the PowerToys executable. Default: 'C:\Program Files\PowerToys\PowerToys.exe'.
+
+.PARAMETER PowerToysAwakePath
+	Path to the PowerToys Awake executable. Default: 'C:\Program Files\PowerToys\PowerToys.Awake.exe'.
+
+.PARAMETER PowerToysWorkspacesPath
 	Path to the PowerToys Workspaces executable. Default: 'C:\Program Files\PowerToys\PowerToys.WorkspacesLauncher.exe'.
 
 .PARAMETER WorkspaceGuid
@@ -300,7 +306,13 @@ param (
 	# Default window width (in pixels)
 	[int]$WindowHeight = 600,
 	# Default window height (in pixels)
-	[string]$PowerToysPath = 'C:\Program Files\PowerToys\PowerToys.WorkspacesLauncher.exe',
+	[string]$PowerToysPath = 'C:\Program Files\PowerToys\PowerToys.exe',
+	# Path to PowerToys executable file (default installation path)
+	[string]$PowerToysAwakePath = 'C:\Program Files\PowerToys\PowerToys.Awake.exe',
+	# Path to PowerToys Awake executable file (default installation path)
+	[int]$PowerToysAwakeTime = $remainingTimeinHours * 3600,
+	# Time in seconds for PowerToys Awake to keep the display awake (default: 3600 seconds = 1 hour)
+	[string]$PowerToysWorkspacesPath = 'C:\Program Files\PowerToys\PowerToys.WorkspacesLauncher.exe',
 	# Path to PowerToys Workspaces executable file (default installation path)
 	[string]$WorkspaceGuid = '{E2CDEA2A-6E33-4CFD-A26B-0C5CC2E55F40}',
 	# GUID for the PowerToys Workspace for Zwift
@@ -785,7 +797,7 @@ try {
 	if (-not $allAppsRunning) {
 		try {
 			Write-Host "$(Get-Date): Launching Zwift PowerToys Workspaces..." -ForegroundColor Cyan
-			Start-Process -FilePath $PowerToysPath -ArgumentList "$WorkspaceGuid 1"
+			Start-Process -FilePath $PowerToysWorkspacesPath -ArgumentList "$WorkspaceGuid 1"
 			Write-Host "$(Get-Date): Zwift PowerToys Workspaces launched successfully." -ForegroundColor Green
 			Add-CompletedTask -Tracker $taskTracker -TaskName 'PowerToys Workspaces launched or skipped'
 		}
@@ -1106,17 +1118,38 @@ catch {
 	}
 }
 
+# Set PowerToys Awake settings (if installed)
+$PowerToysAwakeArgs = "--time-limit $PowerToysAwakeTime --display-on true"
+try {
+	if (Test-Path -LiteralPath $PowerToysAwakePath) {
+		Write-Host "$(Get-Date): Setting PowerToys Awake to on for ($([TimeSpan]::FromSeconds($PowerToysAwakeTime).ToString('hh\:mm\:ss')))..." -ForegroundColor Cyan
+		Start-Process -FilePath $PowerToysAwakePath -ArgumentList $PowerToysAwakeArgs -WindowStyle Hidden -ErrorAction Stop
+		Write-Host "$(Get-Date): PowerToys Awake settings applied." -ForegroundColor Green
+		Add-CompletedTask -Tracker $taskTracker -TaskName 'PowerToys Awake set'
+	}
+	else {
+		Write-Host "$(Get-Date): PowerToys Awake executable not found at '$PowerToysAwakePath'. Skipping." -ForegroundColor Yellow
+		Add-CompletedTask -Tracker $taskTracker -TaskName 'PowerToys Awake skipped'
+	}
+}
+catch {
+	Write-Error "$(Get-Date): Error setting PowerToys Awake: $($_.Exception.Message)"
+	Add-CompletedTask -Tracker $taskTracker -TaskName 'PowerToys Awake failed'
+}
+
 # Validate that all required tasks have been completed successfully
 try {
 	try {
-		$tasksFailed = $tasksCompleted | Where-Object { $_ -notin (Get-CompletedTasks -Tracker $taskTracker) }
-
-		if ($tasksFailed.Count -eq 0) {
-			Write-Host "$(Get-Date): All tasks completed successfully." -ForegroundColor Green
-		}
-		else {
-			Write-Host "$(Get-Date): The following tasks failed or were not completed:" -ForegroundColor Red
-			$tasksFailed | ForEach-Object { Write-Host "- $_" -ForegroundColor Red }
+		# List all tasks and their completion status
+		$allTasks = $taskTracker.CompletedTasks + $tasksCompleted | Sort-Object -Unique
+		Write-Host "$(Get-Date): Task Completion Summary:" -ForegroundColor Cyan
+		foreach ($task in $allTasks) {
+			if ($task -in (Get-CompletedTasks -Tracker $taskTracker)) {
+				Write-Host "- ${task}: Completed" -ForegroundColor Green
+			}
+			else {
+				Write-Host "- ${task}: Not Completed" -ForegroundColor Red
+			}
 		}
 	}
 	catch {
@@ -1144,6 +1177,7 @@ try {
 		exit
 	}
 
+	# Final review countdown timer
 	try {
 		Write-Host "$(Get-Date): Script execution completed. The window will remain open for review for $([TimeSpan]::FromSeconds($remainingTime).ToString('hh\:mm\:ss'))." -ForegroundColor Yellow
 		# Store the original remaining time for accurate display
@@ -1168,6 +1202,22 @@ try {
 		}
 		Write-Host "`n$(Get-Date): Script review time over. $([TimeSpan]::FromSeconds($originalRemainingTime).ToString('hh\:mm\:ss')) has passed since the script ended." -ForegroundColor Yellow
 		Write-Host "$(Get-Date): Closing the script now." -ForegroundColor Yellow
+
+		# End PowerToys Awake if it was started
+		try {
+			if (Get-Process -Name 'PowerToys.Awake' -ErrorAction SilentlyContinue) {
+				Write-Host "$(Get-Date): PowerToys Awake is running. Stopping it now..." -ForegroundColor Cyan
+				Get-Process -Name 'PowerToys.Awake' -ErrorAction SilentlyContinue | Stop-Process -Force
+				Write-Host "$(Get-Date): PowerToys Awake stopped successfully." -ForegroundColor Green
+			}
+			else {
+				Write-Host "$(Get-Date): PowerToys Awake is not running. No action needed." -ForegroundColor Yellow
+			}
+		}
+		catch {
+			Write-Error "$(Get-Date): Error stopping PowerToys Awake: $($_.Exception.Message)"
+		}
+
 		exit
 	}
 	catch {
