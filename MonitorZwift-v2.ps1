@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 1.8.3
+.VERSION 1.8.5
 
 .GUID 4296fcf1-a13d-4d31-afdc-bcbd4e05506d
 
@@ -23,12 +23,19 @@
 .REQUIREDSCRIPTS
 
 .EXTERNALSCRIPTDEPENDENCIES
-- PowerToys: https://github.com/microsoft/PowerToys
-- FreeFileSync: https://freefilesync.org/
-- OBS Studio: https://obsproject.com/
-- Sauce for Zwift: https://sauce.llc/
-- Spotify: https://www.spotify.com/
-- Microsoft Edge: https://www.microsoft.com/edge
+- PowerToys (Recommended): https://github.com/microsoft/PowerToys
+  Required for managing workspaces during Zwift sessions. If not installed, workspace management features will be unavailable.
+- FreeFileSync (Mandatory): https://freefilesync.org/
+  Required for synchronizing Zwift-related files.
+- OBS Studio (Optional): https://obsproject.com/
+  Used for recording and streaming Zwift sessions.
+- Sauce for Zwift (Optional): https://sauce.llc/
+  Provides additional metrics and overlays for Zwift.
+- Spotify (Optional): https://www.spotify.com/
+  Used for managing music playback during Zwift sessions.
+- Microsoft Edge (Mandatory): https://www.microsoft.com/edge
+  Ensure Microsoft Edge is installed and accessible before running the script.
+  Required for launching Zwift-related web pages in app mode.
 
 .RELEASENOTES
 - Initial release of MonitorZwift-v2.
@@ -1024,15 +1031,21 @@ catch {
 	Write-Error "$(Get-Date): Error closing Spotify: $($_.Exception.Message)"
 }
 
-# Launch Microsoft Edge in app mode with the specified URLs
-try {
-	Write-Host "$(Get-Date): Launching Microsoft Edge in app mode with the specified URLs..." -ForegroundColor Cyan
-	Start-Process -FilePath "$EdgePath" -ArgumentList @("$EdgeUrl1", "$EdgeUrl2", "$EdgeUrl3")
-	Write-Host "$(Get-Date): Microsoft Edge launched successfully with the specified URLs." -ForegroundColor Green
-	Add-CompletedTask -Tracker $taskTracker -TaskName 'Microsoft Edge launched'
+# Check if Microsoft Edge is installed
+if (Test-Path -Path $EdgePath) {
+	try {
+		Write-Host "$(Get-Date): Microsoft Edge found. Launching in app mode with the specified URLs..." -ForegroundColor Cyan
+		Start-Process -FilePath "$EdgePath" -ArgumentList @("$EdgeUrl1", "$EdgeUrl2", "$EdgeUrl3")
+		Write-Host "$(Get-Date): Microsoft Edge launched successfully with the specified URLs." -ForegroundColor Green
+		Add-CompletedTask -Tracker $taskTracker -TaskName 'Microsoft Edge launched'
+	}
+	catch {
+		Write-Error "$(Get-Date): Error launching Microsoft Edge: $($_.Exception.Message)"
+	}
 }
-catch {
-	Write-Error "$(Get-Date): Error launching Microsoft Edge: $($_.Exception.Message)"
+else {
+	Write-Host "$(Get-Date): Microsoft Edge not found at $EdgePath. Skipping launch." -ForegroundColor Yellow
+	Add-CompletedTask -Tracker $taskTracker -TaskName 'Microsoft Edge skipped'
 }
 
 # Open File Explorer with two separate windows for the specified directories
