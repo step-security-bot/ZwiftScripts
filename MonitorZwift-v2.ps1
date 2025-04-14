@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 1.8.6
+.VERSION 1.8.7
 
 .GUID 4296fcf1-a13d-4d31-afdc-bcbd4e05506d
 
@@ -265,6 +265,13 @@ This script performs the following tasks:
 .PARAMETER remainingTimeinSeconds
 	Remaining time in seconds for the script to remain open for review. Default: 10800.
 	Must be manually uncommented if used.
+
+.PARAMETER remainingTime
+	Remaining time in seconds for the script to remain open for review. Default: 10800.
+	Must be manually uncommented if used.
+
+.PARAMETER PowerToysAwakeTime
+	Time in seconds for PowerToys Awake to keep the display awake. Default: 3600 seconds (1 hour).
 
 .NOTES
 	- Requires PowerShell 5.1 or later.
@@ -660,6 +667,172 @@ function Set-PrimaryDisplay {
 	}
 	catch {
 		Write-Error "$(Get-Date): Failed to set primary display to ${DisplayIndex}: $($_.Exception.Message)"
+	}
+}
+
+# Function: Show-TaskCompletionSummary
+<#
+.SYNOPSIS
+Displays a summary of task completion status.
+
+.DESCRIPTION
+The Show-TaskCompletionSummary function outputs a summary of completed and not completed tasks by comparing the provided list of completed tasks with the tasks tracked in the given hashtable. It highlights completed tasks in green and not completed tasks in red.
+
+.PARAMETER Tracker
+A hashtable containing task tracking information, including a list of completed tasks.
+
+.PARAMETER tasksCompleted
+An additional collection of completed tasks to be included in the summary.
+
+.EXAMPLE
+Show-TaskCompletionSummary -Tracker $myTracker -tasksCompleted $recentlyCompleted
+
+.NOTES
+This function assumes the existence of a Get-CompletedTasks function that retrieves completed tasks from the provided tracker.
+#>
+function Show-TaskCompletionSummary {
+	param (
+		[hashtable]$Tracker,
+		$tasksCompleted
+	)
+	try {
+		$allTasks = $Tracker.CompletedTasks + $tasksCompleted | Sort-Object -Unique
+		Write-Host "$(Get-Date): Task Completion Summary:" -ForegroundColor Cyan
+		foreach ($task in $allTasks) {
+			if ($task -in (Get-CompletedTasks -Tracker $Tracker)) {
+				Write-Host "- ${task}: Completed" -ForegroundColor Green
+			}
+			else {
+				Write-Host "- ${task}: Not Completed" -ForegroundColor Red
+			}
+		}
+	}
+	catch {
+		Write-Error "$(Get-Date): Error during task validation: $($_.Exception.Message)"
+	}
+}
+
+# Function: Get-RemainingTime
+<#
+.SYNOPSIS
+Calculates the remaining time in seconds based on provided hours, minutes, or seconds.
+
+.DESCRIPTION
+The Get-RemainingTime function returns the remaining time in seconds. It accepts one of three parameters: hours, minutes, or seconds. The function prioritizes hours over minutes, and minutes over seconds. If none of the parameters are provided, it writes an error message and exits the script.
+
+.PARAMETER remainingTimeinHours
+The number of remaining hours to be converted to seconds.
+
+.PARAMETER remainingTimeinMinutes
+The number of remaining minutes to be converted to seconds.
+
+.PARAMETER remainingTimeinSeconds
+The number of remaining seconds.
+
+.EXAMPLE
+Get-RemainingTime -remainingTimeinMinutes 15
+# Returns 900
+
+.EXAMPLE
+Get-RemainingTime -remainingTimeinHours 1
+# Returns 3600
+
+.NOTES
+Only one parameter should be provided at a time. If multiple parameters are provided, hours take precedence over minutes, and minutes over seconds.
+#>
+function Get-RemainingTime {
+	param (
+		$remainingTimeinHours,
+		$remainingTimeinMinutes,
+		$remainingTimeinSeconds
+	)
+	try {
+		if ($null -ne $remainingTimeinHours) {
+			return $remainingTimeinHours * 3600
+		}
+		elseif ($null -ne $remainingTimeinMinutes) {
+			return $remainingTimeinMinutes * 60
+		}
+		elseif ($null -ne $remainingTimeinSeconds) {
+			return $remainingTimeinSeconds
+		}
+		else {
+			Write-Host "$(Get-Date): No valid remaining time parameter provided. Exiting script." -ForegroundColor Red
+			exit
+		}
+	}
+	catch {
+		Write-Error "$(Get-Date): Error calculating remaining time: $($_.Exception.Message)"
+		exit
+	}
+}
+
+# Function: Invoke-ReviewCountdownAndCleanup
+<#
+.SYNOPSIS
+Displays a countdown timer for script review and performs cleanup actions after script execution.
+
+.DESCRIPTION
+The Invoke-ReviewCountdownAndCleanup function provides a post-execution review period by displaying a countdown timer in the console. The user can exit the review early by pressing any key. Once the countdown completes or a key is pressed, the function attempts to stop the PowerToys Awake process if it is running, ensuring proper cleanup. Informative messages are displayed throughout the process, and errors are handled gracefully.
+
+.PARAMETER remainingTime
+The number of seconds to keep the script window open for review after execution completes.
+
+.EXAMPLE
+Invoke-ReviewCountdownAndCleanup -remainingTime 60
+# Keeps the script window open for 60 seconds, allowing the user to review output or exit early by pressing a key.
+
+.NOTES
+This function is intended to be called at the end of a script to allow users time to review output and ensure that PowerToys Awake is stopped if it was started during script execution.
+#>
+function Invoke-ReviewCountdownAndCleanup {
+	param (
+		[int]$remainingTime
+	)
+	try {
+		Write-Host "$(Get-Date): Script execution completed. The window will remain open for review for $([TimeSpan]::FromSeconds($remainingTime).ToString('hh\:mm\:ss'))." -ForegroundColor Yellow
+		$originalRemainingTime = $remainingTime
+		$exitEarly = $false
+		while ($remainingTime -gt 0) {
+			try {
+				if ([Console]::KeyAvailable) {
+					Write-Host "`n$(Get-Date): Key press detected. Stopping the script." -ForegroundColor Yellow
+					$exitEarly = $true
+					break
+				}
+				$formattedTime = [TimeSpan]::FromSeconds($remainingTime).ToString('hh\:mm\:ss')
+				Wait-WithAnimation -Seconds 1 -Message "Time remaining: $formattedTime"
+				$remainingTime--
+			}
+			catch {
+				Write-Error "$(Get-Date): Error during countdown timer: $($_.Exception.Message)"
+				break
+			}
+		}
+		if ($exitEarly) {
+			Write-Host "$(Get-Date): Exiting review early due to key press." -ForegroundColor Yellow
+		}
+		else {
+			Write-Host "`n$(Get-Date): Script review time over. $([TimeSpan]::FromSeconds($originalRemainingTime).ToString('hh\:mm\:ss')) has passed since the script ended." -ForegroundColor Yellow
+			Write-Host "$(Get-Date): Closing the script now." -ForegroundColor Yellow
+		}
+		# End PowerToys Awake if it was started
+		try {
+			if (Get-Process -Name 'PowerToys.Awake' -ErrorAction SilentlyContinue) {
+				Write-Host "$(Get-Date): PowerToys Awake is running. Stopping it now..." -ForegroundColor Cyan
+				Get-Process -Name 'PowerToys.Awake' -ErrorAction SilentlyContinue | Stop-Process -Force
+				Write-Host "$(Get-Date): PowerToys Awake stopped successfully." -ForegroundColor Green
+			}
+			else {
+				Write-Host "$(Get-Date): PowerToys Awake is not running. No action needed." -ForegroundColor Yellow
+			}
+		}
+		catch {
+			Write-Error "$(Get-Date): Error stopping PowerToys Awake: $($_.Exception.Message)"
+		}
+	}
+	catch {
+		Write-Error "$(Get-Date): Error during script review countdown: $($_.Exception.Message)"
 	}
 }
 
@@ -1139,99 +1312,9 @@ catch {
 
 # Validate that all required tasks have been completed successfully
 try {
-	try {
-		# List all tasks and their completion status
-		$allTasks = $taskTracker.CompletedTasks + $tasksCompleted | Sort-Object -Unique
-		Write-Host "$(Get-Date): Task Completion Summary:" -ForegroundColor Cyan
-		foreach ($task in $allTasks) {
-			if ($task -in (Get-CompletedTasks -Tracker $taskTracker)) {
-				Write-Host "- ${task}: Completed" -ForegroundColor Green
-			}
-			else {
-				Write-Host "- ${task}: Not Completed" -ForegroundColor Red
-			}
-		}
-	}
-	catch {
-		Write-Error "$(Get-Date): Error during task validation: $($_.Exception.Message)"
-	}
-
-	try {
-		# Calculate the remaining time in seconds based on the provided input
-		if ($null -ne $remainingTimeinHours) {
-			$remainingTime = $remainingTimeinHours * 3600
-		}
-		elseif ($null -ne $remainingTimeinMinutes) {
-			$remainingTime = $remainingTimeinMinutes * 60
-		}
-		elseif ($null -ne $remainingTimeinSeconds) {
-			$remainingTime = $remainingTimeinSeconds
-		}
-		else {
-			Write-Host "$(Get-Date): No valid remaining time parameter provided. Exiting script." -ForegroundColor Red
-			exit
-		}
-	}
-	catch {
-		Write-Error "$(Get-Date): Error calculating remaining time: $($_.Exception.Message)"
-		exit
-	}
-
-	# Final review countdown timer
-	try {
-		Write-Host "$(Get-Date): Script execution completed. The window will remain open for review for $([TimeSpan]::FromSeconds($remainingTime).ToString('hh\:mm\:ss'))." -ForegroundColor Yellow
-		# Store the original remaining time for accurate display
-		$originalRemainingTime = $remainingTime
-		$exitEarly = $false
-		# Countdown timer using Wait-WithAnimation
-		while ($remainingTime -gt 0) {
-			try {
-				# Check for any key press to stop the script
-				if ([Console]::KeyAvailable) {
-					Write-Host "`n$(Get-Date): Key press detected. Stopping the script." -ForegroundColor Yellow
-					$exitEarly = $true
-					break
-				}
-
-				$formattedTime = [TimeSpan]::FromSeconds($remainingTime).ToString('hh\:mm\:ss')
-				Wait-WithAnimation -Seconds 1 -Message "Time remaining: $formattedTime"
-				$remainingTime--
-			}
-			catch {
-				Write-Error "$(Get-Date): Error during countdown timer: $($_.Exception.Message)"
-				break
-			}
-		}
-
-		if ($exitEarly) {
-			Write-Host "$(Get-Date): Exiting review early due to key press." -ForegroundColor Yellow
-		}
-		else {
-			Write-Host "`n$(Get-Date): Script review time over. $([TimeSpan]::FromSeconds($originalRemainingTime).ToString('hh\:mm\:ss')) has passed since the script ended." -ForegroundColor Yellow
-			Write-Host "$(Get-Date): Closing the script now." -ForegroundColor Yellow
-		}
-
-		# End PowerToys Awake if it was started
-		try {
-			if (Get-Process -Name 'PowerToys.Awake' -ErrorAction SilentlyContinue) {
-				Write-Host "$(Get-Date): PowerToys Awake is running. Stopping it now..." -ForegroundColor Cyan
-				Get-Process -Name 'PowerToys.Awake' -ErrorAction SilentlyContinue | Stop-Process -Force
-				Write-Host "$(Get-Date): PowerToys Awake stopped successfully." -ForegroundColor Green
-			}
-			else {
-				Write-Host "$(Get-Date): PowerToys Awake is not running. No action needed." -ForegroundColor Yellow
-			}
-		}
-		catch {
-			Write-Error "$(Get-Date): Error stopping PowerToys Awake: $($_.Exception.Message)"
-		}
-
-		return
-	}
-	catch {
-		Write-Error "$(Get-Date): Error during script review countdown: $($_.Exception.Message)"
-		return
-	}
+	Show-TaskCompletionSummary -Tracker $taskTracker -tasksCompleted $tasksCompleted
+	$remainingTime = Get-RemainingTime -remainingTimeinHours $remainingTimeinHours -remainingTimeinMinutes $remainingTimeinMinutes -remainingTimeinSeconds $remainingTimeinSeconds
+	Invoke-ReviewCountdownAndCleanup -remainingTime $remainingTime
 }
 catch {
 	Write-Error "$(Get-Date): Unexpected error in the final validation and review process: $($_.Exception.Message)"
