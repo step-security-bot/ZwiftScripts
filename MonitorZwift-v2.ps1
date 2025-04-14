@@ -1182,13 +1182,15 @@ try {
 		Write-Host "$(Get-Date): Script execution completed. The window will remain open for review for $([TimeSpan]::FromSeconds($remainingTime).ToString('hh\:mm\:ss'))." -ForegroundColor Yellow
 		# Store the original remaining time for accurate display
 		$originalRemainingTime = $remainingTime
+		$exitEarly = $false
 		# Countdown timer using Wait-WithAnimation
 		while ($remainingTime -gt 0) {
 			try {
 				# Check for any key press to stop the script
 				if ([Console]::KeyAvailable) {
 					Write-Host "`n$(Get-Date): Key press detected. Stopping the script." -ForegroundColor Yellow
-					exit
+					$exitEarly = $true
+					break
 				}
 
 				$formattedTime = [TimeSpan]::FromSeconds($remainingTime).ToString('hh\:mm\:ss')
@@ -1200,8 +1202,14 @@ try {
 				break
 			}
 		}
-		Write-Host "`n$(Get-Date): Script review time over. $([TimeSpan]::FromSeconds($originalRemainingTime).ToString('hh\:mm\:ss')) has passed since the script ended." -ForegroundColor Yellow
-		Write-Host "$(Get-Date): Closing the script now." -ForegroundColor Yellow
+
+		if ($exitEarly) {
+			Write-Host "$(Get-Date): Exiting review early due to key press." -ForegroundColor Yellow
+		}
+		else {
+			Write-Host "`n$(Get-Date): Script review time over. $([TimeSpan]::FromSeconds($originalRemainingTime).ToString('hh\:mm\:ss')) has passed since the script ended." -ForegroundColor Yellow
+			Write-Host "$(Get-Date): Closing the script now." -ForegroundColor Yellow
+		}
 
 		# End PowerToys Awake if it was started
 		try {
@@ -1218,14 +1226,14 @@ try {
 			Write-Error "$(Get-Date): Error stopping PowerToys Awake: $($_.Exception.Message)"
 		}
 
-		exit
+		return
 	}
 	catch {
 		Write-Error "$(Get-Date): Error during script review countdown: $($_.Exception.Message)"
-		exit
+		return
 	}
 }
 catch {
 	Write-Error "$(Get-Date): Unexpected error in the final validation and review process: $($_.Exception.Message)"
-	exit
+	return
 }
