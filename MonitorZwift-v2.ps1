@@ -366,6 +366,31 @@ param (
 	## If you uncomment any of the above lines, make sure to comment out the other two variables
 )
 
+# =============================
+# Script Steps (in order):
+# 1. Define helper functions and Win32 API for window management.
+# 2. Resize and position the PowerShell window on the target display.
+# 3. Import the DisplayConfig module for display management.
+# 4. Set PowerShell window transparency.
+# 5. Resolve paths for Zwift Launcher and Monitor Script.
+# 6. Start Zwift Launcher if Zwift is not already running.
+# 7. Wait for Zwift Launcher to start, then set Zwift display as primary.
+# 8. Optionally launch PowerToys Workspaces for Zwift.
+# 9. Wait for Zwift game to start, then maximize its window.
+# 10. Move OBS to Zwift monitor if running.
+# 11. Wait for Zwift game to close.
+# 12. Ensure Sauce for Zwift is closed.
+# 13. Restore primary display to default.
+# 14. Run FreeFileSync batch job to sync files.
+# 15. Stop and close OBS if running.
+# 16. Close Spotify if running.
+# 17. Launch Microsoft Edge with specified URLs in app mode.
+# 18. Open File Explorer for Zwift media and pictures directories.
+# 19. Reset PowerShell window transparency to opaque.
+# 20. Set PowerToys Awake if available.
+# 21. Show task completion summary and allow review/countdown before exit.
+# =============================
+
 <#
 .SYNOPSIS
 	This script checks if the 'Win32' type is already defined in the current PowerShell session. If not, it defines the 'Win32' class with several P/Invoke signatures for interacting with the Windows API.
