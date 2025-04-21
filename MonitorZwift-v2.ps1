@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 1.8.7
+.VERSION 1.8.8
 
 .GUID 4296fcf1-a13d-4d31-afdc-bcbd4e05506d
 
@@ -903,9 +903,9 @@ catch {
 # =============================
 
 # Check if Zwift is already running
-$zwiftAppRunning = $null -ne (Get-Process -Name $ZwiftGame -ErrorAction SilentlyContinue)
+$ZwiftAppRunning = $null -ne (Get-Process -Name $ZwiftGame -ErrorAction SilentlyContinue)
 
-if ($zwiftAppRunning) {
+if ($ZwiftAppRunning) {
 	Write-Output 'ZwiftApp.exe is already running. Skipping ZwiftLauncher.exe start.'
 	Add-CompletedTask -Tracker $taskTracker -TaskName 'ZwiftApp already running or Zwift Launcher started'
 }
@@ -913,8 +913,8 @@ else {
 	# Start Zwift Launcher
 	if (Test-Path -LiteralPath $ZwiftLauncherPath) {
 		try {
-			$zwiftProcess = Start-Process -FilePath $ZwiftLauncherPath -NoNewWindow -PassThru -ErrorAction Stop
-			if ($zwiftProcess) {
+				$ZwiftProcess = Start-Process -FilePath $ZwiftLauncherPath -NoNewWindow -PassThru -ErrorAction Stop
+			if ($ZwiftProcess) {
 				Write-Output "Zwift Launcher started successfully from path: $ZwiftLauncherPath"
 				Add-CompletedTask -Tracker $taskTracker -TaskName 'ZwiftApp already running or Zwift Launcher started'
 			}
@@ -1020,14 +1020,14 @@ try {
 	}
 	Write-Host "`rCountdown complete. Proceeding..." -ForegroundColor Green
 
-	$zwiftProcess = Get-Process -Name $ZwiftGame -ErrorAction SilentlyContinue
-	if ($zwiftProcess) {
+	$ZwiftProcess = Get-Process -Name $ZwiftGame -ErrorAction SilentlyContinue
+	if ($ZwiftProcess) {
 		# Get the main window handle of the Zwift game process
-		$zwiftHwnd = $zwiftProcess.MainWindowHandle
-		Write-Host "Zwift MainWindowHandle: $zwiftHwnd"
+		$ZwiftHwnd = $ZwiftProcess.MainWindowHandle
+		Write-Host "Zwift MainWindowHandle: $ZwiftHwnd"
 		# If the handle is valid, maximize the window
-		if ($zwiftHwnd -ne [IntPtr]::Zero) {
-			[Win32]::ShowWindow($zwiftHwnd, [Win32]::SW_MAXIMIZE)
+		if ($ZwiftHwnd -ne [IntPtr]::Zero) {
+			[Win32]::ShowWindow($ZwiftHwnd, [Win32]::SW_MAXIMIZE)
 			Write-Host "$(Get-Date): Zwift game window maximized successfully." -ForegroundColor Green
 			Add-CompletedTask -Tracker $taskTracker -TaskName 'Zwift game window maximized'
 		}
@@ -1050,29 +1050,29 @@ catch {
 # Move OBS to the Zwift monitor and bring it to the top
 try {
 	Write-Host "$(Get-Date): Attempting to move OBS to the Zwift monitor and bring it to the top..." -ForegroundColor Cyan
-	$obsProcess = Get-Process -Name $ObsProcessName -ErrorAction SilentlyContinue
-	if ($obsProcess) {
-		$obsHwnd = $obsProcess.MainWindowHandle
-		if ($obsHwnd -ne [IntPtr]::Zero) {
+	$ObsProcess = Get-Process -Name $ObsProcessName -ErrorAction SilentlyContinue
+	if ($ObsProcess) {
+		$ObsHwnd = $ObsProcess.MainWindowHandle
+		if ($ObsHwnd -ne [IntPtr]::Zero) {
 			# Get the screen coordinates of the Zwift display
 			Add-Type -AssemblyName System.Windows.Forms
 			# Get the display index for Zwift (1-based index)
-			$zwiftDisplayIndex = $PrimaryDisplayZwift - 1
-			$displays = [System.Windows.Forms.Screen]::AllScreens
-			if ($zwiftDisplayIndex -lt $displays.Count) {
-				$zwiftDisplay = $displays[$zwiftDisplayIndex]
-				$x = $zwiftDisplay.WorkingArea.X
-				$y = $zwiftDisplay.WorkingArea.Y
-				$width = $zwiftDisplay.WorkingArea.Width
-				$height = $zwiftDisplay.WorkingArea.Height
+				$ZwiftDisplayIndex = $PrimaryDisplayZwift - 1
+			$Displays = [System.Windows.Forms.Screen]::AllScreens
+			if ($ZwiftDisplayIndex -lt $Displays.Count) {
+				$ZwiftDisplay = $Displays[$ZwiftDisplayIndex]
+				$X = $ZwiftDisplay.WorkingArea.X
+				$Y = $ZwiftDisplay.WorkingArea.Y
+				$Width = $ZwiftDisplay.WorkingArea.Width
+				$Height = $ZwiftDisplay.WorkingArea.Height
 				# Move and resize OBS to fill the Zwift display and bring to top
-				[Win32]::SetWindowPos($obsHwnd, [IntPtr]::Zero, $x, $y, $width, $height, [Win32]::SWP_SHOWWINDOW)
-				[Win32]::ShowWindow($obsHwnd, 5) # SW_SHOW
+				[Win32]::SetWindowPos($ObsHwnd, [IntPtr]::Zero, $X, $Y, $Width, $Height, [Win32]::SWP_SHOWWINDOW)
+				[Win32]::ShowWindow($ObsHwnd, 5) # SW_SHOW
 				Write-Host "$(Get-Date): OBS moved to Zwift monitor and brought to top." -ForegroundColor Green
 				Add-CompletedTask -Tracker $taskTracker -TaskName 'OBS moved to Zwift monitor and brought to top'
 			}
 			else {
-				Write-Host "$(Get-Date): Zwift display index $zwiftDisplayIndex not found. Skipping OBS move." -ForegroundColor Yellow
+				Write-Host "$(Get-Date): Zwift display index $ZwiftDisplayIndex not found. Skipping OBS move." -ForegroundColor Yellow
 			}
 		}
 		else {
@@ -1111,11 +1111,11 @@ catch {
 # Ensure Sauce for Zwift process is closed before restoring primary display
 try {
 	Write-Host "$(Get-Date): Checking for Sauce for Zwift process..." -ForegroundColor Cyan
-	$sauceProcess = Get-Process | Where-Object { $_.Name -like 'Sauce for Zwift*' }
+	$SauceProcess = Get-Process | Where-Object { $_.Name -like 'Sauce for Zwift*' }
 
-	if ($sauceProcess) {
+	if ($SauceProcess) {
 		Write-Host "$(Get-Date): Sauce for Zwift is running. Closing it..." -ForegroundColor Yellow
-		$sauceProcess | Stop-Process -Force
+		$SauceProcess | Stop-Process -Force
 		Write-Host "$(Get-Date): Sauce for Zwift closed successfully." -ForegroundColor Green
 		Add-CompletedTask -Tracker $taskTracker -TaskName 'Sauce for Zwift closed or skipped'
 	}
@@ -1166,15 +1166,15 @@ catch {
 # Stop and save OBS recording, then close OBS
 try {
 	Write-Host "$(Get-Date): Checking for OBS..." -ForegroundColor Cyan
-	$obsProcess = Get-Process -Name $ObsProcessName -ErrorAction SilentlyContinue
+	$ObsProcess = Get-Process -Name $ObsProcessName -ErrorAction SilentlyContinue
 
-	if ($obsProcess) {
+	if ($ObsProcess) {
 		Write-Host "$(Get-Date): OBS is running. Stopping recording and closing OBS..." -ForegroundColor Yellow
 
 		try {
 			# Send hotkey to stop recording
 			$wshell = New-Object -ComObject WScript.Shell
-			$obsProcess | ForEach-Object {
+			$ObsProcess | ForEach-Object {
 				try {
 					[void]$wshell.AppActivate($_.MainWindowTitle)
 					Start-Sleep -Milliseconds 500
@@ -1201,7 +1201,7 @@ try {
 
 		try {
 			# Close OBS gracefully with hotkey instead of force-killing it
-			$obsProcess | ForEach-Object {
+			$ObsProcess | ForEach-Object {
 				try {
 					# Check if the OBS window is already active
 					if ($_.MainWindowTitle -and $wshell.AppActivate($_.MainWindowTitle)) {
@@ -1278,11 +1278,11 @@ catch {
 # Close Spotify if it's running
 try {
 	Write-Host "$(Get-Date): Checking for Spotify..." -ForegroundColor Cyan
-	$spotifyProcess = Get-Process -Name 'Spotify' -ErrorAction SilentlyContinue
+	$SpotifyProcess = Get-Process -Name 'Spotify' -ErrorAction SilentlyContinue
 
-	if ($spotifyProcess) {
+	if ($SpotifyProcess) {
 		Write-Host "$(Get-Date): Spotify is running. Closing Spotify..." -ForegroundColor Yellow
-		$spotifyProcess | Stop-Process -Force
+		$SpotifyProcess | Stop-Process -Force
 		Write-Host "$(Get-Date): Spotify closed successfully." -ForegroundColor Green
 		Add-CompletedTask -Tracker $taskTracker -TaskName 'Spotify closed'
 	}
