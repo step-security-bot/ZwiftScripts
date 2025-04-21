@@ -821,7 +821,7 @@ function Invoke-ReviewCountdownAndCleanup {
 		while ($remainingTime -gt 0) {
 			try {
 				if ([Console]::KeyAvailable) {
-					Write-Host "`n$(Get-Date): Key press detected. Stopping the script." -ForegroundColor Yellow
+					Write-Host "`n$(Get-Date): Key press detected. Exiting script, window will remain open." -ForegroundColor Yellow
 					$exitEarly = $true
 					break
 				}
@@ -835,7 +835,8 @@ function Invoke-ReviewCountdownAndCleanup {
 			}
 		}
 		if ($exitEarly) {
-			Write-Host "$(Get-Date): Exiting review early due to key press." -ForegroundColor Yellow
+			Write-Host "$(Get-Date): Exiting review early due to key press. Window will remain open." -ForegroundColor Yellow
+			return
 		}
 		else {
 			Write-Host "`n$(Get-Date): Script review time over. $([TimeSpan]::FromSeconds($originalRemainingTime).ToString('hh\:mm\:ss')) has passed since the script ended." -ForegroundColor Yellow
