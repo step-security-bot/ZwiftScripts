@@ -367,58 +367,8 @@ param (
 )
 
 # =============================
-# Script Steps (in order):
-# 1. Define helper functions and Win32 API for window management.
-# 2. Resize and position the PowerShell window on the target display.
-# 3. Import the DisplayConfig module for display management.
-# 4. Set PowerShell window transparency.
-# 5. Resolve paths for Zwift Launcher and Monitor Script.
-# 6. Start Zwift Launcher if Zwift is not already running.
-# 7. Wait for Zwift Launcher to start, then set Zwift display as primary.
-# 8. Optionally launch PowerToys Workspaces for Zwift.
-# 9. Wait for Zwift game to start, then maximize its window.
-# 10. Move OBS to Zwift monitor if running.
-# 11. Wait for Zwift game to close.
-# 12. Ensure Sauce for Zwift is closed.
-# 13. Restore primary display to default.
-# 14. Run FreeFileSync batch job to sync files.
-# 15. Stop and close OBS if running.
-# 16. Close Spotify if running.
-# 17. Launch Microsoft Edge with specified URLs in app mode.
-# 18. Open File Explorer for Zwift media and pictures directories.
-# 19. Reset PowerShell window transparency to opaque.
-# 20. Set PowerToys Awake if available.
-# 21. Show task completion summary and allow review/countdown before exit.
+# Step 1: Define helper functions and Win32 API for window management.
 # =============================
-
-<#
-.SYNOPSIS
-	This script checks if the 'Win32' type is already defined in the current PowerShell session. If not, it defines the 'Win32' class with several P/Invoke signatures for interacting with the Windows API.
-
-.DESCRIPTION
-	The script uses the Add-Type cmdlet to define a 'Win32' class in C# if it is not already defined. This class includes several methods for interacting with the Windows API, specifically for window management tasks such as getting the foreground window, setting window attributes, and positioning windows.
-
-.NOTES
-	The 'Win32' class includes the following methods:
-	- GetForegroundWindow: Retrieves a handle to the foreground window.
-	- GetWindowLong: Retrieves information about the specified window.
-	- SetWindowLong: Changes an attribute of the specified window.
-	- SetLayeredWindowAttributes: Sets the opacity and transparency color of a layered window.
-	- SetWindowPos: Changes the size, position, and Z order of a child, pop-up, or top-level window.
-
-	The class also defines several constants used with these methods:
-	- GWL_EXSTYLE: Index to retrieve or set extended window styles.
-	- WS_EX_LAYERED: Style to create a layered window.
-	- LWA_ALPHA: Flag to set the opacity of a layered window.
-	- SWP_NOSIZE, SWP_NOMOVE, SWP_NOZORDER, SWP_SHOWWINDOW: Flags for SetWindowPos method.
-
-.EXAMPLE
-	# Example usage of the Win32 class to set the opacity of the foreground window to 50%
-	$hwnd = [Win32]::GetForegroundWindow()
-	$style = [Win32]::GetWindowLong($hwnd, [Win32]::GWL_EXSTYLE)
-	[Win32]::SetWindowLong($hwnd, [Win32]::GWL_EXSTYLE, $style -bor [Win32]::WS_EX_LAYERED)
-	[Win32]::SetLayeredWindowAttributes($hwnd, 0, 128, [Win32]::LWA_ALPHA)
-#>
 
 # Check if the 'Win32' type is already defined
 if (-not ([System.Management.Automation.PSTypeName]'Win32').Type) {
@@ -864,6 +814,10 @@ function Invoke-ReviewCountdownAndCleanup {
 	}
 }
 
+# =============================
+# Step 2: Resize and position the PowerShell window on the target display.
+# =============================
+
 # Resize the PowerShell window using Win32 API functions
 # This code snippet uses the Win32 class defined earlier to resize the
 # current PowerShell window. It retrieves the handle of the current
@@ -902,6 +856,10 @@ catch {
 	Write-Error "$(Get-Date): Error resizing or positioning the PowerShell window: $($_.Exception.Message)"
 }
 
+# =============================
+# Step 3: Import the DisplayConfig module for display management.
+# =============================
+
 # Import DisplayConfig module for setting the primary display
 try {
 	Write-Host "$(Get-Date): Attempting to import DisplayConfig module..." -ForegroundColor Cyan
@@ -912,6 +870,10 @@ catch {
 	Write-Error "$(Get-Date): Error importing DisplayConfig module: $($_.Exception.Message)"
 }
 
+# =============================
+# Step 4: Set PowerShell window transparency.
+# =============================
+
 # Set PowerShell window transparency to the specified value (default: 25)
 try {
 	Set-WindowTransparencyUWP -Transparency $Transparency
@@ -920,6 +882,10 @@ try {
 catch {
 	Write-Error "$(Get-Date): Error setting window transparency: $($_.Exception.Message)"
 }
+
+# =============================
+# Step 5: Resolve paths for Zwift Launcher and Monitor Script.
+# =============================
 
 # Resolve paths for Zwift Launcher and Monitor Script
 try {
@@ -931,6 +897,10 @@ catch {
 	Write-Error "Failed to resolve paths: $($_.Exception.Message)"
 	exit 1
 }
+
+# =============================
+# Step 6: Start Zwift Launcher if Zwift is not already running.
+# =============================
 
 # Check if Zwift is already running
 $zwiftAppRunning = $null -ne (Get-Process -Name $ZwiftGame -ErrorAction SilentlyContinue)
@@ -961,6 +931,10 @@ else {
 	}
 }
 
+# =============================
+# Step 7: Wait for Zwift Launcher to start, then set Zwift display as primary.
+# =============================
+
 # Wait for Zwift launcher to start and set primary display to Zwift display (index: 4)
 try {
 	Write-Host "$(Get-Date): Waiting for Zwift launcher to start..." -ForegroundColor Cyan
@@ -975,6 +949,10 @@ try {
 catch {
 	Write-Error "$(Get-Date): Error while waiting for Zwift launcher to start or switching primary display: $($_.Exception.Message)"
 }
+
+# =============================
+# Step 8: Optionally launch PowerToys Workspaces for Zwift.
+# =============================
 
 # Launch the PowerToys Workspaces for Zwift (if installed) after the Zwift launcher starts
 try {
@@ -1013,6 +991,10 @@ try {
 catch {
 	Write-Error "$(Get-Date): Error in checking or launching applications: $($_.Exception.Message)"
 }
+
+# =============================
+# Step 9: Wait for Zwift game to start, then maximize its window.
+# =============================
 
 # Wait for Zwift game to start and monitor until it closes
 try {
@@ -1061,6 +1043,10 @@ catch {
 	Write-Error "$(Get-Date): Error maximizing Zwift game window: $($_.Exception.Message)"
 }
 
+# =============================
+# Step 10: Move OBS to Zwift monitor if running.
+# =============================
+
 # Move OBS to the Zwift monitor and bring it to the top
 try {
 	Write-Host "$(Get-Date): Attempting to move OBS to the Zwift monitor and bring it to the top..." -ForegroundColor Cyan
@@ -1101,6 +1087,9 @@ catch {
 	Write-Error "$(Get-Date): Error moving OBS to Zwift monitor: $($_.Exception.Message)"
 }
 
+# =============================
+# Step 11: Wait for Zwift game to close.
+# =============================
 
 # Step 1: Wait for Zwift game to close
 try {
@@ -1114,6 +1103,10 @@ try {
 catch {
 	Write-Error "$(Get-Date): Error monitoring Zwift game: $($_.Exception.Message)"
 }
+
+# =============================
+# Step 12: Ensure Sauce for Zwift is closed.
+# =============================
 
 # Ensure Sauce for Zwift process is closed before restoring primary display
 try {
@@ -1135,6 +1128,10 @@ catch {
 	Write-Error "$(Get-Date): Error closing Sauce for Zwift: $($_.Exception.Message)"
 }
 
+# =============================
+# Step 13: Restore primary display to default.
+# =============================
+
 # Step 3: Restore primary display to default display
 try {
 	Write-Host "$(Get-Date): Restoring primary display to $($PrimaryDisplayDefault + 1)..." -ForegroundColor Cyan
@@ -1145,6 +1142,10 @@ try {
 catch {
 	Write-Error "$(Get-Date): Error restoring primary display: $($_.Exception.Message)"
 }
+
+# =============================
+# Step 14: Run FreeFileSync batch job to sync files.
+# =============================
 
 # Run FreeFileSync batch job after Zwift game closes and display is restored to default display (index: 2)
 # This ensures that any files (screenshots) modified during the Zwift session are synchronized with the backup location.
@@ -1157,6 +1158,10 @@ try {
 catch {
 	Write-Error "$(Get-Date): Error running FreeFileSync batch job: $($_.Exception.Message)"
 }
+
+# =============================
+# Step 15: Stop and close OBS if running.
+# =============================
 
 # Stop and save OBS recording, then close OBS
 try {
@@ -1266,6 +1271,10 @@ catch {
 	Write-Error "$(Get-Date): Error stopping OBS recording or closing OBS: $($_.Exception.Message)"
 }
 
+# =============================
+# Step 16: Close Spotify if running.
+# =============================
+
 # Close Spotify if it's running
 try {
 	Write-Host "$(Get-Date): Checking for Spotify..." -ForegroundColor Cyan
@@ -1285,6 +1294,10 @@ catch {
 	Write-Error "$(Get-Date): Error closing Spotify: $($_.Exception.Message)"
 }
 
+# =============================
+# Step 17: Launch Microsoft Edge with specified URLs in app mode.
+# =============================
+
 # Check if Microsoft Edge is installed
 if (Test-Path -Path $EdgePath) {
 	try {
@@ -1301,6 +1314,10 @@ else {
 	Write-Host "$(Get-Date): Microsoft Edge not found at $EdgePath. Skipping launch." -ForegroundColor Yellow
 	Add-CompletedTask -Tracker $taskTracker -TaskName 'Microsoft Edge skipped'
 }
+
+# =============================
+# Step 18: Open File Explorer for Zwift media and pictures directories.
+# =============================
 
 # Open File Explorer with two separate windows for the specified directories
 try {
@@ -1339,6 +1356,10 @@ catch {
 	Write-Error "$(Get-Date): Error opening File Explorer: $($_.Exception.Message)"
 }
 
+# =============================
+# Step 19: Reset PowerShell window transparency to opaque.
+# =============================
+
 try {
 	Set-WindowTransparencyUWP -Transparency 0
 	Write-Host "$(Get-Date): Window transparency reset to fully opaque." -ForegroundColor Green
@@ -1360,6 +1381,10 @@ catch {
 	}
 }
 
+# =============================
+# Step 20: Set PowerToys Awake if available.
+# =============================
+
 # Set PowerToys Awake settings (if installed)
 $PowerToysAwakeArgs = "--time-limit $PowerToysAwakeTime --display-on true"
 try {
@@ -1378,6 +1403,10 @@ catch {
 	Write-Error "$(Get-Date): Error setting PowerToys Awake: $($_.Exception.Message)"
 	Add-CompletedTask -Tracker $taskTracker -TaskName 'PowerToys Awake failed'
 }
+
+# =============================
+# Step 21: Show task completion summary and allow review/countdown before exit.
+# =============================
 
 # Validate that all required tasks have been completed successfully
 try {
