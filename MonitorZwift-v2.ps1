@@ -1033,6 +1033,47 @@ catch {
 	Write-Error "$(Get-Date): Error maximizing Zwift game window: $($_.Exception.Message)"
 }
 
+# Move OBS to the Zwift monitor and bring it to the top
+try {
+	Write-Host "$(Get-Date): Attempting to move OBS to the Zwift monitor and bring it to the top..." -ForegroundColor Cyan
+	$obsProcess = Get-Process -Name $ObsProcessName -ErrorAction SilentlyContinue
+	if ($obsProcess) {
+		$obsHwnd = $obsProcess.MainWindowHandle
+		if ($obsHwnd -ne [IntPtr]::Zero) {
+			# Get the screen coordinates of the Zwift display
+			Add-Type -AssemblyName System.Windows.Forms
+			# Get the display index for Zwift (1-based index)
+			$zwiftDisplayIndex = $PrimaryDisplayZwift - 1
+			$displays = [System.Windows.Forms.Screen]::AllScreens
+			if ($zwiftDisplayIndex -lt $displays.Count) {
+				$zwiftDisplay = $displays[$zwiftDisplayIndex]
+				$x = $zwiftDisplay.WorkingArea.X
+				$y = $zwiftDisplay.WorkingArea.Y
+				$width = $zwiftDisplay.WorkingArea.Width
+				$height = $zwiftDisplay.WorkingArea.Height
+				# Move and resize OBS to fill the Zwift display and bring to top
+				[Win32]::SetWindowPos($obsHwnd, [IntPtr]::Zero, $x, $y, $width, $height, [Win32]::SWP_SHOWWINDOW)
+				[Win32]::ShowWindow($obsHwnd, 5) # SW_SHOW
+				Write-Host "$(Get-Date): OBS moved to Zwift monitor and brought to top." -ForegroundColor Green
+				Add-CompletedTask -Tracker $taskTracker -TaskName 'OBS moved to Zwift monitor and brought to top'
+			}
+			else {
+				Write-Host "$(Get-Date): Zwift display index $zwiftDisplayIndex not found. Skipping OBS move." -ForegroundColor Yellow
+			}
+		}
+		else {
+			Write-Host "$(Get-Date): OBS window handle not found. Skipping OBS move." -ForegroundColor Yellow
+		}
+	}
+	else {
+		Write-Host "$(Get-Date): OBS is not running. Skipping OBS move." -ForegroundColor Yellow
+	}
+}
+catch {
+	Write-Error "$(Get-Date): Error moving OBS to Zwift monitor: $($_.Exception.Message)"
+}
+
+
 # Step 1: Wait for Zwift game to close
 try {
 	Write-Host "$(Get-Date): Zwift game is running. Waiting for it to close..." -ForegroundColor Cyan
