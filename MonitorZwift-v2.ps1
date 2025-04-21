@@ -834,15 +834,8 @@ function Invoke-ReviewCountdownAndCleanup {
 				break
 			}
 		}
-		if ($exitEarly) {
-			Write-Host "$(Get-Date): Exiting review early due to key press. Window will remain open." -ForegroundColor Yellow
-			return
-		}
-		else {
-			Write-Host "`n$(Get-Date): Script review time over. $([TimeSpan]::FromSeconds($originalRemainingTime).ToString('hh\:mm\:ss')) has passed since the script ended." -ForegroundColor Yellow
-			Write-Host "$(Get-Date): Closing the script now." -ForegroundColor Yellow
-		}
-		# End PowerToys Awake if it was started
+
+		# --- Always attempt to stop PowerToys Awake, regardless of exitEarly ---
 		try {
 			if (Get-Process -Name 'PowerToys.Awake' -ErrorAction SilentlyContinue) {
 				Write-Host "$(Get-Date): PowerToys Awake is running. Stopping it now..." -ForegroundColor Cyan
@@ -855,6 +848,15 @@ function Invoke-ReviewCountdownAndCleanup {
 		}
 		catch {
 			Write-Error "$(Get-Date): Error stopping PowerToys Awake: $($_.Exception.Message)"
+		}
+
+		if ($exitEarly) {
+			Write-Host "$(Get-Date): Exiting review early due to key press. Window will remain open." -ForegroundColor Yellow
+			return
+		}
+		else {
+			Write-Host "`n$(Get-Date): Script review time over. $([TimeSpan]::FromSeconds($originalRemainingTime).ToString('hh\:mm\:ss')) has passed since the script ended." -ForegroundColor Yellow
+			Write-Host "$(Get-Date): Closing the script now." -ForegroundColor Yellow
 		}
 	}
 	catch {
