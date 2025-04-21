@@ -1382,6 +1382,10 @@ try {
 	Show-TaskCompletionSummary -Tracker $taskTracker -tasksCompleted $tasksCompleted
 	$remainingTime = Get-RemainingTime -remainingTimeinHours $remainingTimeinHours -remainingTimeinMinutes $remainingTimeinMinutes -remainingTimeinSeconds $remainingTimeinSeconds
 	Invoke-ReviewCountdownAndCleanup -remainingTime $remainingTime
+
+	# --- Add prompt to keep window open after review period or key press ---
+	Write-Host "`n$(Get-Date): Review period complete. Press Enter to close this window..." -ForegroundColor Cyan
+	[void] (Read-Host)
 }
 catch {
 	Write-Error "$(Get-Date): Unexpected error in the final validation and review process: $($_.Exception.Message)"
