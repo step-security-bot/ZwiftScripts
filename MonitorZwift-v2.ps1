@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 1.9.0
+.VERSION 1.9.1
 
 .GUID 4296fcf1-a13d-4d31-afdc-bcbd4e05506d
 
@@ -651,18 +651,18 @@ function Set-PrimaryDisplay {
 }
 
 # Function: Show-TaskCompletionSummary
-<#
+<#+
 .SYNOPSIS
 Displays a summary of task completion status.
 
 .DESCRIPTION
-The Show-TaskCompletionSummary function outputs a summary of completed and not completed tasks by comparing the provided list of completed tasks with the tasks tracked in the given hashtable. It highlights completed tasks in green and not completed tasks in red.
+The Show-TaskCompletionSummary function outputs a summary of completed tasks in the order they were completed. It also highlights any tasks in the provided tasksCompleted list that were not completed.
 
 .PARAMETER Tracker
 A hashtable containing task tracking information, including a list of completed tasks.
 
 .PARAMETER tasksCompleted
-An additional collection of completed tasks to be included in the summary.
+An additional collection of tasks to check for completion.
 
 .EXAMPLE
 Show-TaskCompletionSummary -Tracker $myTracker -tasksCompleted $recentlyCompleted
@@ -676,14 +676,18 @@ function Show-TaskCompletionSummary {
 		$tasksCompleted
 	)
 	try {
-		$allTasks = $Tracker.CompletedTasks + $tasksCompleted | Sort-Object -Unique
-		Write-Host "$(Get-Date): Task Completion Summary:" -ForegroundColor Cyan
-		foreach ($task in $allTasks) {
-			if ($task -in (Get-CompletedTasks -Tracker $Tracker)) {
-				Write-Host "- ${task}: Completed" -ForegroundColor Green
-			}
-			else {
-				Write-Host "- ${task}: Not Completed" -ForegroundColor Red
+		# Only use the order in which tasks were completed
+		$completedOrdered = $Tracker.CompletedTasks
+		Write-Host "$(Get-Date): Task Completion Summary (in order completed):" -ForegroundColor Cyan
+		foreach ($task in $completedOrdered) {
+			Write-Host "- ${task}: Completed" -ForegroundColor Green
+		}
+		# Optionally, show any tasks in $tasksCompleted that were not completed (if needed)
+		if ($tasksCompleted) {
+			foreach ($task in $tasksCompleted) {
+				if ($task -notin $completedOrdered) {
+					Write-Host "- ${task}: Not Completed" -ForegroundColor Red
+				}
 			}
 		}
 	}
@@ -918,7 +922,7 @@ else {
 	# Start Zwift Launcher
 	if (Test-Path -LiteralPath $ZwiftLauncherPath) {
 		try {
-				$ZwiftProcess = Start-Process -FilePath $ZwiftLauncherPath -NoNewWindow -PassThru -ErrorAction Stop
+			$ZwiftProcess = Start-Process -FilePath $ZwiftLauncherPath -NoNewWindow -PassThru -ErrorAction Stop
 			if ($ZwiftProcess) {
 				Write-Output "Zwift Launcher started successfully from path: $ZwiftLauncherPath"
 				Add-CompletedTask -Tracker $taskTracker -TaskName 'ZwiftApp already running or Zwift Launcher started'
@@ -1062,7 +1066,7 @@ try {
 			# Get the screen coordinates of the Zwift display
 			Add-Type -AssemblyName System.Windows.Forms
 			# Get the display index for Zwift (1-based index)
-				$ZwiftDisplayIndex = $PrimaryDisplayZwift - 1
+			$ZwiftDisplayIndex = $PrimaryDisplayZwift - 1
 			$Displays = [System.Windows.Forms.Screen]::AllScreens
 			if ($ZwiftDisplayIndex -lt $Displays.Count) {
 				$ZwiftDisplay = $Displays[$ZwiftDisplayIndex]
