@@ -1056,9 +1056,9 @@ catch {
 # Step 10: Move OBS to Zwift monitor if running.
 # =============================
 
-# Move OBS to the Zwift monitor and bring it to the top
+# Move OBS to the Zwift monitor, center it, and resize to 80% of the monitor's width and height
 try {
-	Write-Host "$(Get-Date): Attempting to move OBS to the Zwift monitor and bring it to the top..." -ForegroundColor Cyan
+	Write-Host "$(Get-Date): Attempting to move OBS to the Zwift monitor, center it, and resize to 80% of the monitor's dimensions..." -ForegroundColor Cyan
 	$ObsProcess = Get-Process -Name $ObsProcessName -ErrorAction SilentlyContinue
 	if ($ObsProcess) {
 		$ObsHwnd = $ObsProcess.MainWindowHandle
@@ -1074,11 +1074,19 @@ try {
 				$Y = $ZwiftDisplay.WorkingArea.Y
 				$Width = $ZwiftDisplay.WorkingArea.Width
 				$Height = $ZwiftDisplay.WorkingArea.Height
-				# Move and resize OBS to fill the Zwift display and bring to top
-				[Win32]::SetWindowPos($ObsHwnd, [IntPtr]::Zero, $X, $Y, $Width, $Height, [Win32]::SWP_SHOWWINDOW)
+
+				# Calculate 80% of the display size for OBS window
+				$ObsWidth = [int]($Width * 0.8)
+				$ObsHeight = [int]($Height * 0.8)
+				# Center the OBS window on the display
+				$ObsX = $X + [int](($Width - $ObsWidth) / 2)
+				$ObsY = $Y + [int](($Height - $ObsHeight) / 2)
+
+				# Move and resize OBS to be centered and 80% of the Zwift display
+				[Win32]::SetWindowPos($ObsHwnd, [IntPtr]::Zero, $ObsX, $ObsY, $ObsWidth, $ObsHeight, [Win32]::SWP_SHOWWINDOW)
 				[Win32]::ShowWindow($ObsHwnd, 5) # SW_SHOW
-				Write-Host "$(Get-Date): OBS moved to Zwift monitor and brought to top." -ForegroundColor Green
-				Add-CompletedTask -Tracker $taskTracker -TaskName 'OBS moved to Zwift monitor and brought to top'
+				Write-Host "$(Get-Date): OBS moved to Zwift monitor, centered, and resized to 80% of the display." -ForegroundColor Green
+				Add-CompletedTask -Tracker $taskTracker -TaskName 'OBS moved to Zwift monitor and centered/resized'
 			}
 			else {
 				Write-Host "$(Get-Date): Zwift display index $ZwiftDisplayIndex not found. Skipping OBS move." -ForegroundColor Yellow
