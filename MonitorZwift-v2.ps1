@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 1.8.8
+.VERSION 1.9.0
 
 .GUID 4296fcf1-a13d-4d31-afdc-bcbd4e05506d
 
@@ -204,6 +204,9 @@ This script performs the following tasks:
 .PARAMETER BatchJobPath
 	Path to the FreeFileSync batch job file for synchronizing files. Default: 'C:\Users\Nick\Dropbox\Random Save\Task Scheduler Rules\ZwiftPics.ffs_batch'.
 
+.PARAMETER BatchJobPath2
+	Path to the second FreeFileSync batch job file for synchronizing recordings to NAS. Default: 'C:\Users\Nick\Dropbox\Random Save\Task Scheduler Rules\RecordingsToNas.ffs_batch'.
+
 .PARAMETER ZwiftMediaPath
 	Path to the Zwift media directory. Default: 'C:\Users\Nick\Dropbox\Cycling\ZwiftMedia'.
 
@@ -327,6 +330,8 @@ param (
 	# Path to FreeFileSync executable file (default installation path)
 	[string]$BatchJobPath = 'C:\Users\Nick\Dropbox\Random Save\Task Scheduler Rules\ZwiftPics.ffs_batch',
 	# Path to FreeFileSync batch job file for synchronizing files after Zwift session
+	[string]$BatchJobPath2 = 'C:\Users\Nick\Dropbox\Random Save\Task Scheduler Rules\RecordingsToNas.ffs_batch',
+	# Path to second FreeFileSync batch job file for synchronizing recordings to NAS
 	[string]$ZwiftMediaPath = 'C:\Users\Nick\Dropbox\Cycling\ZwiftMedia',
 	[string]$ZwiftPicturesPath = 'C:\Users\Nick\Dropbox\PC (2)\Pictures\Zwift',
 	[string]$EdgePath = 'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe',
@@ -1154,9 +1159,15 @@ try {
 	Start-Process -FilePath $FreeFileSyncPath -ArgumentList "`"$BatchJobPath`"" -Wait
 	Write-Host "$(Get-Date): FreeFileSync batch job completed." -ForegroundColor Green
 	Add-CompletedTask -Tracker $taskTracker -TaskName 'FreeFileSync batch job completed'
+
+	# Run the second batch job for recordings to NAS
+	Write-Host "$(Get-Date): Running second FreeFileSync batch job (RecordingsToNas)..." -ForegroundColor Cyan
+	Start-Process -FilePath $FreeFileSyncPath -ArgumentList "`"$BatchJobPath2`"" -Wait
+	Write-Host "$(Get-Date): Second FreeFileSync batch job completed." -ForegroundColor Green
+	Add-CompletedTask -Tracker $taskTracker -TaskName 'FreeFileSync batch job 2 completed'
 }
 catch {
-	Write-Error "$(Get-Date): Error running FreeFileSync batch job: $($_.Exception.Message)"
+	Write-Error "$(Get-Date): Error running FreeFileSync batch job(s): $($_.Exception.Message)"
 }
 
 # =============================
