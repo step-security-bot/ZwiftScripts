@@ -869,7 +869,6 @@ catch {
 # Step 3: Import the DisplayConfig module for display management.
 # =============================
 
-# Import DisplayConfig module for setting the primary display
 try {
 	Write-Host "$(Get-Date): Attempting to import DisplayConfig module..." -ForegroundColor Cyan
 	Import-DisplayConfigModule
@@ -896,7 +895,6 @@ catch {
 # Step 5: Resolve paths for Zwift Launcher and Monitor Script.
 # =============================
 
-# Resolve paths for Zwift Launcher and Monitor Script
 try {
 	$MonitorZwiftScriptPath = Resolve-Path -LiteralPath $MonitorZwiftScriptPath -ErrorAction Stop
 	$ZwiftLauncherPath = Resolve-Path -LiteralPath $ZwiftLauncherPath -ErrorAction Stop
@@ -944,7 +942,6 @@ else {
 # Step 7: Wait for Zwift Launcher to start, then set Zwift display as primary.
 # =============================
 
-# Wait for Zwift launcher to start and set primary display to Zwift display (index: 4)
 try {
 	Write-Host "$(Get-Date): Waiting for Zwift launcher to start..." -ForegroundColor Cyan
 	while (-not (Get-ProcessRunning -ProcessName $ZwiftLauncher)) {
@@ -1005,7 +1002,6 @@ catch {
 # Step 9: Wait for Zwift game to start, then maximize its window.
 # =============================
 
-# Wait for Zwift game to start and monitor until it closes
 try {
 	Write-Host "$(Get-Date): Waiting for Zwift game to start..." -ForegroundColor Cyan
 	while (-not (Get-ProcessRunning -ProcessName $ZwiftGame)) {
@@ -1108,7 +1104,6 @@ catch {
 # Step 11: Wait for Zwift game to close.
 # =============================
 
-# Step 1: Wait for Zwift game to close
 try {
 	Write-Host "$(Get-Date): Zwift game is running. Waiting for it to close..." -ForegroundColor Cyan
 	while (Get-ProcessRunning -ProcessName $ZwiftGame) {
@@ -1125,7 +1120,6 @@ catch {
 # Step 12: Ensure Sauce for Zwift is closed.
 # =============================
 
-# Ensure Sauce for Zwift process is closed before restoring primary display
 try {
 	Write-Host "$(Get-Date): Checking for Sauce for Zwift process..." -ForegroundColor Cyan
 	$SauceProcess = Get-Process | Where-Object { $_.Name -like 'Sauce for Zwift*' }
@@ -1149,7 +1143,6 @@ catch {
 # Step 13: Restore primary display to default.
 # =============================
 
-# Step 3: Restore primary display to default display
 try {
 	Write-Host "$(Get-Date): Restoring primary display to $($PrimaryDisplayDefault + 1)..." -ForegroundColor Cyan
 	Set-PrimaryDisplay ($PrimaryDisplayDefault + 1) # + 1 to make it one-based index for the DisplayConfig module (index: 2)
@@ -1161,32 +1154,9 @@ catch {
 }
 
 # =============================
-# Step 14: Run FreeFileSync batch job to sync files.
+# Step 14: Stop and close OBS if running.
 # =============================
 
-# Run FreeFileSync batch job after Zwift game closes and display is restored to default display (index: 2)
-# This ensures that any files (screenshots) modified during the Zwift session are synchronized with the backup location.
-try {
-	Write-Host "$(Get-Date): Running FreeFileSync batch job..." -ForegroundColor Cyan
-	Start-Process -FilePath $FreeFileSyncPath -ArgumentList "`"$BatchJobPath`"" -Wait
-	Write-Host "$(Get-Date): FreeFileSync batch job completed." -ForegroundColor Green
-	Add-CompletedTask -Tracker $taskTracker -TaskName 'FreeFileSync batch job completed'
-
-	# Run the second batch job for recordings to NAS
-	Write-Host "$(Get-Date): Running second FreeFileSync batch job (RecordingsToNas)..." -ForegroundColor Cyan
-	Start-Process -FilePath $FreeFileSyncPath -ArgumentList "`"$BatchJobPath2`"" -Wait
-	Write-Host "$(Get-Date): Second FreeFileSync batch job completed." -ForegroundColor Green
-	Add-CompletedTask -Tracker $taskTracker -TaskName 'FreeFileSync batch job 2 completed'
-}
-catch {
-	Write-Error "$(Get-Date): Error running FreeFileSync batch job(s): $($_.Exception.Message)"
-}
-
-# =============================
-# Step 15: Stop and close OBS if running.
-# =============================
-
-# Stop and save OBS recording, then close OBS
 try {
 	Write-Host "$(Get-Date): Checking for OBS..." -ForegroundColor Cyan
 	$ObsProcess = Get-Process -Name $ObsProcessName -ErrorAction SilentlyContinue
@@ -1295,10 +1265,33 @@ catch {
 }
 
 # =============================
+# Step 15: Run FreeFileSync batch job to sync files.
+# =============================
+
+# Run FreeFileSync batch job after Zwift game closes and display is restored to default display (index: 2)
+# This ensures that any files (screenshots) modified during the Zwift session are synchronized with the backup location.
+try {
+	Write-Host "$(Get-Date): Running FreeFileSync batch job..." -ForegroundColor Cyan
+	Start-Process -FilePath $FreeFileSyncPath -ArgumentList "`"$BatchJobPath`""
+	Write-Host "$(Get-Date): FreeFileSync batch job started (not waiting for completion)." -ForegroundColor Green
+	Add-CompletedTask -Tracker $taskTracker -TaskName 'FreeFileSync batch job started'
+
+	# Run the second batch job for recordings to NAS
+	Write-Host "$(Get-Date): Running second FreeFileSync batch job (RecordingsToNas)..." -ForegroundColor Cyan
+	Start-Process -FilePath $FreeFileSyncPath -ArgumentList "`"$BatchJobPath2`""
+	Write-Host "$(Get-Date): Second FreeFileSync batch job started (not waiting for completion)." -ForegroundColor Green
+	Add-CompletedTask -Tracker $taskTracker -TaskName 'FreeFileSync batch job 2 started'
+}
+catch {
+	Write-Error "$(Get-Date): Error running FreeFileSync batch job(s): $($_.Exception.Message)"
+}
+
+
+
+# =============================
 # Step 16: Close Spotify if running.
 # =============================
 
-# Close Spotify if it's running
 try {
 	Write-Host "$(Get-Date): Checking for Spotify..." -ForegroundColor Cyan
 	$SpotifyProcess = Get-Process -Name 'Spotify' -ErrorAction SilentlyContinue
@@ -1342,7 +1335,6 @@ else {
 # Step 18: Open File Explorer for Zwift media and pictures directories.
 # =============================
 
-# Open File Explorer with two separate windows for the specified directories
 try {
 	Write-Host "$(Get-Date): Opening File Explorer with specified directories..." -ForegroundColor Cyan
 	if (Test-Path -Path $ZwiftMediaPath) {
@@ -1408,7 +1400,6 @@ catch {
 # Step 20: Set PowerToys Awake if available.
 # =============================
 
-# Set PowerToys Awake settings (if installed)
 $PowerToysAwakeArgs = "--time-limit $PowerToysAwakeTime --display-on true"
 try {
 	if (Test-Path -LiteralPath $PowerToysAwakePath) {
@@ -1431,7 +1422,6 @@ catch {
 # Step 21: Show task completion summary and allow review/countdown before exit.
 # =============================
 
-# Validate that all required tasks have been completed successfully
 try {
 	Show-TaskCompletionSummary -Tracker $taskTracker -tasksCompleted $tasksCompleted
 	$remainingTime = Get-RemainingTime -remainingTimeinHours $remainingTimeinHours -remainingTimeinMinutes $remainingTimeinMinutes -remainingTimeinSeconds $remainingTimeinSeconds
