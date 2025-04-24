@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
         <meta name="apple-mobile-web-app-capable" content="yes"/>
         <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';"/>
-        
+
         <link id="favicon" rel="shortcut icon" href="../../../../images/favicon.png"/>
         <link rel="stylesheet" href="/pages/css/common.css"/>
         <!-- <link rel="stylesheet" href="../css/settings.css"/> -->
@@ -35,7 +35,7 @@
                     <key>Font scaling:</key>
                     <input type="range" name="fontScale" min="0.5" max="2" step="0.05"/>
                     <input type="number" name="fontScale" min="0.5" max="2" step="0.05" style="--size: 5"/>
-                </label>                
+                </label>
                 <label>
                     <key>Theme override:</key>
                     <select is="sauce-theme" override></select>
@@ -62,6 +62,10 @@
                 <label>
                     <key>Cut Time:</key>
                     <input type="checkbox" name="showCutTime"/>
+                </label>
+                <label>
+                    <key>Show Estimated Calories:</key>
+                    <input type="checkbox" name="showEstimatedCalories"/>
                 </label>
             </form>
             <form id="fields" class="section">

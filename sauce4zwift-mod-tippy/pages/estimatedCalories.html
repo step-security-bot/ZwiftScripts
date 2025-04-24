@@ -12,6 +12,20 @@
         import {main} from '../src/estimatedCalories.mjs';
         main();
     </script>
+    <script>
+        // Responsive label shortening for estimatedCalories
+        function updateLabels() {
+            const label = document.getElementById('estimatedCaloriesKey');
+            if (!label) return;
+            if (window.innerWidth < 400) {
+                label.textContent = 'C:';
+            } else {
+                label.textContent = 'Estimated Calories at Finish:';
+            }
+        }
+        window.addEventListener('resize', updateLabels);
+        window.addEventListener('DOMContentLoaded', updateLabels);
+    </script>
 </head>
 <body>
     <div id="titlebar">
@@ -28,18 +42,21 @@
             </div>
         </header>
     </div>
-    <div id="calories">
+    <div id="content">
         <form id="options" class="section">
             <div id="caloriesTitle" class="title">Estimated Calories Burned at Finish</div>
-            <label>
-                <key id="currentCaloriesKey">Current Calories:</key>
+            <div class="field">
+                <label for="currentCaloriesKey"><key id="currentCaloriesKey">Current Calories:</key></label>
                 <div name="currentCalories" class="info-item-value"></div>
-            </label>
-            <label>
-                <key id="estimatedCaloriesKey">Estimated Calories at Finish:</key>
+            </div>
+            <div class="field">
+                <label for="estimatedCaloriesKey"><key id="estimatedCaloriesKey" style="min-width:16ch;">Estimated Calories at Finish:</key></label>
                 <div name="estimatedCalories" class="info-item-value"></div>
-            </label>
+            </div>
         </form>
+    </div>
+    <div id="hintbar">
+        <div class="hint"></div>
     </div>
 </body>
 </html>

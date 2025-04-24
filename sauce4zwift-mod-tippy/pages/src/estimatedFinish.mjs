@@ -20,6 +20,7 @@ let cutTimesArray = JSON.parse(JSONobj.cutTimesFlat);
 
 let showFirstRiderInfo = common.settingsStore.get('showFirstRiderInfo');
 let showCutTime = common.settingsStore.get('showCutTime');
+const showEstimatedCalories = common.settingsStore.get('showEstimatedCalories');
 let lastRefreshDate = Date.now() - 99999;
 let routeRefreshInterval = 120000;
 let eventRefreshInterval = 180000;
@@ -732,10 +733,16 @@ async function updateRiderInfo(nearby) {
     let avgWatts = watchingRider.stats.power && watchingRider.stats.power.avg ? watchingRider.stats.power.avg : null;
     let elapsedSeconds = watchingRider.state.time;
     let estimatedCalories = null;
-    if (avgWatts && elapsedSeconds) {
-        estimatedCalories = calculateCalories(avgWatts, elapsedSeconds);
-        document.getElementsByName("watchCalories")[0].textContent = estimatedCalories + ' kcal';
+    const caloriesElem = document.getElementsByName("watchCalories")[0];
+    if (showEstimatedCalories) {
+        if (avgWatts && elapsedSeconds) {
+            estimatedCalories = calculateCalories(avgWatts, elapsedSeconds);
+            caloriesElem.textContent = estimatedCalories + ' kcal';
+        } else {
+            caloriesElem.textContent = 'N/A';
+        }
+        caloriesElem.parentElement.style.display = '';
     } else {
-        document.getElementsByName("watchCalories")[0].textContent = 'N/A';
+        caloriesElem.parentElement.style.display = 'none';
     }
 }
