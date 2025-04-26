@@ -294,81 +294,84 @@ This script performs the following tasks:
 #>
 [CmdletBinding()]
 param (
-	[string]$ZwiftLauncherPath = 'C:\Program Files (x86)\Zwift\ZwiftLauncher.exe',
-	[string]$MonitorZwiftScriptPath = 'C:\Users\Nick\Dropbox\Cycling\ZwiftScripts\MonitorZwift-v2.ps1',
-	[string]$ZwiftLauncher = 'ZwiftLauncher',
-	# Zwift launcher process name
-	[string]$ZwiftGame = 'ZwiftApp',
-	# Zwift game process name
-	[int]$ZwiftGameMaximizeDelay = 180,
-	# Delay before maximizing the Zwift game window (in seconds)
-	[int]$PrimaryDisplayZwift = 3,
-	# Zero-based index of the display to be used for Zwift (Zero-based)
-	[int]$PrimaryDisplayDefault = 1,
-	# Index of the default primary display (zero-based)
+	# Used in Step 1: Define helper functions and Win32 API for window management
+	[string[]]$Colors = @('Black', 'DarkBlue', 'DarkGreen', 'DarkCyan', 'DarkRed', 'DarkMagenta', 'DarkYellow', 'Gray', 'DarkGray', 'Blue', 'Green', 'Cyan', 'Red', 'Magenta', 'Yellow', 'White'),
+	[string]$randomColor = ($Colors | Get-Random),
+	[int]$AnimIndex = 0,
+	[string[]]$AnimationChars = @('|', '/', '-', '\', '|', '/', '-', '\'),
+
+	# Used in Step 2: Resize and position the PowerShell window on the target display
 	[int]$TargetDisplayIndex = 1,
-	# Index of the target display (zero-based) for positioning the PowerShell window
 	[int]$WindowPositionX = 0,
-	# Default window position X (offset from the display's top-left corner)
 	[int]$WindowPositionY = 50,
-	# Default window position Y (offset from the display's top-left corner)
 	[int]$WindowWidth = 300,
-	# Default window width (in pixels)
 	[int]$WindowHeight = 600,
-	# Default window height (in pixels)
-	[string]$PowerToysPath = 'C:\Program Files\PowerToys\PowerToys.exe',
-	# Path to PowerToys executable file (default installation path)
-	[string]$PowerToysAwakePath = 'C:\Program Files\PowerToys\PowerToys.Awake.exe',
-	# Path to PowerToys Awake executable file (default installation path)
-	[int]$PowerToysAwakeTime = $remainingTimeinHours * 3600,
-	# Time in seconds for PowerToys Awake to keep the display awake (default: 3600 seconds = 1 hour)
+
+	# Used in Step 3: Import the DisplayConfig module for display management
+	# (No params used directly here)
+
+	# Used in Step 4: Set PowerShell window transparency
+	[int]$Transparency = 75,
+
+	# Used in Step 5: Resolve paths for Zwift Launcher and Monitor Script
+	[string]$MonitorZwiftScriptPath = 'C:\Users\Nick\Dropbox\Cycling\ZwiftScripts\MonitorZwift-v2.ps1',
+	[string]$ZwiftLauncherPath = 'C:\Program Files (x86)\Zwift\ZwiftLauncher.exe',
+
+	# Used in Step 6: Start Zwift Launcher if Zwift is not already running
+	[string]$ZwiftGame = 'ZwiftApp',
+	[string]$ZwiftLauncher = 'ZwiftLauncher',
+
+	# Used in Step 7: Wait for Zwift Launcher to start, then set Zwift display as primary
+	[int]$PrimaryDisplayZwift = 3,
+
+	# Used in Step 8: Optionally launch PowerToys Workspaces for Zwift
+	[string[]]$AppsToCheck = @('Spotify', 'obs64', 'Sauce for Zwift'),
 	[string]$PowerToysWorkspacesPath = 'C:\Program Files\PowerToys\PowerToys.WorkspacesLauncher.exe',
-	# Path to PowerToys Workspaces executable file (default installation path)
 	[string]$WorkspaceGuid = '{E2CDEA2A-6E33-4CFD-A26B-0C5CC2E55F40}',
-	# GUID for the PowerToys Workspace for Zwift
+
+	# Used in Step 9: Wait for Zwift game to start, then maximize its window
+	[int]$ZwiftGameMaximizeDelay = 180,
+
+	# Used in Step 10: Move OBS to Zwift monitor if running
+	[string]$ObsProcessName = 'obs64',
+
+	# Used in Step 9.5: Monitor Zwift log for 'GameFlowState Riding' and check OBS
+	[string]$ObsRecordingHotkey = '^{F11}',
+
+	# Used in Step 13: Restore primary display to default
+	[int]$PrimaryDisplayDefault = 1,
+
+	# Used in Step 14: Stop and close OBS if running
+	[string]$CloseObsHotkey = '%{F4}',
+
+	# Used in Step 15: Run FreeFileSync batch job to sync files
 	[string]$FreeFileSyncPath = 'C:\Program Files\FreeFileSync\FreeFileSync.exe',
-	# Path to FreeFileSync executable file (default installation path)
 	[string]$BatchJobPath = 'C:\Users\Nick\Dropbox\Random Save\Task Scheduler Rules\ZwiftPics.ffs_batch',
-	# Path to FreeFileSync batch job file for synchronizing files after Zwift session
 	[string]$BatchJobPath2 = 'C:\Users\Nick\Dropbox\Random Save\Task Scheduler Rules\RecordingsToNas.ffs_batch',
-	# Path to second FreeFileSync batch job file for synchronizing recordings to NAS
+
+	# Used in Step 16: Close Spotify if running
+	# (No params used directly here)
+
+	# Used in Step 17: Launch Microsoft Edge with specified URLs in app mode
+	[string]$EdgePath = 'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe',
+	[string]$EdgeUrl1 = 'https://studio.youtube.com/channel/UCyYwMWui3Opy2yZyom2QM0g/videos/upload?filter=%5B%5D&sort=%7B%22columnType%22%3A%22date%22%2C%22sortOrder%22%3A%22DESCENDING%22%7D',
+	[string]$EdgeUrl2 = 'https://www.strava.com/athlete/training',
+	[string]$EdgeUrl3 = 'https://connect.garmin.com/modern/home',
+
+	# Used in Step 18: Open File Explorer for Zwift media and pictures directories
 	[string]$ZwiftMediaPath = 'C:\Users\Nick\Dropbox\Cycling\ZwiftMedia',
 	[string]$ZwiftPicturesPath = 'C:\Users\Nick\Dropbox\PC (2)\Pictures\Zwift',
-	[string]$EdgePath = 'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe',
-	# Path to Microsoft Edge executable file
-	[string]$EdgeUrl1 = 'https://studio.youtube.com/channel/UCyYwMWui3Opy2yZyom2QM0g/videos/upload?filter=%5B%5D&sort=%7B%22columnType%22%3A%22date%22%2C%22sortOrder%22%3A%22DESCENDING%22%7D',
-	# URL to open in Microsoft Edge in app mode (YouTube Studio) Opens Edge URL 1
-	[string]$EdgeUrl2 = 'https://www.strava.com/athlete/training',
-	# URL to open in Microsoft Edge in app mode (Strava) Opens Edge URL 2
-	[string]$EdgeUrl3 = 'https://connect.garmin.com/modern/home',
-	# URL to open in Microsoft Edge in app mode (Garmin Connect) Opens Edge URL 3
-	[string[]]$AppsToCheck = @('Spotify', 'obs64', 'Sauce for Zwift'),
-	# List of additional apps to check for and close when Zwift is detected
-	[string[]]$AnimationChars = @('|', '/', '-', '\', '|', '/', '-', '\'),
-	# Animation characters for waiting animation
-	[int]$Transparency = 75,
-	# Window transparency percentage (0-100) 100 = fully transparent, 0 = opaque
-	[int]$SleepInterval = 10,
-	# Reduced interval for faster detection of Zwift launcher and game processes
-	[string[]]$Colors = @('Black', 'DarkBlue', 'DarkGreen', 'DarkCyan', 'DarkRed', 'DarkMagenta', 'DarkYellow', 'Gray', 'DarkGray', 'Blue', 'Green', 'Cyan', 'Red', 'Magenta', 'Yellow', 'White'),
-	# List of colors for the waiting animation
-	[string]$randomColor = ($Colors | Get-Random),
-	# Random color for the waiting animation
-	[int]$AnimIndex = 0,
-	# Animation index for the waiting animation
-	[string]$ObsProcessName = 'obs64',
-	# OBS process name (default: obs64)
-	[string]$ObsRecordingHotkey = '^{F11}',
-	# Hotkey to stop recording in OBS (default: Ctrl+F11)
-	[string]$CloseObsHotkey = '%{F4}',
-	# Hotkey to close OBS gracefully (default: Alt+F4)
-	[int]$remainingTimeinHours = 3
-	# Remaining time in hours for the script to run before closing
 
-	# Uncomment the following variables if you prefer to specify the remaining time in minutes or seconds
-	# [int]$remainingTimeinMinutes = 180 # Time in minutes for the script to remain open for review
-	# [int]$remainingTimeinSeconds = 10800 # Time in seconds for the script to remain open for review
-	## If you uncomment any of the above lines, make sure to comment out the other two variables
+	# Used in Step 20: Set PowerToys Awake if available
+	[string]$PowerToysAwakePath = 'C:\Program Files\PowerToys\PowerToys.Awake.exe',
+	[int]$remainingTimeinHours = 3,
+	[int]$PowerToysAwakeTime = $remainingTimeinHours * 3600,
+
+	# Used in Step 21: Show task completion summary and allow review/countdown before exit
+	# (No params used directly here)
+
+	# Used throughout
+	[int]$SleepInterval = 10
 )
 
 # =============================
@@ -1101,44 +1104,52 @@ catch {
 }
 
 # =============================
-# Step 9.5: Monitor Zwift log for 'GameFlowState Riding' and check OBS
+# Step 10.5: Monitor Zwift log for 'GameFlowState Riding' and check OBS
 # =============================
 
-$ZwiftLogPath = 'C:\Users\Nick\Dropbox\PC (2)\Documents\Zwift\Logs\Log.txt'
 $GameFlowRidingDetected = $false
 
 if (Test-Path -Path $ZwiftLogPath) {
 	Write-Host "$(Get-Date): Monitoring Zwift log for '[ZWATCHDOG]: GameFlowState Riding'..." -ForegroundColor Cyan
-	$logStream = [System.IO.File]::Open($ZwiftLogPath, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite)
-	$reader = New-Object System.IO.StreamReader($logStream)
-	# Move to end of file
-	$null = $reader.BaseStream.Seek(0, [System.IO.SeekOrigin]::End)
-	while (-not $GameFlowRidingDetected) {
-		Start-Sleep -Milliseconds 500
-		while ($null -ne ($line = $reader.ReadLine())) {
-			if ($line -match '\[ZWATCHDOG\]: GameFlowState Riding') {
-				Write-Host "$(Get-Date): Detected 'GameFlowState Riding' in Zwift log!" -ForegroundColor Green
-				$GameFlowRidingDetected = $true
-				break
+	try {
+		$logStream = [System.IO.File]::Open($ZwiftLogPath, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite)
+		$reader = New-Object System.IO.StreamReader($logStream)
+		# Move to end of file
+		$null = $reader.BaseStream.Seek(0, [System.IO.SeekOrigin]::End)
+		while (-not $GameFlowRidingDetected) {
+			Start-Sleep -Seconds 1
+			while ($null -ne ($line = $reader.ReadLine())) {
+				if ($line -match '\[ZWATCHDOG\]: GameFlowState Riding') {
+					Write-Host "$(Get-Date): Detected 'GameFlowState Riding' in Zwift log!" -ForegroundColor Green
+					$GameFlowRidingDetected = $true
+					break
+				}
 			}
 		}
 	}
-	$reader.Close()
-	$logStream.Close()
+	finally {
+		if ($null -ne $reader) { $reader.Close() }
+		if ($null -ne $logStream) { $logStream.Close() }
+	}
 
 	# Check if OBS is running
 	$obsProcess = Get-Process -Name $ObsProcessName -ErrorAction SilentlyContinue
 	if (-not $obsProcess) {
 		Write-Host "$(Get-Date): OBS is NOT running!" -ForegroundColor Red
-		$userInput = Read-Host 'Would you like to start OBS now? (Y/N)'
+		do {
+			$userInput = Read-Host 'Would you like to start OBS now? (Y/N)'
+			if ($userInput -notmatch '^(Y|y|N|n)$') {
+				Write-Host "Invalid input. Please enter 'Y' or 'N'." -ForegroundColor Yellow
+			}
+		} while ($userInput -notmatch '^(Y|y|N|n)$')
 		if ($userInput -match '^(Y|y)') {
-			$obsPath = 'C:\Program Files\obs-studio\bin\64bit\obs64.exe'
 			if (Test-Path -Path $obsPath) {
 				Start-Process -FilePath $obsPath
 				Write-Host "$(Get-Date): OBS started." -ForegroundColor Green
 				# Wait for OBS to start
 				Start-Sleep -Seconds 3
 				$obsProcess = Get-Process -Name $ObsProcessName -ErrorAction SilentlyContinue
+				Add-CompletedTask -Tracker $taskTracker -TaskName 'OBS started after user prompt'
 			}
 			else {
 				Write-Host "$(Get-Date): OBS executable not found at $obsPath. Please start OBS manually." -ForegroundColor Yellow
@@ -1153,13 +1164,32 @@ if (Test-Path -Path $ZwiftLogPath) {
 	}
 
 	# After checking/starting OBS, check if recording has started in the latest OBS log
-	$ObsLogDir = "$env:APPDATA\obs-studio\logs"
-	if (Test-Path $ObsLogDir) {
+	if (Test-Path $ObsLogDir -and (Get-ChildItem -Path $ObsLogDir -Filter '*.txt' -ErrorAction SilentlyContinue)) {
 		$latestLog = Get-ChildItem -Path $ObsLogDir -Filter '*.txt' | Sort-Object LastWriteTime -Descending | Select-Object -First 1
 		if ($latestLog) {
 			$logContent = Get-Content $latestLog.FullName -Raw
-			if ($logContent -match '==== Recording Start') {
+			if ($logContent -match [regex]::Escape($ObsRecordingStartLogMessage)) {
+				# Ensure OBS window is active before sending the hotkey
+				if ($obsProc -and $obsProc.MainWindowTitle) {
+					$retryCount = 0
+					$maxRetries = 3
+					while (-not $obsProc -and $retryCount -lt $maxRetries) {
+						Write-Host "$(Get-Date): OBS process not found. Retrying in 5 seconds... (Attempt $($retryCount + 1) of $maxRetries)" -ForegroundColor Yellow
+						Start-Sleep -Seconds 5
+						$obsProc = Get-Process -Name $ObsProcessName -ErrorAction SilentlyContinue
+						$retryCount++
+					}
+
+					if ($obsProc) {
+						[void]$wshell.AppActivate($obsProc.MainWindowTitle)
+					}
+					else {
+						Write-Host "$(Get-Date): OBS process could not be found after $maxRetries attempts. Please start OBS manually." -ForegroundColor Red
+					}
+					Start-Sleep -Milliseconds 500
+				}
 				Write-Host "$(Get-Date): OBS recording already started (detected in log)." -ForegroundColor Green
+				Add-CompletedTask -Tracker $taskTracker -TaskName 'OBS recording already started, detected in log'
 			}
 			else {
 				Write-Host "$(Get-Date): OBS recording not detected in log. Attempting to start recording..." -ForegroundColor Yellow
@@ -1522,6 +1552,7 @@ catch {
 # =============================
 
 try {
+	Add-CompletedTask -Tracker $taskTracker -TaskName 'Final validation and review process started'
 	Show-TaskCompletionSummary -Tracker $taskTracker -tasksCompleted $tasksCompleted
 	$remainingTime = Get-RemainingTime -remainingTimeinHours $remainingTimeinHours -remainingTimeinMinutes $remainingTimeinMinutes -remainingTimeinSeconds $remainingTimeinSeconds
 	Invoke-ReviewCountdownAndCleanup -remainingTime $remainingTime
