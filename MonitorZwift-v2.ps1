@@ -334,8 +334,14 @@ param (
 	# Used in Step 10: Move OBS to Zwift monitor if running
 	[string]$ObsProcessName = 'obs64',
 
-	# Used in Step 9.5: Monitor Zwift log for 'GameFlowState Riding' and check OBS
+	# Used in Step 10.5: Monitor Zwift log for 'GameFlowState Riding' and check OBS
 	[string]$ObsRecordingHotkey = '^{F11}',
+
+	# Used in Step 11: Wait for Zwift game to close
+	# (No params used directly here)
+
+	# Used in Step 12: Close Sauce for Zwift if running
+	# (No params used directly here)
 
 	# Used in Step 13: Restore primary display to default
 	[int]$PrimaryDisplayDefault = 1,
@@ -360,6 +366,9 @@ param (
 	# Used in Step 18: Open File Explorer for Zwift media and pictures directories
 	[string]$ZwiftMediaPath = 'C:\Users\Nick\Dropbox\Cycling\ZwiftMedia',
 	[string]$ZwiftPicturesPath = 'C:\Users\Nick\Dropbox\PC (2)\Pictures\Zwift',
+
+	# Used in Step 19: Show task completion summary
+	# (No params used directly here)
 
 	# Used in Step 20: Set PowerToys Awake if available
 	[string]$PowerToysAwakePath = 'C:\Program Files\PowerToys\PowerToys.Awake.exe',
