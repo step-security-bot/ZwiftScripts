@@ -1,7 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 1.9.2
-
+.VERSION 2.0.1
 .GUID 4296fcf1-a13d-4d31-afdc-bcbd4e05506d
 
 .AUTHOR Nick2bad4u
@@ -330,7 +329,7 @@ param (
 	[string]$WorkspaceGuid = '{E2CDEA2A-6E33-4CFD-A26B-0C5CC2E55F40}',
 
 	# Used in Step 9: Wait for Zwift game to start, then maximize its window
-	[int]$ZwiftGameMaximizeDelay = 180,
+	[int]$ZwiftGameMaximizeDelay = 60,
 
 	# Used in Step 10: Move OBS to Zwift monitor if running
 	[string]$ObsProcessName = 'obs64',
