@@ -249,7 +249,7 @@ This script performs the following tasks:
 .PARAMETER ObsProcessName
 	Process name of OBS. Default: 'obs64'.
 
-.PARAMETER StopRecordingHotkey
+.PARAMETER ObsRecordingHotkey
 	Hotkey to stop recording in OBS. Default: '^{F11}' (Ctrl+F11).
 
 .PARAMETER CloseObsHotkey
@@ -358,7 +358,7 @@ param (
 	# Animation index for the waiting animation
 	[string]$ObsProcessName = 'obs64',
 	# OBS process name (default: obs64)
-	[string]$StopRecordingHotkey = '^{F11}',
+	[string]$ObsRecordingHotkey = '^{F11}',
 	# Hotkey to stop recording in OBS (default: Ctrl+F11)
 	[string]$CloseObsHotkey = '%{F4}',
 	# Hotkey to close OBS gracefully (default: Alt+F4)
@@ -1115,7 +1115,7 @@ if (Test-Path -Path $ZwiftLogPath) {
 	$null = $reader.BaseStream.Seek(0, [System.IO.SeekOrigin]::End)
 	while (-not $GameFlowRidingDetected) {
 		Start-Sleep -Milliseconds 500
-		while (($line = $reader.ReadLine()) -ne $null) {
+		while ($null -ne ($line = $reader.ReadLine())) {
 			if ($line -match '\[ZWATCHDOG\]: GameFlowState Riding') {
 				Write-Host "$(Get-Date): Detected 'GameFlowState Riding' in Zwift log!" -ForegroundColor Green
 				$GameFlowRidingDetected = $true
@@ -1148,7 +1148,7 @@ if (Test-Path -Path $ZwiftLogPath) {
 			Write-Host "$(Get-Date): OBS will not be started automatically. Remember to start it if you want to record!" -ForegroundColor Yellow
 		}
 	}
- else {
+	else {
 		Write-Host "$(Get-Date): OBS is already running." -ForegroundColor Green
 	}
 
@@ -1168,7 +1168,9 @@ if (Test-Path -Path $ZwiftLogPath) {
 				$obsProc = Get-Process -Name $ObsProcessName -ErrorAction SilentlyContinue
 				if ($obsProc) {
 					[void]$wshell.AppActivate($obsProc.MainWindowTitle)
-					Start-Sleep -Milliseconds 500
+					Start-Sleep -Seconds 1
+					$wshell.SendKeys($ObsRecordingHotkey) # <-- Send the start recording hotkey (Ctrl+F11 by default)
+					Add-CompletedTask -Tracker $taskTracker -TaskName 'OBS recording started'
 					Start-Sleep -Seconds 3
 					# Minimize OBS window
 					$obsHwnd = $obsProc.MainWindowHandle
@@ -1189,7 +1191,7 @@ if (Test-Path -Path $ZwiftLogPath) {
 			Write-Host "$(Get-Date): No OBS log files found to check recording status." -ForegroundColor Yellow
 		}
 	}
- else {
+	else {
 		Write-Host "$(Get-Date): OBS log directory not found: $ObsLogDir" -ForegroundColor Yellow
 	}
 }
@@ -1268,7 +1270,7 @@ try {
 				try {
 					[void]$wshell.AppActivate($_.MainWindowTitle)
 					Start-Sleep -Milliseconds 500
-					$wshell.SendKeys($StopRecordingHotkey) # Send hotkey to stop recording
+					$wshell.SendKeys($ObsRecordingHotkey) # Send hotkey to stop recording
 				}
 				catch {
 					Write-Error "$(Get-Date): Error activating OBS window or sending stop recording hotkey: $($_.Exception.Message)"
