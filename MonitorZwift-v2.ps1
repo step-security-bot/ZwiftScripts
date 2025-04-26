@@ -1101,6 +1101,103 @@ catch {
 }
 
 # =============================
+# Step 9.5: Monitor Zwift log for 'GameFlowState Riding' and check OBS
+# =============================
+
+$ZwiftLogPath = 'C:\Users\Nick\Dropbox\PC (2)\Documents\Zwift\Logs\Log.txt'
+$GameFlowRidingDetected = $false
+
+if (Test-Path -Path $ZwiftLogPath) {
+	Write-Host "$(Get-Date): Monitoring Zwift log for '[ZWATCHDOG]: GameFlowState Riding'..." -ForegroundColor Cyan
+	$logStream = [System.IO.File]::Open($ZwiftLogPath, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite)
+	$reader = New-Object System.IO.StreamReader($logStream)
+	# Move to end of file
+	$null = $reader.BaseStream.Seek(0, [System.IO.SeekOrigin]::End)
+	while (-not $GameFlowRidingDetected) {
+		Start-Sleep -Milliseconds 500
+		while (($line = $reader.ReadLine()) -ne $null) {
+			if ($line -match '\[ZWATCHDOG\]: GameFlowState Riding') {
+				Write-Host "$(Get-Date): Detected 'GameFlowState Riding' in Zwift log!" -ForegroundColor Green
+				$GameFlowRidingDetected = $true
+				break
+			}
+		}
+	}
+	$reader.Close()
+	$logStream.Close()
+
+	# Check if OBS is running
+	$obsProcess = Get-Process -Name $ObsProcessName -ErrorAction SilentlyContinue
+	if (-not $obsProcess) {
+		Write-Host "$(Get-Date): OBS is NOT running!" -ForegroundColor Red
+		$userInput = Read-Host 'Would you like to start OBS now? (Y/N)'
+		if ($userInput -match '^(Y|y)') {
+			$obsPath = 'C:\Program Files\obs-studio\bin\64bit\obs64.exe'
+			if (Test-Path -Path $obsPath) {
+				Start-Process -FilePath $obsPath
+				Write-Host "$(Get-Date): OBS started." -ForegroundColor Green
+				# Wait for OBS to start
+				Start-Sleep -Seconds 3
+				$obsProcess = Get-Process -Name $ObsProcessName -ErrorAction SilentlyContinue
+			}
+			else {
+				Write-Host "$(Get-Date): OBS executable not found at $obsPath. Please start OBS manually." -ForegroundColor Yellow
+			}
+		}
+		else {
+			Write-Host "$(Get-Date): OBS will not be started automatically. Remember to start it if you want to record!" -ForegroundColor Yellow
+		}
+	}
+ else {
+		Write-Host "$(Get-Date): OBS is already running." -ForegroundColor Green
+	}
+
+	# After checking/starting OBS, check if recording has started in the latest OBS log
+	$ObsLogDir = "$env:APPDATA\obs-studio\logs"
+	if (Test-Path $ObsLogDir) {
+		$latestLog = Get-ChildItem -Path $ObsLogDir -Filter '*.txt' | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+		if ($latestLog) {
+			$logContent = Get-Content $latestLog.FullName -Raw
+			if ($logContent -match '==== Recording Start') {
+				Write-Host "$(Get-Date): OBS recording already started (detected in log)." -ForegroundColor Green
+			}
+			else {
+				Write-Host "$(Get-Date): OBS recording not detected in log. Attempting to start recording..." -ForegroundColor Yellow
+				# Try to start recording using OBS hotkey (simulate hotkey Ctrl+F11 by default)
+				$wshell = New-Object -ComObject WScript.Shell
+				$obsProc = Get-Process -Name $ObsProcessName -ErrorAction SilentlyContinue
+				if ($obsProc) {
+					[void]$wshell.AppActivate($obsProc.MainWindowTitle)
+					Start-Sleep -Milliseconds 500
+					Start-Sleep -Seconds 3
+					# Minimize OBS window
+					$obsHwnd = $obsProc.MainWindowHandle
+					if ($obsHwnd -ne [IntPtr]::Zero) {
+						[Win32]::ShowWindow($obsHwnd, 2) # SW_MINIMIZE
+						Write-Host "$(Get-Date): OBS window minimized." -ForegroundColor Green
+					}
+					else {
+						Write-Host "$(Get-Date): Could not get OBS window handle to minimize." -ForegroundColor Yellow
+					}
+				}
+				else {
+					Write-Host "$(Get-Date): OBS process not found to send hotkey." -ForegroundColor Red
+				}
+			}
+		}
+		else {
+			Write-Host "$(Get-Date): No OBS log files found to check recording status." -ForegroundColor Yellow
+		}
+	}
+ else {
+		Write-Host "$(Get-Date): OBS log directory not found: $ObsLogDir" -ForegroundColor Yellow
+	}
+}
+else {
+	Write-Host "$(Get-Date): Zwift log file not found at $ZwiftLogPath. Skipping log monitoring for ride start." -ForegroundColor Yellow
+}
+
+# =============================
 # Step 11: Wait for Zwift game to close.
 # =============================
 
