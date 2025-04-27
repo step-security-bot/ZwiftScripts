@@ -287,6 +287,15 @@ This script performs the following tasks:
 .PARAMETER PowerToysAwakeTime
 	Time in seconds for PowerToys Awake to keep the display awake. Default: 3600 seconds (1 hour).
 
+.PARAMETER ExplorerPath
+	Path to the File Explorer executable. Default: 'explorer.exe'.
+
+.PARAMETER SpotifyProcessName
+	Process name of Spotify. Default: 'Spotify'.
+
+.PARAMETER SauceProcessName
+	Process name of Sauce for Zwift. Default: 'Sauce for Zwift'.
+
 .NOTES
 	- Requires PowerShell 5.1 or later.
 	- Some features depend on external modules like DisplayConfig and applications like PowerToys, FreeFileSync, and OBS.
@@ -312,6 +321,7 @@ param (
 	[string[]]$AnimationChars = @('|', '/', '-', '\', '|', '/', '-', '\'),
 
 	# Used in Step 2: Resize and position the PowerShell window on the target display
+	[ValidateRange(1, 10000)]
 	[int]$TargetDisplayIndex = 1,
 	[int]$WindowPositionX = 0,
 	[int]$WindowPositionY = 50,
@@ -322,6 +332,7 @@ param (
 	# (No params used directly here)
 
 	# Used in Step 4: Set PowerShell window transparency
+	[ValidateRange(0, 100)]
 	[int]$Transparency = 75,
 
 	# Used in Step 5: Resolve paths for Zwift Launcher and Monitor Script
@@ -333,6 +344,7 @@ param (
 	[string]$ZwiftLauncher = 'ZwiftLauncher',
 
 	# Used in Step 7: Wait for Zwift Launcher to start, then set Zwift display as primary
+	[ValidateRange(0, 100)]
 	[int]$PrimaryDisplayZwift = 3,
 
 	# Used in Step 8: Optionally launch PowerToys Workspaces for Zwift
@@ -356,7 +368,7 @@ param (
 	[string]$BatchJobPath2 = 'C:\Users\Nick\Dropbox\Random Save\Task Scheduler Rules\RecordingsToNas.ffs_batch',
 
 	# Used in Step 16: Close Spotify if running
-	# (No params used directly here)
+	[string]$SpotifyProcessName = 'Spotify',
 
 	# Used in Step 17: Launch Microsoft Edge with specified URLs in app mode
 	[string]$EdgePath = 'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe',
@@ -367,6 +379,7 @@ param (
 	# Used in Step 18: Open File Explorer for Zwift media and pictures directories
 	[string]$ZwiftMediaPath = 'C:\Users\Nick\Dropbox\Cycling\ZwiftMedia',
 	[string]$ZwiftPicturesPath = 'C:\Users\Nick\Dropbox\PC (2)\Pictures\Zwift',
+	[string]$ExplorerPath = 'explorer.exe',
 
 	# Used in Step 19: Show task completion summary
 	# (No params used directly here)
@@ -380,7 +393,7 @@ param (
 	# (No params used directly here)
 
 	# Used throughout
-	[int]$SleepInterval = 10
+	[int]$SleepInterval = 2
 )
 
 # =============================
@@ -500,6 +513,25 @@ function Get-CompletedTasks {
 		[hashtable]$Tracker
 	)
 	return $Tracker.CompletedTasks
+}
+
+# Helper function to activate and optionally minimize a window by process name
+function Activate-And-MinimizeWindow {
+	param (
+		[string]$ProcessName,
+		[switch]$Minimize
+	)
+	$proc = Get-Process -Name $ProcessName -ErrorAction SilentlyContinue
+	if ($proc) {
+		$wshell = New-Object -ComObject WScript.Shell
+		if ($proc.MainWindowTitle) {
+			[void]$wshell.AppActivate($proc.MainWindowTitle)
+			Start-Sleep -Milliseconds 500
+			if ($Minimize -and $proc.MainWindowHandle -ne [IntPtr]::Zero) {
+				[Win32]::ShowWindow($proc.MainWindowHandle, 2) # SW_MINIMIZE
+			}
+		}
+	}
 }
 
 # Function: Show-WaitingAnimation
@@ -855,7 +887,13 @@ try {
 	# Resize the PowerShell window
 	$hwnd = [Win32]::GetForegroundWindow()
 
-	# Get the screen coordinates of display 3
+	# Validate display index
+	if ($TargetDisplayIndex -lt 1 -or $TargetDisplayIndex -gt [System.Windows.Forms.Screen]::AllScreens.Count) {
+		Write-Host "Invalid TargetDisplayIndex: $TargetDisplayIndex. Defaulting to 1." -ForegroundColor Yellow
+		$TargetDisplayIndex = 1
+	}
+
+	# Get the screen coordinates of the target display
 	$displayIndex = $TargetDisplayIndex - 1 # Subtract 1 to make it zero-based
 	$displays = [System.Windows.Forms.Screen]::AllScreens
 	if ($displayIndex -lt $displays.Count) {
@@ -863,13 +901,13 @@ try {
 		$x = $targetDisplay.WorkingArea.X
 		$y = $targetDisplay.WorkingArea.Y
 
-		# Set the window position to display 3
+		# Set the window position to the target display
 		[Win32]::SetWindowPos($hwnd, [IntPtr]::Zero, $x + $WindowPositionX, $y + $WindowPositionY, $WindowWidth, $WindowHeight, [Win32]::SWP_NOZORDER -bor [Win32]::SWP_SHOWWINDOW)
 		Write-Host "$(Get-Date): Successfully resized and positioned the PowerShell window on display $TargetDisplayIndex." -ForegroundColor Green
 		Add-CompletedTask -Tracker $taskTracker -TaskName 'Resized and positioned PowerShell window'
 	}
 	else {
-		Write-Host "$(Get-Date): Display 3 not found.  Resizing in current display." -ForegroundColor Yellow
+		Write-Host "$(Get-Date): Target display not found. Resizing in current display." -ForegroundColor Yellow
 		[Win32]::SetWindowPos($hwnd, [IntPtr]::Zero, $WindowPositionX, $WindowPositionY, $WindowWidth, $WindowHeight, [Win32]::SWP_NOZORDER -bor [Win32]::SWP_SHOWWINDOW)
 	}
 }
@@ -959,6 +997,13 @@ try {
 	while (-not (Get-ProcessRunning -ProcessName $ZwiftLauncher)) {
 		Wait-WithAnimation -Seconds 1 -Message "Waiting for $ZwiftLauncher"
 	}
+
+	# Validate display index
+	if ($PrimaryDisplayZwift -lt 0 -or $PrimaryDisplayZwift -ge [System.Windows.Forms.Screen]::AllScreens.Count) {
+		Write-Host "Invalid PrimaryDisplayZwift index: $PrimaryDisplayZwift. Defaulting to 1." -ForegroundColor Yellow
+		$PrimaryDisplayZwift = 1
+	}
+
 	Write-Host "$(Get-Date): Zwift launcher detected. Switching primary display to $($PrimaryDisplayZwift + 1)" -ForegroundColor Green
 	Set-PrimaryDisplay ($PrimaryDisplayZwift + 1) # + 1 to make it one-based index for the DisplayConfig module (index: 4)
 	Add-CompletedTask -Tracker $taskTracker -TaskName 'Zwift launcher running'
@@ -1073,6 +1118,11 @@ try {
 		if ($ObsHwnd -ne [IntPtr]::Zero) {
 			# Get the screen coordinates of the Zwift display
 			Add-Type -AssemblyName System.Windows.Forms
+			# Validate display index
+			if ($PrimaryDisplayZwift -lt 0 -or $PrimaryDisplayZwift -ge [System.Windows.Forms.Screen]::AllScreens.Count) {
+				Write-Host "Invalid PrimaryDisplayZwift index: $PrimaryDisplayZwift. Defaulting to 1." -ForegroundColor Yellow
+				$PrimaryDisplayZwift = 1
+			}
 			# Get the display index for Zwift (1-based index)
 			$ZwiftDisplayIndex = $PrimaryDisplayZwift - 1
 			$Displays = [System.Windows.Forms.Screen]::AllScreens
@@ -1145,12 +1195,21 @@ if (Test-Path -Path $ZwiftLogPath) {
 	$obsProcess = Get-Process -Name $ObsProcessName -ErrorAction SilentlyContinue
 	if (-not $obsProcess) {
 		Write-Host "$(Get-Date): OBS is NOT running!" -ForegroundColor Red
-		do {
-			$userInput = Read-Host 'Would you like to start OBS now? (Y/N)'
-			if ($userInput -notmatch '^(Y|y|N|n)$') {
-				Write-Host "Invalid input. Please enter 'Y' or 'N'." -ForegroundColor Yellow
+		$obsPromptTimeout = 15 # seconds
+		$obsPromptStart = Get-Date
+		$userInput = $null
+		while ($null -eq $userInput -and ((Get-Date) - $obsPromptStart).TotalSeconds -lt $obsPromptTimeout) {
+			if ([Console]::KeyAvailable) {
+				$userInput = Read-Host 'Would you like to start OBS now? (Y/N)'
 			}
-		} while ($userInput -notmatch '^(Y|y|N|n)$')
+			else {
+				Start-Sleep -Milliseconds 500
+			}
+		}
+		if ($null -eq $userInput) {
+			Write-Host "No input received after $obsPromptTimeout seconds. Defaulting to 'N'." -ForegroundColor Yellow
+			$userInput = 'N'
+		}
 		if ($userInput -match '^(Y|y)') {
 			if (Test-Path -Path $obsPath) {
 				Start-Process -FilePath $obsPath
@@ -1177,7 +1236,7 @@ if (Test-Path -Path $ZwiftLogPath) {
 		$latestLog = Get-ChildItem -Path $ObsLogDir -Filter '*.txt' | Sort-Object LastWriteTime -Descending | Select-Object -First 1
 		if ($latestLog) {
 			$logContent = Get-Content $latestLog.FullName -Raw
-			if ($logContent -match [regex]::Escape($ObsRecordingStartLogMessage)) {
+			if ($logContent -match [regex]::Escape($ObsRecordingStartLogMessage) -or $logContent -match 'Recording started' -or $logContent -match 'Start recording') {
 				# Ensure OBS window is active before sending the hotkey
 				if ($obsProc -and $obsProc.MainWindowTitle) {
 					$retryCount = 0
@@ -1212,14 +1271,7 @@ if (Test-Path -Path $ZwiftLogPath) {
 					Add-CompletedTask -Tracker $taskTracker -TaskName 'OBS recording started'
 					Start-Sleep -Seconds 3
 					# Minimize OBS window
-					$obsHwnd = $obsProc.MainWindowHandle
-					if ($obsHwnd -ne [IntPtr]::Zero) {
-						[Win32]::ShowWindow($obsHwnd, 2) # SW_MINIMIZE
-						Write-Host "$(Get-Date): OBS window minimized." -ForegroundColor Green
-					}
-					else {
-						Write-Host "$(Get-Date): Could not get OBS window handle to minimize." -ForegroundColor Yellow
-					}
+					Activate-And-MinimizeWindow -ProcessName $ObsProcessName -Minimize
 				}
 				else {
 					Write-Host "$(Get-Date): OBS process not found to send hotkey." -ForegroundColor Red
@@ -1260,7 +1312,7 @@ catch {
 
 try {
 	Write-Host "$(Get-Date): Checking for Sauce for Zwift process..." -ForegroundColor Cyan
-	$SauceProcess = Get-Process | Where-Object { $_.Name -like 'Sauce for Zwift*' }
+	$SauceProcess = Get-Process -Name $SauceProcessName -ErrorAction SilentlyContinue
 
 	if ($SauceProcess) {
 		Write-Host "$(Get-Date): Sauce for Zwift is running. Closing it..." -ForegroundColor Yellow
@@ -1282,6 +1334,12 @@ catch {
 # =============================
 
 try {
+	# Validate display index
+	if ($PrimaryDisplayDefault -lt 0 -or $PrimaryDisplayDefault -ge [System.Windows.Forms.Screen]::AllScreens.Count) {
+		Write-Host "Invalid PrimaryDisplayDefault index: $PrimaryDisplayDefault. Defaulting to 1." -ForegroundColor Yellow
+		$PrimaryDisplayDefault = 1
+	}
+
 	Write-Host "$(Get-Date): Restoring primary display to $($PrimaryDisplayDefault + 1)..." -ForegroundColor Cyan
 	Set-PrimaryDisplay ($PrimaryDisplayDefault + 1) # + 1 to make it one-based index for the DisplayConfig module (index: 2)
 	Write-Host "$(Get-Date): Primary display restored to $($PrimaryDisplayDefault + 1)." -ForegroundColor Green
@@ -1432,7 +1490,7 @@ catch {
 
 try {
 	Write-Host "$(Get-Date): Checking for Spotify..." -ForegroundColor Cyan
-	$SpotifyProcess = Get-Process -Name 'Spotify' -ErrorAction SilentlyContinue
+	$SpotifyProcess = Get-Process -Name $SpotifyProcessName -ErrorAction SilentlyContinue
 
 	if ($SpotifyProcess) {
 		Write-Host "$(Get-Date): Spotify is running. Closing Spotify..." -ForegroundColor Yellow
@@ -1476,7 +1534,7 @@ else {
 try {
 	Write-Host "$(Get-Date): Opening File Explorer with specified directories..." -ForegroundColor Cyan
 	if (Test-Path -Path $ZwiftMediaPath) {
-		Start-Process -FilePath 'explorer.exe' -ArgumentList "`"$ZwiftMediaPath`""
+		Start-Process -FilePath $ExplorerPath -ArgumentList "`"$ZwiftMediaPath`""
 		Add-CompletedTask -Tracker $taskTracker -TaskName 'Opened File Explorer for ZwiftMediaPath'
 	}
 	else {
@@ -1484,7 +1542,7 @@ try {
 	}
 
 	if (Test-Path -Path $ZwiftPicturesPath) {
-		Start-Process -FilePath 'explorer.exe' -ArgumentList "`"$ZwiftPicturesPath`""
+		Start-Process -FilePath $ExplorerPath -ArgumentList "`"$ZwiftPicturesPath`""
 		Add-CompletedTask -Tracker $taskTracker -TaskName 'Opened File Explorer for ZwiftPicturesPath'
 	}
 	else {
