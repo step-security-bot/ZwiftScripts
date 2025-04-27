@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 2.0.3
+.VERSION 2.0.4
 .GUID 4296fcf1-a13d-4d31-afdc-bcbd4e05506d
 
 .AUTHOR Nick2bad4u
@@ -349,6 +349,7 @@ param (
 
 	# Used in Step 8: Optionally launch PowerToys Workspaces for Zwift
 	[string[]]$AppsToCheck = @('Spotify', 'obs64', 'Sauce for Zwift'),
+	[string]$PowerToysPath = 'C:\Program Files\PowerToys\PowerToys.exe',
 	[string]$PowerToysWorkspacesPath = 'C:\Program Files\PowerToys\PowerToys.WorkspacesLauncher.exe',
 	[string]$WorkspaceGuid = '{E2CDEA2A-6E33-4CFD-A26B-0C5CC2E55F40}',
 
@@ -363,6 +364,20 @@ param (
 	[string]$ObsLogDir = "$env:APPDATA\obs-studio\logs",
 	[string]$obsPath = 'C:\Program Files\obs-studio\bin\64bit\obs64.exe',
 	[string]$ObsRecordingStartLogMessage = '==== Recording Start',
+	[string]$ObsRecordingHotkey = '^{F11}',
+
+	# Used in Step 11: Wait for Zwift game to close.
+
+	# Used in Step 12: Ensure Sauce for Zwift is closed.
+	[int]$SauceProcessName = 'Sauce for Zwift',
+
+	# Used in Step 13: Restore primary display to default.
+	[int]$PrimaryDisplayDefault = 1,
+
+	# Used in Step 14: Stop and close OBS if running.
+	[string]$CloseObsHotkey = '%{F4}',
+
+	# Used in Step 15: Run FreeFileSync batch job to sync Zwift media and pictures
 	[string]$FreeFileSyncPath = 'C:\Program Files\FreeFileSync\FreeFileSync.exe',
 	[string]$BatchJobPath = 'C:\Users\Nick\Dropbox\Random Save\Task Scheduler Rules\ZwiftPics.ffs_batch',
 	[string]$BatchJobPath2 = 'C:\Users\Nick\Dropbox\Random Save\Task Scheduler Rules\RecordingsToNas.ffs_batch',
@@ -388,6 +403,9 @@ param (
 	[string]$PowerToysAwakePath = 'C:\Program Files\PowerToys\PowerToys.Awake.exe',
 	[int]$remainingTimeinHours = 3,
 	[int]$PowerToysAwakeTime = $remainingTimeinHours * 3600,
+	# [int]$remainingTimeinMinutes = 180, # Uncomment if needed
+	# [int]$remainingTimeinSeconds = 10800, # Uncomment if needed
+	# [int]$remainingTime = 10800, # Uncomment if needed
 
 	# Used in Step 21: Show task completion summary and allow review/countdown before exit
 	# (No params used directly here)
@@ -516,7 +534,29 @@ function Get-CompletedTasks {
 }
 
 # Helper function to activate and optionally minimize a window by process name
-function Activate-And-MinimizeWindow {
+<#
+.SYNOPSIS
+	Activates the main window of a specified process and optionally minimizes it.
+
+.DESCRIPTION
+	This function locates a running process by its name, brings its main window to the foreground,
+	and optionally minimizes the window if the -Minimize switch is specified.
+
+.PARAMETER ProcessName
+	The name of the process whose window should be activated and optionally minimized.
+
+.PARAMETER Minimize
+	If specified, the function will minimize the process's main window after activating it.
+
+.EXAMPLE
+	ShowThenMinimizeWindow -ProcessName "notepad" -Minimize
+
+	Activates the Notepad window and minimizes it.
+
+.NOTES
+	Requires the process to have a main window. Uses WScript.Shell COM object and Win32 API for window manipulation.
+#>
+function ShowThenMinimizeWindow {
 	param (
 		[string]$ProcessName,
 		[switch]$Minimize
@@ -526,7 +566,7 @@ function Activate-And-MinimizeWindow {
 		$wshell = New-Object -ComObject WScript.Shell
 		if ($proc.MainWindowTitle) {
 			[void]$wshell.AppActivate($proc.MainWindowTitle)
-			Start-Sleep -Milliseconds 500
+			Start-Sleep -Seconds 3
 			if ($Minimize -and $proc.MainWindowHandle -ne [IntPtr]::Zero) {
 				[Win32]::ShowWindow($proc.MainWindowHandle, 2) # SW_MINIMIZE
 			}
@@ -1232,7 +1272,7 @@ if (Test-Path -Path $ZwiftLogPath) {
 	}
 
 	# After checking/starting OBS, check if recording has started in the latest OBS log
-	if (Test-Path $ObsLogDir -and (Get-ChildItem -Path $ObsLogDir -Filter '*.txt' -ErrorAction SilentlyContinue)) {
+	if ((Test-Path $ObsLogDir) -and (Get-ChildItem -Path $ObsLogDir -Filter '*.txt' -ErrorAction SilentlyContinue)) {
 		$latestLog = Get-ChildItem -Path $ObsLogDir -Filter '*.txt' | Sort-Object LastWriteTime -Descending | Select-Object -First 1
 		if ($latestLog) {
 			$logContent = Get-Content $latestLog.FullName -Raw
@@ -1271,7 +1311,7 @@ if (Test-Path -Path $ZwiftLogPath) {
 					Add-CompletedTask -Tracker $taskTracker -TaskName 'OBS recording started'
 					Start-Sleep -Seconds 3
 					# Minimize OBS window
-					Activate-And-MinimizeWindow -ProcessName $ObsProcessName -Minimize
+					ShowThenMinimizeWindow -ProcessName $ObsProcessName -Minimize
 				}
 				else {
 					Write-Host "$(Get-Date): OBS process not found to send hotkey." -ForegroundColor Red
