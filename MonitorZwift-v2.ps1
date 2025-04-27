@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 2.0.1
+.VERSION 2.0.2
 .GUID 4296fcf1-a13d-4d31-afdc-bcbd4e05506d
 
 .AUTHOR Nick2bad4u
@@ -336,6 +336,7 @@ param (
 
 	# Used in Step 10.5: Monitor Zwift log for 'GameFlowState Riding' and check OBS
 	[string]$ObsRecordingHotkey = '^{F11}',
+	[string]$ZwiftLogPath = 'C:\Users\Nick\Dropbox\PC (2)\Documents\Zwift\Logs\Log.txt',
 
 	# Used in Step 11: Wait for Zwift game to close
 	# (No params used directly here)
