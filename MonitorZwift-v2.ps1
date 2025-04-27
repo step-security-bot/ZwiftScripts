@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 2.0.2
+.VERSION 2.0.3
 .GUID 4296fcf1-a13d-4d31-afdc-bcbd4e05506d
 
 .AUTHOR Nick2bad4u
@@ -254,6 +254,18 @@ This script performs the following tasks:
 .PARAMETER CloseObsHotkey
 	Hotkey to close OBS gracefully. Default: '%{F4}' (Alt+F4).
 
+.PARAMETER ZwiftLogPath
+	Path to the Zwift log file. Default: 'C:\Users\Nick\Dropbox\PC (2)\Documents\Zwift\Logs\Log.txt'.
+
+.PARAMETER ObsLogDir
+	Path to the OBS log directory. Default: "$env:APPDATA\obs-studio\logs".
+
+.PARAMETER obsPath
+	Path to the OBS executable. Default: 'C:\Program Files\obs-studio\bin\64bit\obs64.exe'.
+
+.PARAMETER ObsRecordingStartLogMessage
+	Log message indicating OBS recording start. Default: '==== Recording Start'.
+
 .PARAMETER tasksCompleted
 	List of tasks to track completion status.
 
@@ -335,22 +347,10 @@ param (
 	[string]$ObsProcessName = 'obs64',
 
 	# Used in Step 10.5: Monitor Zwift log for 'GameFlowState Riding' and check OBS
-	[string]$ObsRecordingHotkey = '^{F11}',
 	[string]$ZwiftLogPath = 'C:\Users\Nick\Dropbox\PC (2)\Documents\Zwift\Logs\Log.txt',
-
-	# Used in Step 11: Wait for Zwift game to close
-	# (No params used directly here)
-
-	# Used in Step 12: Close Sauce for Zwift if running
-	# (No params used directly here)
-
-	# Used in Step 13: Restore primary display to default
-	[int]$PrimaryDisplayDefault = 1,
-
-	# Used in Step 14: Stop and close OBS if running
-	[string]$CloseObsHotkey = '%{F4}',
-
-	# Used in Step 15: Run FreeFileSync batch job to sync files
+	[string]$ObsLogDir = "$env:APPDATA\obs-studio\logs",
+	[string]$obsPath = 'C:\Program Files\obs-studio\bin\64bit\obs64.exe',
+	[string]$ObsRecordingStartLogMessage = '==== Recording Start',
 	[string]$FreeFileSyncPath = 'C:\Program Files\FreeFileSync\FreeFileSync.exe',
 	[string]$BatchJobPath = 'C:\Users\Nick\Dropbox\Random Save\Task Scheduler Rules\ZwiftPics.ffs_batch',
 	[string]$BatchJobPath2 = 'C:\Users\Nick\Dropbox\Random Save\Task Scheduler Rules\RecordingsToNas.ffs_batch',
