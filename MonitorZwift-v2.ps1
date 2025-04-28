@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 2.0.4
+.VERSION 2.0.5
 .GUID 4296fcf1-a13d-4d31-afdc-bcbd4e05506d
 
 .AUTHOR Nick2bad4u
