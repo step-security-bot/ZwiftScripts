@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 2.0.5
+.VERSION 2.0.6
 .GUID 4296fcf1-a13d-4d31-afdc-bcbd4e05506d
 
 .AUTHOR Nick2bad4u
@@ -369,7 +369,7 @@ param (
 	# Used in Step 11: Wait for Zwift game to close.
 
 	# Used in Step 12: Ensure Sauce for Zwift is closed.
-	[int]$SauceProcessName = 'Sauce for Zwift',
+	[string]$SauceProcessName = 'Sauce for Zwift',
 
 	# Used in Step 13: Restore primary display to default.
 	[int]$PrimaryDisplayDefault = 1,
