@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 2.0.6
+.VERSION 2.0.7
 .GUID 4296fcf1-a13d-4d31-afdc-bcbd4e05506d
 
 .AUTHOR Nick2bad4u
@@ -456,6 +456,45 @@ if (-not ([System.Management.Automation.PSTypeName]'Win32').Type) {
 	Add-Type -TypeDefinition $win32Code
 }
 
+# Win32 API helper for robust window activation (works for OBS and others)
+function Activate-Window {
+	param([System.Diagnostics.Process]$proc)
+	if (-not $proc) { return $false }
+	$hWnd = $proc.MainWindowHandle
+	if ($hWnd -eq 0) {
+		Write-Host "[$(Get-Date -Format o)] Process has no MainWindowHandle." -ForegroundColor Yellow
+		return $false
+	}
+	# If minimized, restore window (SW_RESTORE = 9)
+	$win32 = @'
+using System;
+using System.Runtime.InteropServices;
+public class Win32Activate {
+    [DllImport("user32.dll")]
+    public static extern bool SetForegroundWindow(IntPtr hWnd);
+    [DllImport("user32.dll")]
+    public static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
+    [DllImport("user32.dll")]
+    public static extern bool IsIconic(IntPtr hWnd);
+}
+'@
+	if (-not ([System.Management.Automation.PSTypeName]'Win32Activate').Type) {
+		Add-Type -TypeDefinition $win32 -ErrorAction SilentlyContinue
+	}
+	if ([Win32Activate]::IsIconic($hWnd)) {
+		[Win32Activate]::ShowWindowAsync($hWnd, 9) | Out-Null
+		Start-Sleep -Milliseconds 500
+	}
+	$result = [Win32Activate]::SetForegroundWindow($hWnd)
+	if ($result) {
+		Write-Host "[$(Get-Date -Format o)] Window activated using Win32 API."
+	}
+ else {
+		Write-Host "[$(Get-Date -Format o)] Failed to activate window using Win32 API." -ForegroundColor Yellow
+	}
+	return $result
+}
+
 # Variables for the current PowerShell window and process
 $hwnd = [Win32]::GetForegroundWindow()
 $process = Get-Process -Id ([System.Diagnostics.Process]::GetCurrentProcess().Id)
@@ -531,47 +570,6 @@ function Get-CompletedTasks {
 		[hashtable]$Tracker
 	)
 	return $Tracker.CompletedTasks
-}
-
-# Helper function to activate and optionally minimize a window by process name
-<#
-.SYNOPSIS
-	Activates the main window of a specified process and optionally minimizes it.
-
-.DESCRIPTION
-	This function locates a running process by its name, brings its main window to the foreground,
-	and optionally minimizes the window if the -Minimize switch is specified.
-
-.PARAMETER ProcessName
-	The name of the process whose window should be activated and optionally minimized.
-
-.PARAMETER Minimize
-	If specified, the function will minimize the process's main window after activating it.
-
-.EXAMPLE
-	ShowThenMinimizeWindow -ProcessName "notepad" -Minimize
-
-	Activates the Notepad window and minimizes it.
-
-.NOTES
-	Requires the process to have a main window. Uses WScript.Shell COM object and Win32 API for window manipulation.
-#>
-function ShowThenMinimizeWindow {
-	param (
-		[string]$ProcessName,
-		[switch]$Minimize
-	)
-	$proc = Get-Process -Name $ProcessName -ErrorAction SilentlyContinue
-	if ($proc) {
-		$wshell = New-Object -ComObject WScript.Shell
-		if ($proc.MainWindowTitle) {
-			[void]$wshell.AppActivate($proc.MainWindowTitle)
-			Start-Sleep -Seconds 3
-			if ($Minimize -and $proc.MainWindowHandle -ne [IntPtr]::Zero) {
-				[Win32]::ShowWindow($proc.MainWindowHandle, 2) # SW_MINIMIZE
-			}
-		}
-	}
 }
 
 # Function: Show-WaitingAnimation
@@ -1289,7 +1287,7 @@ if (Test-Path -Path $ZwiftLogPath) {
 					}
 
 					if ($obsProc) {
-						[void]$wshell.AppActivate($obsProc.MainWindowTitle)
+						Activate-Window $obsProc | Out-Null
 					}
 					else {
 						Write-Host "$(Get-Date): OBS process could not be found after $maxRetries attempts. Please start OBS manually." -ForegroundColor Red
@@ -1305,13 +1303,27 @@ if (Test-Path -Path $ZwiftLogPath) {
 				$wshell = New-Object -ComObject WScript.Shell
 				$obsProc = Get-Process -Name $ObsProcessName -ErrorAction SilentlyContinue
 				if ($obsProc) {
-					[void]$wshell.AppActivate($obsProc.MainWindowTitle)
+					Activate-Window $obsProc | Out-Null
 					Start-Sleep -Seconds 1
 					$wshell.SendKeys($ObsRecordingHotkey) # <-- Send the start recording hotkey (Ctrl+F11 by default)
+					# Minimize OBS after starting recording
+					$obsHwnd = $obsProc.MainWindowHandle
+					if ($obsHwnd -ne 0) {
+						if (-not ([System.Management.Automation.PSTypeName]'Win32Activate').Type) {
+							$win32 = @'
+using System;
+using System.Runtime.InteropServices;
+public class Win32Activate {
+    [DllImport("user32.dll")]
+    public static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
+}
+'@
+							Add-Type -TypeDefinition $win32 -ErrorAction SilentlyContinue
+						}
+						[Win32Activate]::ShowWindowAsync($obsHwnd, 6) | Out-Null # SW_MINIMIZE = 6
+					}
 					Add-CompletedTask -Tracker $taskTracker -TaskName 'OBS recording started'
 					Start-Sleep -Seconds 3
-					# Minimize OBS window
-					ShowThenMinimizeWindow -ProcessName $ObsProcessName -Minimize
 				}
 				else {
 					Write-Host "$(Get-Date): OBS process not found to send hotkey." -ForegroundColor Red
@@ -1405,7 +1417,7 @@ try {
 			$wshell = New-Object -ComObject WScript.Shell
 			$ObsProcess | ForEach-Object {
 				try {
-					[void]$wshell.AppActivate($_.MainWindowTitle)
+					Activate-Window $_ | Out-Null
 					Start-Sleep -Milliseconds 500
 					$wshell.SendKeys($ObsRecordingHotkey) # Send hotkey to stop recording
 				}
@@ -1432,27 +1444,8 @@ try {
 			# Close OBS gracefully with hotkey instead of force-killing it
 			$ObsProcess | ForEach-Object {
 				try {
-					# Check if the OBS window is already active
-					if ($_.MainWindowTitle -and $wshell.AppActivate($_.MainWindowTitle)) {
-						Write-Host "$(Get-Date): OBS window is already active: $($_.MainWindowTitle)" -ForegroundColor Yellow
-					}
-					else {
-						# Attempt to activate the OBS window
-						if ($_.MainWindowTitle) {
-							$activated = $wshell.AppActivate($_.MainWindowTitle)
-							if ($activated) {
-								Write-Host "$(Get-Date): Activated OBS window: $($_.MainWindowTitle)" -ForegroundColor Green
-								Wait-WithAnimation -Seconds 2 -Message 'Activating OBS Window...'
-							}
-							else {
-								Write-Host "$(Get-Date): Failed to activate OBS window: $($_.MainWindowTitle)" -ForegroundColor Yellow
-							}
-						}
-						else {
-							Write-Host "$(Get-Date): OBS process has no MainWindowTitle. Skipping activation." -ForegroundColor Yellow
-						}
-					}
-
+					Activate-Window $_ | Out-Null
+					Start-Sleep -Milliseconds 500
 					# Send the hotkey to close OBS
 					$wshell.SendKeys($CloseObsHotkey)
 					Write-Host "$(Get-Date): Sent close hotkey to OBS window: $($_.MainWindowTitle)" -ForegroundColor Green
