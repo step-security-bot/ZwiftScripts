@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 2.0.7
+.VERSION 2.0.8
 .GUID 4296fcf1-a13d-4d31-afdc-bcbd4e05506d
 
 .AUTHOR Nick2bad4u
@@ -1302,32 +1302,51 @@ if (Test-Path -Path $ZwiftLogPath) {
 				# Try to start recording using OBS hotkey (simulate hotkey Ctrl+F11 by default)
 				$wshell = New-Object -ComObject WScript.Shell
 				$obsProc = Get-Process -Name $ObsProcessName -ErrorAction SilentlyContinue
-				if ($obsProc) {
-					Activate-Window $obsProc | Out-Null
-					Start-Sleep -Seconds 1
-					$wshell.SendKeys($ObsRecordingHotkey) # <-- Send the start recording hotkey (Ctrl+F11 by default)
-					# Minimize OBS after starting recording
-					$obsHwnd = $obsProc.MainWindowHandle
-					if ($obsHwnd -ne 0) {
-						if (-not ([System.Management.Automation.PSTypeName]'Win32Activate').Type) {
-							$win32 = @'
+				$maxRetries = 5
+				$retryCount = 0
+				$activated = $false
+
+				while ($retryCount -lt $maxRetries -and -not $activated) {
+					if ($obsProc -and $obsProc.MainWindowHandle -ne 0) {
+						$activated = Activate-Window $obsProc
+						if (-not $activated) {
+							Write-Host "[$(Get-Date -Format o)] Retry $($retryCount+1): Failed to activate OBS window. Retrying in 1s..." -ForegroundColor Yellow
+							Start-Sleep -Seconds 1
+						}
+					}
+					else {
+						Write-Host "[$(Get-Date -Format o)] OBS MainWindowHandle not ready. Waiting..." -ForegroundColor Yellow
+						Start-Sleep -Seconds 1
+						$obsProc = Get-Process -Name $ObsProcessName -ErrorAction SilentlyContinue
+					}
+					$retryCount++
+				}
+
+				if (-not $activated) {
+					Write-Host "[$(Get-Date -Format o)] Could not activate OBS window after $maxRetries attempts. Please manually focus OBS before recording." -ForegroundColor Red
+					Read-Host 'Press Enter to continue and send the recording hotkey to OBS'
+				}
+
+				Start-Sleep -Seconds 1
+				$wshell.SendKeys($ObsRecordingHotkey) # <-- Send the start recording hotkey (Ctrl+F11 by default)
+				# Minimize OBS after starting recording
+				$obsHwnd = $obsProc.MainWindowHandle
+				if ($obsHwnd -ne 0) {
+					if (-not ([System.Management.Automation.PSTypeName]'Win32Activate').Type) {
+						$win32 = @'
 using System;
 using System.Runtime.InteropServices;
 public class Win32Activate {
-    [DllImport("user32.dll")]
-    public static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
+	[DllImport("user32.dll")]
+	public static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
 }
 '@
-							Add-Type -TypeDefinition $win32 -ErrorAction SilentlyContinue
-						}
-						[Win32Activate]::ShowWindowAsync($obsHwnd, 6) | Out-Null # SW_MINIMIZE = 6
+						Add-Type -TypeDefinition $win32 -ErrorAction SilentlyContinue
 					}
-					Add-CompletedTask -Tracker $taskTracker -TaskName 'OBS recording started'
-					Start-Sleep -Seconds 3
+					[Win32Activate]::ShowWindowAsync($obsHwnd, 6) | Out-Null # SW_MINIMIZE = 6
 				}
-				else {
-					Write-Host "$(Get-Date): OBS process not found to send hotkey." -ForegroundColor Red
-				}
+				Add-CompletedTask -Tracker $taskTracker -TaskName 'OBS recording started'
+				Start-Sleep -Seconds 3
 			}
 		}
 		else {
