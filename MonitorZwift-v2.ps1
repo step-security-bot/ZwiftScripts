@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 2.0.8
+.VERSION 2.1.0
 .GUID 4296fcf1-a13d-4d31-afdc-bcbd4e05506d
 
 .AUTHOR Nick2bad4u
@@ -457,7 +457,7 @@ if (-not ([System.Management.Automation.PSTypeName]'Win32').Type) {
 }
 
 # Win32 API helper for robust window activation (works for OBS and others)
-function Activate-Window {
+function Focus-Window {
 	param([System.Diagnostics.Process]$proc)
 	if (-not $proc) { return $false }
 	$hWnd = $proc.MainWindowHandle
@@ -1201,6 +1201,36 @@ catch {
 }
 
 # =============================
+# Step 10.4: Focus Spotify and start playing music if running.
+# =============================
+
+try {
+    Write-Host "$(Get-Date): Checking for Spotify before starting OBS recording..." -ForegroundColor Cyan
+    $SpotifyProcess = Get-Process -Name $SpotifyProcessName -ErrorAction SilentlyContinue
+    if ($SpotifyProcess) {
+        Write-Host "$(Get-Date): Spotify is running. Focusing window and sending Play hotkey (Spacebar)..." -ForegroundColor Green
+        try {
+            # Activate Spotify window
+            Focus-Window $SpotifyProcess | Out-Null
+            Start-Sleep -Milliseconds 500
+            # Send Spacebar to play music
+            $wshell = New-Object -ComObject WScript.Shell
+            $wshell.SendKeys(' ')
+            Write-Host "$(Get-Date): Sent Play hotkey (Spacebar) to Spotify." -ForegroundColor Green
+            Add-CompletedTask -Tracker $taskTracker -TaskName 'Spotify play hotkey sent'
+        }
+        catch {
+            Write-Error "$(Get-Date): Error activating Spotify window or sending play hotkey: $($_.Exception.Message)"
+        }
+    } else {
+        Write-Host "$(Get-Date): Spotify is not running. Skipping play hotkey." -ForegroundColor Yellow
+    }
+}
+catch {
+    Write-Error "$(Get-Date): Error checking for Spotify or sending play hotkey: $($_.Exception.Message)"
+}
+
+# =============================
 # Step 10.5: Monitor Zwift log for 'GameFlowState Riding' and check OBS
 # =============================
 
@@ -1287,7 +1317,7 @@ if (Test-Path -Path $ZwiftLogPath) {
 					}
 
 					if ($obsProc) {
-						Activate-Window $obsProc | Out-Null
+						Focus-Window $obsProc | Out-Null
 					}
 					else {
 						Write-Host "$(Get-Date): OBS process could not be found after $maxRetries attempts. Please start OBS manually." -ForegroundColor Red
@@ -1308,7 +1338,7 @@ if (Test-Path -Path $ZwiftLogPath) {
 
 				while ($retryCount -lt $maxRetries -and -not $activated) {
 					if ($obsProc -and $obsProc.MainWindowHandle -ne 0) {
-						$activated = Activate-Window $obsProc
+						$activated = Focus-Window $obsProc
 						if (-not $activated) {
 							Write-Host "[$(Get-Date -Format o)] Retry $($retryCount+1): Failed to activate OBS window. Retrying in 1s..." -ForegroundColor Yellow
 							Start-Sleep -Seconds 1
@@ -1436,7 +1466,7 @@ try {
 			$wshell = New-Object -ComObject WScript.Shell
 			$ObsProcess | ForEach-Object {
 				try {
-					Activate-Window $_ | Out-Null
+					Focus-Window $_ | Out-Null
 					Start-Sleep -Milliseconds 500
 					$wshell.SendKeys($ObsRecordingHotkey) # Send hotkey to stop recording
 				}
@@ -1445,6 +1475,34 @@ try {
 				}
 			}
 			Write-Host "$(Get-Date): Sent stop recording command to OBS" -ForegroundColor Green
+
+			# Wait for '==== Recording Stop' in the latest OBS log (mirror start check)
+			$ObsRecordingStopLogMessage = '==== Recording Stop'
+			$stopTimeout = 15 # seconds
+			$stopDetected = $false
+			$stopStartTime = Get-Date
+			if ((Test-Path $ObsLogDir) -and (Get-ChildItem -Path $ObsLogDir -Filter '*.txt' -ErrorAction SilentlyContinue)) {
+				$latestLog = Get-ChildItem -Path $ObsLogDir -Filter '*.txt' | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+				if ($latestLog) {
+					while (-not $stopDetected -and ((Get-Date) - $stopStartTime).TotalSeconds -lt $stopTimeout) {
+						$logContent = Get-Content $latestLog.FullName -Raw
+						if ($logContent -match [regex]::Escape($ObsRecordingStopLogMessage) -or $logContent -match 'Recording stopped' -or $logContent -match 'Stop recording') {
+							$stopDetected = $true
+							Write-Host "$(Get-Date): OBS recording stop detected in log." -ForegroundColor Green
+							Add-CompletedTask -Tracker $taskTracker -TaskName 'OBS recording stopped, detected in log'
+							break
+						}
+						Start-Sleep -Seconds 1
+					}
+					if (-not $stopDetected) {
+						Write-Host "$(Get-Date): OBS recording stop NOT detected in log after $stopTimeout seconds. Proceeding anyway." -ForegroundColor Yellow
+					}
+				} else {
+					Write-Host "$(Get-Date): No OBS log files found to check recording stop status." -ForegroundColor Yellow
+				}
+			} else {
+				Write-Host "$(Get-Date): OBS log directory not found: $ObsLogDir" -ForegroundColor Yellow
+			}
 		}
 		catch {
 			Write-Error "$(Get-Date): Error initializing WScript.Shell or sending stop recording command: $($_.Exception.Message)"
@@ -1463,7 +1521,7 @@ try {
 			# Close OBS gracefully with hotkey instead of force-killing it
 			$ObsProcess | ForEach-Object {
 				try {
-					Activate-Window $_ | Out-Null
+					Focus-Window $_ | Out-Null
 					Start-Sleep -Milliseconds 500
 					# Send the hotkey to close OBS
 					$wshell.SendKeys($CloseObsHotkey)
@@ -1472,7 +1530,7 @@ try {
 
 				}
 				catch {
-					Write-Error "$(Get-Date): Error activating OBS window or sending close hotkey: $($_.Exception.Message)"
+					Write-Error "$(Get-Date): Error focusing OBS window or sending close hotkey: $($_.Exception.Message)"
 				}
 			}
 		}
