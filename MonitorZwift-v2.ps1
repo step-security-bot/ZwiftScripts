@@ -457,7 +457,7 @@ if (-not ([System.Management.Automation.PSTypeName]'Win32').Type) {
 }
 
 # Win32 API helper for robust window activation (works for OBS and others)
-function Focus-Window {
+function Set-WindowFocus {
 	param([System.Diagnostics.Process]$proc)
 	if (-not $proc) { return $false }
 	$hWnd = $proc.MainWindowHandle
@@ -489,7 +489,7 @@ public class Win32Activate {
 	if ($result) {
 		Write-Host "[$(Get-Date -Format o)] Window activated using Win32 API."
 	}
- else {
+	else {
 		Write-Host "[$(Get-Date -Format o)] Failed to activate window using Win32 API." -ForegroundColor Yellow
 	}
 	return $result
@@ -1205,29 +1205,30 @@ catch {
 # =============================
 
 try {
-    Write-Host "$(Get-Date): Checking for Spotify before starting OBS recording..." -ForegroundColor Cyan
-    $SpotifyProcess = Get-Process -Name $SpotifyProcessName -ErrorAction SilentlyContinue
-    if ($SpotifyProcess) {
-        Write-Host "$(Get-Date): Spotify is running. Focusing window and sending Play hotkey (Spacebar)..." -ForegroundColor Green
-        try {
-            # Activate Spotify window
-            Focus-Window $SpotifyProcess | Out-Null
-            Start-Sleep -Milliseconds 500
-            # Send Spacebar to play music
-            $wshell = New-Object -ComObject WScript.Shell
-            $wshell.SendKeys(' ')
-            Write-Host "$(Get-Date): Sent Play hotkey (Spacebar) to Spotify." -ForegroundColor Green
-            Add-CompletedTask -Tracker $taskTracker -TaskName 'Spotify play hotkey sent'
-        }
-        catch {
-            Write-Error "$(Get-Date): Error activating Spotify window or sending play hotkey: $($_.Exception.Message)"
-        }
-    } else {
-        Write-Host "$(Get-Date): Spotify is not running. Skipping play hotkey." -ForegroundColor Yellow
-    }
+	Write-Host "$(Get-Date): Checking for Spotify before starting OBS recording..." -ForegroundColor Cyan
+	$SpotifyProcess = Get-Process -Name $SpotifyProcessName -ErrorAction SilentlyContinue
+	if ($SpotifyProcess) {
+		Write-Host "$(Get-Date): Spotify is running. Focusing window and sending Play hotkey (Spacebar)..." -ForegroundColor Green
+		try {
+			# Activate Spotify window
+			Set-WindowFocus $SpotifyProcess | Out-Null
+			Start-Sleep -Milliseconds 500
+			# Send Spacebar to play music
+			$wshell = New-Object -ComObject WScript.Shell
+			$wshell.SendKeys(' ')
+			Write-Host "$(Get-Date): Sent Play hotkey (Spacebar) to Spotify." -ForegroundColor Green
+			Add-CompletedTask -Tracker $taskTracker -TaskName 'Spotify play hotkey sent'
+		}
+		catch {
+			Write-Error "$(Get-Date): Error activating Spotify window or sending play hotkey: $($_.Exception.Message)"
+		}
+	}
+ else {
+		Write-Host "$(Get-Date): Spotify is not running. Skipping play hotkey." -ForegroundColor Yellow
+	}
 }
 catch {
-    Write-Error "$(Get-Date): Error checking for Spotify or sending play hotkey: $($_.Exception.Message)"
+	Write-Error "$(Get-Date): Error checking for Spotify or sending play hotkey: $($_.Exception.Message)"
 }
 
 # =============================
@@ -1317,7 +1318,7 @@ if (Test-Path -Path $ZwiftLogPath) {
 					}
 
 					if ($obsProc) {
-						Focus-Window $obsProc | Out-Null
+						Set-WindowFocus $obsProc | Out-Null
 					}
 					else {
 						Write-Host "$(Get-Date): OBS process could not be found after $maxRetries attempts. Please start OBS manually." -ForegroundColor Red
@@ -1338,7 +1339,7 @@ if (Test-Path -Path $ZwiftLogPath) {
 
 				while ($retryCount -lt $maxRetries -and -not $activated) {
 					if ($obsProc -and $obsProc.MainWindowHandle -ne 0) {
-						$activated = Focus-Window $obsProc
+						$activated = Set-WindowFocus $obsProc
 						if (-not $activated) {
 							Write-Host "[$(Get-Date -Format o)] Retry $($retryCount+1): Failed to activate OBS window. Retrying in 1s..." -ForegroundColor Yellow
 							Start-Sleep -Seconds 1
@@ -1466,7 +1467,7 @@ try {
 			$wshell = New-Object -ComObject WScript.Shell
 			$ObsProcess | ForEach-Object {
 				try {
-					Focus-Window $_ | Out-Null
+					Set-WindowFocus $_ | Out-Null
 					Start-Sleep -Milliseconds 500
 					$wshell.SendKeys($ObsRecordingHotkey) # Send hotkey to stop recording
 				}
@@ -1497,10 +1498,12 @@ try {
 					if (-not $stopDetected) {
 						Write-Host "$(Get-Date): OBS recording stop NOT detected in log after $stopTimeout seconds. Proceeding anyway." -ForegroundColor Yellow
 					}
-				} else {
+				}
+				else {
 					Write-Host "$(Get-Date): No OBS log files found to check recording stop status." -ForegroundColor Yellow
 				}
-			} else {
+			}
+			else {
 				Write-Host "$(Get-Date): OBS log directory not found: $ObsLogDir" -ForegroundColor Yellow
 			}
 		}
@@ -1521,7 +1524,7 @@ try {
 			# Close OBS gracefully with hotkey instead of force-killing it
 			$ObsProcess | ForEach-Object {
 				try {
-					Focus-Window $_ | Out-Null
+					Set-WindowFocus $_ | Out-Null
 					Start-Sleep -Milliseconds 500
 					# Send the hotkey to close OBS
 					$wshell.SendKeys($CloseObsHotkey)
@@ -1568,6 +1571,44 @@ try {
 }
 catch {
 	Write-Error "$(Get-Date): Error stopping OBS recording or closing OBS: $($_.Exception.Message)"
+}
+
+# =============================
+# Step 14.5: Stop Spotify music and close Spotify after recording ends.
+# =============================
+
+try {
+	Write-Host "$(Get-Date): Attempting to stop Spotify music and close Spotify after recording..." -ForegroundColor Cyan
+	$SpotifyProcess = Get-Process -Name $SpotifyProcessName -ErrorAction SilentlyContinue
+	if ($SpotifyProcess) {
+		try {
+			# Activate Spotify window
+			Set-WindowFocus $SpotifyProcess | Out-Null
+			Start-Sleep -Milliseconds 500
+			# Send Spacebar to pause music
+			$wshell = New-Object -ComObject WScript.Shell
+			$wshell.SendKeys(' ')
+			Write-Host "$(Get-Date): Sent Pause hotkey (Spacebar) to Spotify." -ForegroundColor Green
+		}
+		catch {
+			Write-Error "$(Get-Date): Error activating Spotify window or sending pause hotkey: $($_.Exception.Message)"
+		}
+		try {
+			# Close Spotify
+			$SpotifyProcess | Stop-Process -Force
+			Write-Host "$(Get-Date): Spotify closed successfully after recording." -ForegroundColor Green
+			Add-CompletedTask -Tracker $taskTracker -TaskName 'Spotify stopped and closed after recording'
+		}
+		catch {
+			Write-Error "$(Get-Date): Error closing Spotify after recording: $($_.Exception.Message)"
+		}
+	}
+	else {
+		Write-Host "$(Get-Date): Spotify is not running after recording. No action needed." -ForegroundColor Yellow
+	}
+}
+catch {
+	Write-Error "$(Get-Date): Error in stopping or closing Spotify after recording: $($_.Exception.Message)"
 }
 
 # =============================
