@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 2.1.1
+.VERSION 2.1.3
 .GUID 4296fcf1-a13d-4d31-afdc-bcbd4e05506d
 
 .AUTHOR Nick2bad4u
@@ -1210,7 +1210,7 @@ try {
 	if ($SpotifyProcess) {
 		Write-Host "$(Get-Date): Spotify is running. Focusing window and sending Play hotkey (Spacebar)..." -ForegroundColor Green
 		try {
-			Activate-Window $SpotifyProcess | Out-Null
+			Set-WindowFocus $SpotifyProcess | Out-Null
 			Start-Sleep -Milliseconds 500
 			$wshell = New-Object -ComObject WScript.Shell
 			$wshell.SendKeys(' ')
@@ -1580,7 +1580,7 @@ try {
 	$SpotifyProcess = Get-Process -Name $SpotifyProcessName -ErrorAction SilentlyContinue | Where-Object { $_.MainWindowHandle -ne 0 } | Select-Object -First 1
 	if ($SpotifyProcess) {
 		try {
-			Activate-Window $SpotifyProcess | Out-Null
+			Set-WindowFocus $SpotifyProcess | Out-Null
 			Start-Sleep -Milliseconds 500
 			$wshell = New-Object -ComObject WScript.Shell
 			$wshell.SendKeys(' ')
