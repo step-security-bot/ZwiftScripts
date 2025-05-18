@@ -31,6 +31,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: stale-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   stale:
     runs-on: ubuntu-latest
