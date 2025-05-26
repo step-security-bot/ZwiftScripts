@@ -29,5 +29,5 @@ jobs:
       - name: Run StyleLint
         uses: actions-hub/stylelint@79a72921dfce2e51791be2df406f0c103fb47553 # v1.1.6
         env:
-          PATTERN: "electron-app/*.css electron-app/**/*.css"
+          PATTERN: "./*.css ./**/*.css"
         continue-on-error: true # Continue even if this step fails

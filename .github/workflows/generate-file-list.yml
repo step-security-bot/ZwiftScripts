@@ -1,8 +1,6 @@
 name: Generate and Update README.MD File List
 
 on:
-  schedule:
-    - cron: "0 0 */14 * *" # Runs every 14 days
   workflow_dispatch: # Allows manual triggering
 
 permissions:
