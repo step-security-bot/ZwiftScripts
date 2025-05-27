@@ -1358,8 +1358,6 @@ if (Test-Path -Path $ZwiftLogPath) {
 
 				Start-Sleep -Seconds 1
 				$wshell.SendKeys($ObsRecordingHotkey) # <-- Send the start recording hotkey (Ctrl+F11 by default)
-				# Wait 3 seconds to visually verify recording started
-				Start-Sleep -Seconds 3
 				# Minimize OBS after starting recording
 				$obsHwnd = $obsProc.MainWindowHandle
 				if ($obsHwnd -ne 0) {
