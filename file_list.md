@@ -33,116 +33,116 @@ document.addEventListener("DOMContentLoaded", function() {
                     let file_list_html = '';
                     switch(contentId) {
                         case 'file-list-1':
-                            file_list_html = `<ul><h2 style="color: #e0aaa6;">Repo Root</h2>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.black" style="color: #ff99a2;">.black</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.editorconfig" style="color: #b77d8b;">.editorconfig</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.gitignore" style="color: #54af9f;">.gitignore</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.hintrc" style="color: #90b608;">.hintrc</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.jsbeautifyrc" style="color: #eebd09;">.jsbeautifyrc</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.jscsrc" style="color: #afc28d;">.jscsrc</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.pre-commit-config.yaml" style="color: #caa09b;">.pre-commit-config.yaml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.pre-commit-hooks.yaml" style="color: #c7cd6e;">.pre-commit-hooks.yaml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.prettierignore" style="color: #f09bd9;">.prettierignore</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.prettierrc" style="color: #76a84f;">.prettierrc</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.stylelintrc.json" style="color: #bb8409;">.stylelintrc.json</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.vale.ini" style="color: #5ee8be;">.vale.ini</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/CNAME" style="color: #c6aed3;">CNAME</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/LaunchZwift.ps1" style="color: #d1a404;">LaunchZwift.ps1</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/MonitorZwift-v2.md" style="color: #8ac3bf;">MonitorZwift-v2.md</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/MonitorZwift-v2.ps1" style="color: #73d711;">MonitorZwift-v2.ps1</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/MonitorZwift-v2.ps1%20-%20Shortcut.lnk" style="color: #6bb8b7;">MonitorZwift-v2.ps1 - Shortcut.lnk</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/MonitorZwift.ps1" style="color: #78bf42;">MonitorZwift.ps1</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/MoveZwiftCleanPhotos.ps1" style="color: #4aad57;">MoveZwiftCleanPhotos.ps1</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/README.md" style="color: #5cb448;">README.md</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/SetPrimaryDefault.ps1" style="color: #e0b599;">SetPrimaryDefault.ps1</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/SetPrimaryZwift.ps1" style="color: #76ab39;">SetPrimaryZwift.ps1</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/Zwift-Bike-Combos.xlsx" style="color: #a16dfd;">Zwift-Bike-Combos.xlsx</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/Zwift-Setup.lnk" style="color: #4ca373;">Zwift-Setup.lnk</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/ZwiftSetup.lnk" style="color: #e48a1a;">ZwiftSetup.lnk</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/file_list.md" style="color: #df72aa;">file_list.md</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/filelist.html" style="color: #2eadcb;">filelist.html</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/filelist.md" style="color: #909fab;">filelist.md</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sitemap.xml" style="color: #e4c567;">sitemap.xml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/test.ps1" style="color: #f7c26f;">test.ps1</a></li>
-<h2 style="color: #30e16a;">CSS</h2>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/css/DSNotes.css" style="color: #38a252;">sauce4zwift-mod-tippy/pages/css/DSNotes.css</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/css/ui.css" style="color: #fd789f;">sauce4zwift-mod-tippy/pages/css/ui.css</a></li>
-<h2 style="color: #3790cb;">JavaScript</h2>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.eslintrc.js" style="color: #71cc76;">.eslintrc.js</a></li>
-<h2 style="color: #88bcff;">YAML</h2>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/dependabot.yml" style="color: #6d971d;">.github/dependabot.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/labeler.yml" style="color: #67b19d;">.github/labeler.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/ActionLint.yml" style="color: #bbcf23;">.github/workflows/ActionLint.yml</a></li></ul>`;
+                            file_list_html = `<ul><h2 style="color: #89cb42;">Repo Root</h2>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.black" style="color: #85c26d;">.black</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.editorconfig" style="color: #c3d141;">.editorconfig</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.gitignore" style="color: #35a6f9;">.gitignore</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.hintrc" style="color: #ef972b;">.hintrc</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.jsbeautifyrc" style="color: #a6af90;">.jsbeautifyrc</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.jscsrc" style="color: #2395ee;">.jscsrc</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.pre-commit-config.yaml" style="color: #dc639a;">.pre-commit-config.yaml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.pre-commit-hooks.yaml" style="color: #8db142;">.pre-commit-hooks.yaml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.prettierignore" style="color: #dec0be;">.prettierignore</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.prettierrc" style="color: #c29627;">.prettierrc</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.stylelintrc.json" style="color: #c378fc;">.stylelintrc.json</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.vale.ini" style="color: #95a8d6;">.vale.ini</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/CNAME" style="color: #f762ca;">CNAME</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/LaunchZwift.ps1" style="color: #af82df;">LaunchZwift.ps1</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/MonitorZwift-v2.md" style="color: #a3ba10;">MonitorZwift-v2.md</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/MonitorZwift-v2.ps1" style="color: #7db7b3;">MonitorZwift-v2.ps1</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/MonitorZwift-v2.ps1%20-%20Shortcut.lnk" style="color: #4cdf1c;">MonitorZwift-v2.ps1 - Shortcut.lnk</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/MonitorZwift.ps1" style="color: #568dc4;">MonitorZwift.ps1</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/MoveZwiftCleanPhotos.ps1" style="color: #acab0f;">MoveZwiftCleanPhotos.ps1</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/README.md" style="color: #848e0b;">README.md</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/SetPrimaryDefault.ps1" style="color: #6aa107;">SetPrimaryDefault.ps1</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/SetPrimaryZwift.ps1" style="color: #dea7cf;">SetPrimaryZwift.ps1</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/Zwift-Bike-Combos.xlsx" style="color: #a19b0a;">Zwift-Bike-Combos.xlsx</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/Zwift-Setup.lnk" style="color: #98bbf3;">Zwift-Setup.lnk</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/ZwiftSetup.lnk" style="color: #e19e5a;">ZwiftSetup.lnk</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/file_list.md" style="color: #ed9672;">file_list.md</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/filelist.html" style="color: #72db87;">filelist.html</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/filelist.md" style="color: #e8c291;">filelist.md</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sitemap.xml" style="color: #c4bf51;">sitemap.xml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/test.ps1" style="color: #918dfe;">test.ps1</a></li>
+<h2 style="color: #e0c12d;">CSS</h2>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/css/DSNotes.css" style="color: #9bb272;">sauce4zwift-mod-tippy/pages/css/DSNotes.css</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/css/ui.css" style="color: #ef8a6c;">sauce4zwift-mod-tippy/pages/css/ui.css</a></li>
+<h2 style="color: #46f578;">JavaScript</h2>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.eslintrc.js" style="color: #bbdb10;">.eslintrc.js</a></li>
+<h2 style="color: #78abb7;">YAML</h2>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/dependabot.yml" style="color: #b1b6b3;">.github/dependabot.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/labeler.yml" style="color: #96dc44;">.github/labeler.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/ActionLint.yml" style="color: #5ebd42;">.github/workflows/ActionLint.yml</a></li></ul>`;
                             break;
                         case 'file-list-2':
-                            file_list_html = `<ul><li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/codeql.yml" style="color: #c18e0f;">.github/workflows/codeql.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/defender.yml" style="color: #29ec95;">.github/workflows/defender.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/dependency-review.yml" style="color: #f87caa;">.github/workflows/dependency-review.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/generate-file-list.yml" style="color: #8d8472;">.github/workflows/generate-file-list.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/greetings.yml" style="color: #4cdb54;">.github/workflows/greetings.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/jekyll-gh-pages.yml" style="color: #60c7b9;">.github/workflows/jekyll-gh-pages.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/label.yml" style="color: #d56dfc;">.github/workflows/label.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/ossar.yml" style="color: #ceac86;">.github/workflows/ossar.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/osv-scanner.yml" style="color: #56c03c;">.github/workflows/osv-scanner.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/scorecards.yml" style="color: #667dee;">.github/workflows/scorecards.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/sitemap.yml" style="color: #78ea50;">.github/workflows/sitemap.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/stale.yml" style="color: #6090cd;">.github/workflows/stale.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/static.yml" style="color: #8daaf2;">.github/workflows/static.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/super-linter.yml" style="color: #ee8498;">.github/workflows/super-linter.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.markdownlint.yml" style="color: #47ac15;">.markdownlint.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.scss-lint.yml" style="color: #57cab9;">.scss-lint.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/_config.yml" style="color: #23ea21;">_config.yml</a></li>
-<h2 style="color: #2ad79e;">.vscode</h2>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.vscode/generate_file_list.py" style="color: #6d94a0;">.vscode/generate_file_list.py</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.vscode/launch.json" style="color: #81c0d3;">.vscode/launch.json</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.vscode/settings.json" style="color: #cec185;">.vscode/settings.json</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.vscode/tasks.json" style="color: #49d376;">.vscode/tasks.json</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.vscode/test_generate_file_list.py" style="color: #d49784;">.vscode/test_generate_file_list.py</a></li>
-<h2 style="color: #86e703;">sauce4zwift-mod-tippy</h2>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/.gitignore" style="color: #efa66b;">sauce4zwift-mod-tippy/.gitignore</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/Change%20Log.txt" style="color: #3cb086;">sauce4zwift-mod-tippy/Change Log.txt</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/LICENSE" style="color: #43cae0;">sauce4zwift-mod-tippy/LICENSE</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/README.md" style="color: #90ccf5;">sauce4zwift-mod-tippy/README.md</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/manifest.json" style="color: #2aa46a;">sauce4zwift-mod-tippy/manifest.json</a></li>
-<h2 style="color: #88aa50;">sauce4zwift-mod-tippy/pages</h2>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/DSNotes.html" style="color: #46b2fc;">sauce4zwift-mod-tippy/pages/DSNotes.html</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/chaseRace.html" style="color: #e89ed7;">sauce4zwift-mod-tippy/pages/chaseRace.html</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/estimatedCalories.html" style="color: #84d472;">sauce4zwift-mod-tippy/pages/estimatedCalories.html</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/estimatedFinish-v1.html" style="color: #9aaad2;">sauce4zwift-mod-tippy/pages/estimatedFinish-v1.html</a></li>
-<h2 style="color: #b3c498;">sauce4zwift-mod-tippy/pages/images</h2>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/images/checker_640.png" style="color: #a38df6;">sauce4zwift-mod-tippy/pages/images/checker_640.png</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/images/greenConnect.png" style="color: #90cf8e;">sauce4zwift-mod-tippy/pages/images/greenConnect.png</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/images/orangeConnect.png" style="color: #bd8482;">sauce4zwift-mod-tippy/pages/images/orangeConnect.png</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/images/redConnect.png" style="color: #e4a10b;">sauce4zwift-mod-tippy/pages/images/redConnect.png</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/images/whiteConnect.png" style="color: #a9b174;">sauce4zwift-mod-tippy/pages/images/whiteConnect.png</a></li></ul>`;
+                            file_list_html = `<ul><li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/codeql.yml" style="color: #e3bb6f;">.github/workflows/codeql.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/defender.yml" style="color: #e5956f;">.github/workflows/defender.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/dependency-review.yml" style="color: #4fd001;">.github/workflows/dependency-review.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/generate-file-list.yml" style="color: #cd8a41;">.github/workflows/generate-file-list.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/greetings.yml" style="color: #ffb6b1;">.github/workflows/greetings.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/jekyll-gh-pages.yml" style="color: #d5a15c;">.github/workflows/jekyll-gh-pages.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/label.yml" style="color: #4bf171;">.github/workflows/label.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/ossar.yml" style="color: #9e7878;">.github/workflows/ossar.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/osv-scanner.yml" style="color: #5eac4d;">.github/workflows/osv-scanner.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/scorecards.yml" style="color: #81b5eb;">.github/workflows/scorecards.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/sitemap.yml" style="color: #3ac322;">.github/workflows/sitemap.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/stale.yml" style="color: #88c745;">.github/workflows/stale.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/static.yml" style="color: #d7aff5;">.github/workflows/static.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/super-linter.yml" style="color: #92e903;">.github/workflows/super-linter.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.markdownlint.yml" style="color: #97c30e;">.markdownlint.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.scss-lint.yml" style="color: #439c2f;">.scss-lint.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/_config.yml" style="color: #73add1;">_config.yml</a></li>
+<h2 style="color: #25ebc7;">.vscode</h2>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.vscode/generate_file_list.py" style="color: #aa7f3a;">.vscode/generate_file_list.py</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.vscode/launch.json" style="color: #dcbd19;">.vscode/launch.json</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.vscode/settings.json" style="color: #31c3b4;">.vscode/settings.json</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.vscode/tasks.json" style="color: #44b6cf;">.vscode/tasks.json</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.vscode/test_generate_file_list.py" style="color: #22e908;">.vscode/test_generate_file_list.py</a></li>
+<h2 style="color: #6ec30b;">sauce4zwift-mod-tippy</h2>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/.gitignore" style="color: #3da751;">sauce4zwift-mod-tippy/.gitignore</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/Change%20Log.txt" style="color: #42ae76;">sauce4zwift-mod-tippy/Change Log.txt</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/LICENSE" style="color: #2cc2b1;">sauce4zwift-mod-tippy/LICENSE</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/README.md" style="color: #98b8e2;">sauce4zwift-mod-tippy/README.md</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/manifest.json" style="color: #4ba63f;">sauce4zwift-mod-tippy/manifest.json</a></li>
+<h2 style="color: #acd52f;">sauce4zwift-mod-tippy/pages</h2>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/DSNotes.html" style="color: #94de7f;">sauce4zwift-mod-tippy/pages/DSNotes.html</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/chaseRace.html" style="color: #a1b890;">sauce4zwift-mod-tippy/pages/chaseRace.html</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/estimatedCalories.html" style="color: #84cf1a;">sauce4zwift-mod-tippy/pages/estimatedCalories.html</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/estimatedFinish-v1.html" style="color: #2dbf3e;">sauce4zwift-mod-tippy/pages/estimatedFinish-v1.html</a></li>
+<h2 style="color: #f1c556;">sauce4zwift-mod-tippy/pages/images</h2>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/images/checker_640.png" style="color: #a0b807;">sauce4zwift-mod-tippy/pages/images/checker_640.png</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/images/greenConnect.png" style="color: #77b3a8;">sauce4zwift-mod-tippy/pages/images/greenConnect.png</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/images/orangeConnect.png" style="color: #ff8a73;">sauce4zwift-mod-tippy/pages/images/orangeConnect.png</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/images/redConnect.png" style="color: #c564da;">sauce4zwift-mod-tippy/pages/images/redConnect.png</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/images/whiteConnect.png" style="color: #909e8c;">sauce4zwift-mod-tippy/pages/images/whiteConnect.png</a></li></ul>`;
                             break;
                         case 'file-list-3':
-                            file_list_html = `<ul><h2 style="color: #bc8bd8;">sauce4zwift-mod-tippy/pages/settings</h2>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/settings/DSNotes.html" style="color: #91d124;">sauce4zwift-mod-tippy/pages/settings/DSNotes.html</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/settings/estimatedFinish.html" style="color: #d88623;">sauce4zwift-mod-tippy/pages/settings/estimatedFinish.html</a></li>
-<h2 style="color: #3fb977;">sauce4zwift-mod-tippy/pages/src</h2>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/src/DSNotes.mjs" style="color: #c2bce2;">sauce4zwift-mod-tippy/pages/src/DSNotes.mjs</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/src/chaseRace.mjs" style="color: #cf779f;">sauce4zwift-mod-tippy/pages/src/chaseRace.mjs</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/src/estimatedFinish.mjs" style="color: #b1cb36;">sauce4zwift-mod-tippy/pages/src/estimatedFinish.mjs</a></li>
-<h2 style="color: #6cdc12;">sauce4zwift-mod-tippy/pages/src/BM</h2>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/src/BM/common.mjs" style="color: #22deee;">sauce4zwift-mod-tippy/pages/src/BM/common.mjs</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/src/BM/dataLookup.mjs" style="color: #8fe505;">sauce4zwift-mod-tippy/pages/src/BM/dataLookup.mjs</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/src/BM/notesLookup.mjs" style="color: #77cb92;">sauce4zwift-mod-tippy/pages/src/BM/notesLookup.mjs</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/src/BM/settings.mjs" style="color: #8ddc22;">sauce4zwift-mod-tippy/pages/src/BM/settings.mjs</a></li>
-<h2 style="color: #50d621;">sauce4zwift-mod-tippy/src</h2>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/src/estimatedCalories.mjs" style="color: #b68318;">sauce4zwift-mod-tippy/src/estimatedCalories.mjs</a></li>
-<h2 style="color: #97aaf8;">src</h2>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/src/generate_file_list.py" style="color: #e3b6f9;">src/generate_file_list.py</a></li>
-<h2 style="color: #d3980e;">tests</h2>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/MonitorZwift-v2.Tests.ps1" style="color: #57b5e6;">tests/MonitorZwift-v2.Tests.ps1</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/test_OBSActivateAndRecord.ps1" style="color: #83d313;">tests/test_OBSActivateAndRecord.ps1</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/tests_LaunchZwift.ps1" style="color: #dab1a2;">tests/tests_LaunchZwift.ps1</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/tests_MoveZwiftCleanPhotos.ps1" style="color: #898a20;">tests/tests_MoveZwiftCleanPhotos.ps1</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/tests_PowerToysAwake.ps1" style="color: #70b9a7;">tests/tests_PowerToysAwake.ps1</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/tests_SetPrimaryDefault.ps1" style="color: #769f70;">tests/tests_SetPrimaryDefault.ps1</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/tests_SetPrimaryZwift.ps1" style="color: #43cc94;">tests/tests_SetPrimaryZwift.ps1</a></li>
-<h2 style="color: #dba6f2;">tests/old</h2>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/old/tests_MonitorZwift-v2_3.ps1" style="color: #50a7fb;">tests/old/tests_MonitorZwift-v2_3.ps1</a></li></ul>`;
+                            file_list_html = `<ul><h2 style="color: #de98f4;">sauce4zwift-mod-tippy/pages/settings</h2>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/settings/DSNotes.html" style="color: #db6997;">sauce4zwift-mod-tippy/pages/settings/DSNotes.html</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/settings/estimatedFinish.html" style="color: #da63a2;">sauce4zwift-mod-tippy/pages/settings/estimatedFinish.html</a></li>
+<h2 style="color: #85acc1;">sauce4zwift-mod-tippy/pages/src</h2>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/src/DSNotes.mjs" style="color: #c4912c;">sauce4zwift-mod-tippy/pages/src/DSNotes.mjs</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/src/chaseRace.mjs" style="color: #32f212;">sauce4zwift-mod-tippy/pages/src/chaseRace.mjs</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/src/estimatedFinish.mjs" style="color: #52e5b7;">sauce4zwift-mod-tippy/pages/src/estimatedFinish.mjs</a></li>
+<h2 style="color: #88c52c;">sauce4zwift-mod-tippy/pages/src/BM</h2>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/src/BM/common.mjs" style="color: #7ed8e9;">sauce4zwift-mod-tippy/pages/src/BM/common.mjs</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/src/BM/dataLookup.mjs" style="color: #6faebc;">sauce4zwift-mod-tippy/pages/src/BM/dataLookup.mjs</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/src/BM/notesLookup.mjs" style="color: #82b42c;">sauce4zwift-mod-tippy/pages/src/BM/notesLookup.mjs</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/src/BM/settings.mjs" style="color: #c5a755;">sauce4zwift-mod-tippy/pages/src/BM/settings.mjs</a></li>
+<h2 style="color: #57ea38;">sauce4zwift-mod-tippy/src</h2>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/src/estimatedCalories.mjs" style="color: #3be7bb;">sauce4zwift-mod-tippy/src/estimatedCalories.mjs</a></li>
+<h2 style="color: #eeaa95;">src</h2>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/src/generate_file_list.py" style="color: #f5a6fd;">src/generate_file_list.py</a></li>
+<h2 style="color: #f35ad2;">tests</h2>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/MonitorZwift-v2.Tests.ps1" style="color: #5beb40;">tests/MonitorZwift-v2.Tests.ps1</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/test_OBSActivateAndRecord.ps1" style="color: #3f95bd;">tests/test_OBSActivateAndRecord.ps1</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/tests_LaunchZwift.ps1" style="color: #baa471;">tests/tests_LaunchZwift.ps1</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/tests_MoveZwiftCleanPhotos.ps1" style="color: #807ca9;">tests/tests_MoveZwiftCleanPhotos.ps1</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/tests_PowerToysAwake.ps1" style="color: #e5809f;">tests/tests_PowerToysAwake.ps1</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/tests_SetPrimaryDefault.ps1" style="color: #58b7ad;">tests/tests_SetPrimaryDefault.ps1</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/tests_SetPrimaryZwift.ps1" style="color: #44b6b3;">tests/tests_SetPrimaryZwift.ps1</a></li>
+<h2 style="color: #9ec980;">tests/old</h2>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/old/tests_MonitorZwift-v2_3.ps1" style="color: #76ce20;">tests/old/tests_MonitorZwift-v2_3.ps1</a></li></ul>`;
                             break;
                     }
                     placeholder.innerHTML = file_list_html;
@@ -162,116 +162,116 @@ document.addEventListener("DOMContentLoaded", function() {
             let file_list_html = '';
             switch(contentId) {
                 case 'file-list-1':
-                    file_list_html = `<ul><h2 style="color: #e0aaa6;">Repo Root</h2>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.black" style="color: #ff99a2;">.black</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.editorconfig" style="color: #b77d8b;">.editorconfig</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.gitignore" style="color: #54af9f;">.gitignore</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.hintrc" style="color: #90b608;">.hintrc</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.jsbeautifyrc" style="color: #eebd09;">.jsbeautifyrc</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.jscsrc" style="color: #afc28d;">.jscsrc</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.pre-commit-config.yaml" style="color: #caa09b;">.pre-commit-config.yaml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.pre-commit-hooks.yaml" style="color: #c7cd6e;">.pre-commit-hooks.yaml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.prettierignore" style="color: #f09bd9;">.prettierignore</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.prettierrc" style="color: #76a84f;">.prettierrc</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.stylelintrc.json" style="color: #bb8409;">.stylelintrc.json</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.vale.ini" style="color: #5ee8be;">.vale.ini</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/CNAME" style="color: #c6aed3;">CNAME</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/LaunchZwift.ps1" style="color: #d1a404;">LaunchZwift.ps1</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/MonitorZwift-v2.md" style="color: #8ac3bf;">MonitorZwift-v2.md</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/MonitorZwift-v2.ps1" style="color: #73d711;">MonitorZwift-v2.ps1</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/MonitorZwift-v2.ps1%20-%20Shortcut.lnk" style="color: #6bb8b7;">MonitorZwift-v2.ps1 - Shortcut.lnk</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/MonitorZwift.ps1" style="color: #78bf42;">MonitorZwift.ps1</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/MoveZwiftCleanPhotos.ps1" style="color: #4aad57;">MoveZwiftCleanPhotos.ps1</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/README.md" style="color: #5cb448;">README.md</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/SetPrimaryDefault.ps1" style="color: #e0b599;">SetPrimaryDefault.ps1</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/SetPrimaryZwift.ps1" style="color: #76ab39;">SetPrimaryZwift.ps1</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/Zwift-Bike-Combos.xlsx" style="color: #a16dfd;">Zwift-Bike-Combos.xlsx</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/Zwift-Setup.lnk" style="color: #4ca373;">Zwift-Setup.lnk</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/ZwiftSetup.lnk" style="color: #e48a1a;">ZwiftSetup.lnk</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/file_list.md" style="color: #df72aa;">file_list.md</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/filelist.html" style="color: #2eadcb;">filelist.html</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/filelist.md" style="color: #909fab;">filelist.md</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sitemap.xml" style="color: #e4c567;">sitemap.xml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/test.ps1" style="color: #f7c26f;">test.ps1</a></li>
-<h2 style="color: #30e16a;">CSS</h2>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/css/DSNotes.css" style="color: #38a252;">sauce4zwift-mod-tippy/pages/css/DSNotes.css</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/css/ui.css" style="color: #fd789f;">sauce4zwift-mod-tippy/pages/css/ui.css</a></li>
-<h2 style="color: #3790cb;">JavaScript</h2>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.eslintrc.js" style="color: #71cc76;">.eslintrc.js</a></li>
-<h2 style="color: #88bcff;">YAML</h2>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/dependabot.yml" style="color: #6d971d;">.github/dependabot.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/labeler.yml" style="color: #67b19d;">.github/labeler.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/ActionLint.yml" style="color: #bbcf23;">.github/workflows/ActionLint.yml</a></li></ul>`;
+                    file_list_html = `<ul><h2 style="color: #89cb42;">Repo Root</h2>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.black" style="color: #85c26d;">.black</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.editorconfig" style="color: #c3d141;">.editorconfig</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.gitignore" style="color: #35a6f9;">.gitignore</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.hintrc" style="color: #ef972b;">.hintrc</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.jsbeautifyrc" style="color: #a6af90;">.jsbeautifyrc</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.jscsrc" style="color: #2395ee;">.jscsrc</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.pre-commit-config.yaml" style="color: #dc639a;">.pre-commit-config.yaml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.pre-commit-hooks.yaml" style="color: #8db142;">.pre-commit-hooks.yaml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.prettierignore" style="color: #dec0be;">.prettierignore</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.prettierrc" style="color: #c29627;">.prettierrc</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.stylelintrc.json" style="color: #c378fc;">.stylelintrc.json</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.vale.ini" style="color: #95a8d6;">.vale.ini</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/CNAME" style="color: #f762ca;">CNAME</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/LaunchZwift.ps1" style="color: #af82df;">LaunchZwift.ps1</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/MonitorZwift-v2.md" style="color: #a3ba10;">MonitorZwift-v2.md</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/MonitorZwift-v2.ps1" style="color: #7db7b3;">MonitorZwift-v2.ps1</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/MonitorZwift-v2.ps1%20-%20Shortcut.lnk" style="color: #4cdf1c;">MonitorZwift-v2.ps1 - Shortcut.lnk</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/MonitorZwift.ps1" style="color: #568dc4;">MonitorZwift.ps1</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/MoveZwiftCleanPhotos.ps1" style="color: #acab0f;">MoveZwiftCleanPhotos.ps1</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/README.md" style="color: #848e0b;">README.md</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/SetPrimaryDefault.ps1" style="color: #6aa107;">SetPrimaryDefault.ps1</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/SetPrimaryZwift.ps1" style="color: #dea7cf;">SetPrimaryZwift.ps1</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/Zwift-Bike-Combos.xlsx" style="color: #a19b0a;">Zwift-Bike-Combos.xlsx</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/Zwift-Setup.lnk" style="color: #98bbf3;">Zwift-Setup.lnk</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/ZwiftSetup.lnk" style="color: #e19e5a;">ZwiftSetup.lnk</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/file_list.md" style="color: #ed9672;">file_list.md</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/filelist.html" style="color: #72db87;">filelist.html</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/filelist.md" style="color: #e8c291;">filelist.md</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sitemap.xml" style="color: #c4bf51;">sitemap.xml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/test.ps1" style="color: #918dfe;">test.ps1</a></li>
+<h2 style="color: #e0c12d;">CSS</h2>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/css/DSNotes.css" style="color: #9bb272;">sauce4zwift-mod-tippy/pages/css/DSNotes.css</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/css/ui.css" style="color: #ef8a6c;">sauce4zwift-mod-tippy/pages/css/ui.css</a></li>
+<h2 style="color: #46f578;">JavaScript</h2>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.eslintrc.js" style="color: #bbdb10;">.eslintrc.js</a></li>
+<h2 style="color: #78abb7;">YAML</h2>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/dependabot.yml" style="color: #b1b6b3;">.github/dependabot.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/labeler.yml" style="color: #96dc44;">.github/labeler.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/ActionLint.yml" style="color: #5ebd42;">.github/workflows/ActionLint.yml</a></li></ul>`;
                     break;
                 case 'file-list-2':
-                    file_list_html = `<ul><li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/codeql.yml" style="color: #c18e0f;">.github/workflows/codeql.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/defender.yml" style="color: #29ec95;">.github/workflows/defender.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/dependency-review.yml" style="color: #f87caa;">.github/workflows/dependency-review.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/generate-file-list.yml" style="color: #8d8472;">.github/workflows/generate-file-list.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/greetings.yml" style="color: #4cdb54;">.github/workflows/greetings.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/jekyll-gh-pages.yml" style="color: #60c7b9;">.github/workflows/jekyll-gh-pages.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/label.yml" style="color: #d56dfc;">.github/workflows/label.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/ossar.yml" style="color: #ceac86;">.github/workflows/ossar.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/osv-scanner.yml" style="color: #56c03c;">.github/workflows/osv-scanner.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/scorecards.yml" style="color: #667dee;">.github/workflows/scorecards.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/sitemap.yml" style="color: #78ea50;">.github/workflows/sitemap.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/stale.yml" style="color: #6090cd;">.github/workflows/stale.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/static.yml" style="color: #8daaf2;">.github/workflows/static.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/super-linter.yml" style="color: #ee8498;">.github/workflows/super-linter.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.markdownlint.yml" style="color: #47ac15;">.markdownlint.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.scss-lint.yml" style="color: #57cab9;">.scss-lint.yml</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/_config.yml" style="color: #23ea21;">_config.yml</a></li>
-<h2 style="color: #2ad79e;">.vscode</h2>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.vscode/generate_file_list.py" style="color: #6d94a0;">.vscode/generate_file_list.py</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.vscode/launch.json" style="color: #81c0d3;">.vscode/launch.json</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.vscode/settings.json" style="color: #cec185;">.vscode/settings.json</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.vscode/tasks.json" style="color: #49d376;">.vscode/tasks.json</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.vscode/test_generate_file_list.py" style="color: #d49784;">.vscode/test_generate_file_list.py</a></li>
-<h2 style="color: #86e703;">sauce4zwift-mod-tippy</h2>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/.gitignore" style="color: #efa66b;">sauce4zwift-mod-tippy/.gitignore</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/Change%20Log.txt" style="color: #3cb086;">sauce4zwift-mod-tippy/Change Log.txt</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/LICENSE" style="color: #43cae0;">sauce4zwift-mod-tippy/LICENSE</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/README.md" style="color: #90ccf5;">sauce4zwift-mod-tippy/README.md</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/manifest.json" style="color: #2aa46a;">sauce4zwift-mod-tippy/manifest.json</a></li>
-<h2 style="color: #88aa50;">sauce4zwift-mod-tippy/pages</h2>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/DSNotes.html" style="color: #46b2fc;">sauce4zwift-mod-tippy/pages/DSNotes.html</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/chaseRace.html" style="color: #e89ed7;">sauce4zwift-mod-tippy/pages/chaseRace.html</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/estimatedCalories.html" style="color: #84d472;">sauce4zwift-mod-tippy/pages/estimatedCalories.html</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/estimatedFinish-v1.html" style="color: #9aaad2;">sauce4zwift-mod-tippy/pages/estimatedFinish-v1.html</a></li>
-<h2 style="color: #b3c498;">sauce4zwift-mod-tippy/pages/images</h2>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/images/checker_640.png" style="color: #a38df6;">sauce4zwift-mod-tippy/pages/images/checker_640.png</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/images/greenConnect.png" style="color: #90cf8e;">sauce4zwift-mod-tippy/pages/images/greenConnect.png</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/images/orangeConnect.png" style="color: #bd8482;">sauce4zwift-mod-tippy/pages/images/orangeConnect.png</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/images/redConnect.png" style="color: #e4a10b;">sauce4zwift-mod-tippy/pages/images/redConnect.png</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/images/whiteConnect.png" style="color: #a9b174;">sauce4zwift-mod-tippy/pages/images/whiteConnect.png</a></li></ul>`;
+                    file_list_html = `<ul><li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/codeql.yml" style="color: #e3bb6f;">.github/workflows/codeql.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/defender.yml" style="color: #e5956f;">.github/workflows/defender.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/dependency-review.yml" style="color: #4fd001;">.github/workflows/dependency-review.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/generate-file-list.yml" style="color: #cd8a41;">.github/workflows/generate-file-list.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/greetings.yml" style="color: #ffb6b1;">.github/workflows/greetings.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/jekyll-gh-pages.yml" style="color: #d5a15c;">.github/workflows/jekyll-gh-pages.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/label.yml" style="color: #4bf171;">.github/workflows/label.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/ossar.yml" style="color: #9e7878;">.github/workflows/ossar.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/osv-scanner.yml" style="color: #5eac4d;">.github/workflows/osv-scanner.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/scorecards.yml" style="color: #81b5eb;">.github/workflows/scorecards.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/sitemap.yml" style="color: #3ac322;">.github/workflows/sitemap.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/stale.yml" style="color: #88c745;">.github/workflows/stale.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/static.yml" style="color: #d7aff5;">.github/workflows/static.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.github/workflows/super-linter.yml" style="color: #92e903;">.github/workflows/super-linter.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.markdownlint.yml" style="color: #97c30e;">.markdownlint.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.scss-lint.yml" style="color: #439c2f;">.scss-lint.yml</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/_config.yml" style="color: #73add1;">_config.yml</a></li>
+<h2 style="color: #25ebc7;">.vscode</h2>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.vscode/generate_file_list.py" style="color: #aa7f3a;">.vscode/generate_file_list.py</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.vscode/launch.json" style="color: #dcbd19;">.vscode/launch.json</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.vscode/settings.json" style="color: #31c3b4;">.vscode/settings.json</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.vscode/tasks.json" style="color: #44b6cf;">.vscode/tasks.json</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/.vscode/test_generate_file_list.py" style="color: #22e908;">.vscode/test_generate_file_list.py</a></li>
+<h2 style="color: #6ec30b;">sauce4zwift-mod-tippy</h2>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/.gitignore" style="color: #3da751;">sauce4zwift-mod-tippy/.gitignore</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/Change%20Log.txt" style="color: #42ae76;">sauce4zwift-mod-tippy/Change Log.txt</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/LICENSE" style="color: #2cc2b1;">sauce4zwift-mod-tippy/LICENSE</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/README.md" style="color: #98b8e2;">sauce4zwift-mod-tippy/README.md</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/manifest.json" style="color: #4ba63f;">sauce4zwift-mod-tippy/manifest.json</a></li>
+<h2 style="color: #acd52f;">sauce4zwift-mod-tippy/pages</h2>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/DSNotes.html" style="color: #94de7f;">sauce4zwift-mod-tippy/pages/DSNotes.html</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/chaseRace.html" style="color: #a1b890;">sauce4zwift-mod-tippy/pages/chaseRace.html</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/estimatedCalories.html" style="color: #84cf1a;">sauce4zwift-mod-tippy/pages/estimatedCalories.html</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/estimatedFinish-v1.html" style="color: #2dbf3e;">sauce4zwift-mod-tippy/pages/estimatedFinish-v1.html</a></li>
+<h2 style="color: #f1c556;">sauce4zwift-mod-tippy/pages/images</h2>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/images/checker_640.png" style="color: #a0b807;">sauce4zwift-mod-tippy/pages/images/checker_640.png</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/images/greenConnect.png" style="color: #77b3a8;">sauce4zwift-mod-tippy/pages/images/greenConnect.png</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/images/orangeConnect.png" style="color: #ff8a73;">sauce4zwift-mod-tippy/pages/images/orangeConnect.png</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/images/redConnect.png" style="color: #c564da;">sauce4zwift-mod-tippy/pages/images/redConnect.png</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/images/whiteConnect.png" style="color: #909e8c;">sauce4zwift-mod-tippy/pages/images/whiteConnect.png</a></li></ul>`;
                     break;
                 case 'file-list-3':
-                    file_list_html = `<ul><h2 style="color: #bc8bd8;">sauce4zwift-mod-tippy/pages/settings</h2>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/settings/DSNotes.html" style="color: #91d124;">sauce4zwift-mod-tippy/pages/settings/DSNotes.html</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/settings/estimatedFinish.html" style="color: #d88623;">sauce4zwift-mod-tippy/pages/settings/estimatedFinish.html</a></li>
-<h2 style="color: #3fb977;">sauce4zwift-mod-tippy/pages/src</h2>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/src/DSNotes.mjs" style="color: #c2bce2;">sauce4zwift-mod-tippy/pages/src/DSNotes.mjs</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/src/chaseRace.mjs" style="color: #cf779f;">sauce4zwift-mod-tippy/pages/src/chaseRace.mjs</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/src/estimatedFinish.mjs" style="color: #b1cb36;">sauce4zwift-mod-tippy/pages/src/estimatedFinish.mjs</a></li>
-<h2 style="color: #6cdc12;">sauce4zwift-mod-tippy/pages/src/BM</h2>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/src/BM/common.mjs" style="color: #22deee;">sauce4zwift-mod-tippy/pages/src/BM/common.mjs</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/src/BM/dataLookup.mjs" style="color: #8fe505;">sauce4zwift-mod-tippy/pages/src/BM/dataLookup.mjs</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/src/BM/notesLookup.mjs" style="color: #77cb92;">sauce4zwift-mod-tippy/pages/src/BM/notesLookup.mjs</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/src/BM/settings.mjs" style="color: #8ddc22;">sauce4zwift-mod-tippy/pages/src/BM/settings.mjs</a></li>
-<h2 style="color: #50d621;">sauce4zwift-mod-tippy/src</h2>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/src/estimatedCalories.mjs" style="color: #b68318;">sauce4zwift-mod-tippy/src/estimatedCalories.mjs</a></li>
-<h2 style="color: #97aaf8;">src</h2>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/src/generate_file_list.py" style="color: #e3b6f9;">src/generate_file_list.py</a></li>
-<h2 style="color: #d3980e;">tests</h2>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/MonitorZwift-v2.Tests.ps1" style="color: #57b5e6;">tests/MonitorZwift-v2.Tests.ps1</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/test_OBSActivateAndRecord.ps1" style="color: #83d313;">tests/test_OBSActivateAndRecord.ps1</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/tests_LaunchZwift.ps1" style="color: #dab1a2;">tests/tests_LaunchZwift.ps1</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/tests_MoveZwiftCleanPhotos.ps1" style="color: #898a20;">tests/tests_MoveZwiftCleanPhotos.ps1</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/tests_PowerToysAwake.ps1" style="color: #70b9a7;">tests/tests_PowerToysAwake.ps1</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/tests_SetPrimaryDefault.ps1" style="color: #769f70;">tests/tests_SetPrimaryDefault.ps1</a></li>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/tests_SetPrimaryZwift.ps1" style="color: #43cc94;">tests/tests_SetPrimaryZwift.ps1</a></li>
-<h2 style="color: #dba6f2;">tests/old</h2>
-<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/old/tests_MonitorZwift-v2_3.ps1" style="color: #50a7fb;">tests/old/tests_MonitorZwift-v2_3.ps1</a></li></ul>`;
+                    file_list_html = `<ul><h2 style="color: #de98f4;">sauce4zwift-mod-tippy/pages/settings</h2>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/settings/DSNotes.html" style="color: #db6997;">sauce4zwift-mod-tippy/pages/settings/DSNotes.html</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/settings/estimatedFinish.html" style="color: #da63a2;">sauce4zwift-mod-tippy/pages/settings/estimatedFinish.html</a></li>
+<h2 style="color: #85acc1;">sauce4zwift-mod-tippy/pages/src</h2>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/src/DSNotes.mjs" style="color: #c4912c;">sauce4zwift-mod-tippy/pages/src/DSNotes.mjs</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/src/chaseRace.mjs" style="color: #32f212;">sauce4zwift-mod-tippy/pages/src/chaseRace.mjs</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/src/estimatedFinish.mjs" style="color: #52e5b7;">sauce4zwift-mod-tippy/pages/src/estimatedFinish.mjs</a></li>
+<h2 style="color: #88c52c;">sauce4zwift-mod-tippy/pages/src/BM</h2>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/src/BM/common.mjs" style="color: #7ed8e9;">sauce4zwift-mod-tippy/pages/src/BM/common.mjs</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/src/BM/dataLookup.mjs" style="color: #6faebc;">sauce4zwift-mod-tippy/pages/src/BM/dataLookup.mjs</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/src/BM/notesLookup.mjs" style="color: #82b42c;">sauce4zwift-mod-tippy/pages/src/BM/notesLookup.mjs</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/pages/src/BM/settings.mjs" style="color: #c5a755;">sauce4zwift-mod-tippy/pages/src/BM/settings.mjs</a></li>
+<h2 style="color: #57ea38;">sauce4zwift-mod-tippy/src</h2>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/sauce4zwift-mod-tippy/src/estimatedCalories.mjs" style="color: #3be7bb;">sauce4zwift-mod-tippy/src/estimatedCalories.mjs</a></li>
+<h2 style="color: #eeaa95;">src</h2>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/src/generate_file_list.py" style="color: #f5a6fd;">src/generate_file_list.py</a></li>
+<h2 style="color: #f35ad2;">tests</h2>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/MonitorZwift-v2.Tests.ps1" style="color: #5beb40;">tests/MonitorZwift-v2.Tests.ps1</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/test_OBSActivateAndRecord.ps1" style="color: #3f95bd;">tests/test_OBSActivateAndRecord.ps1</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/tests_LaunchZwift.ps1" style="color: #baa471;">tests/tests_LaunchZwift.ps1</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/tests_MoveZwiftCleanPhotos.ps1" style="color: #807ca9;">tests/tests_MoveZwiftCleanPhotos.ps1</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/tests_PowerToysAwake.ps1" style="color: #e5809f;">tests/tests_PowerToysAwake.ps1</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/tests_SetPrimaryDefault.ps1" style="color: #58b7ad;">tests/tests_SetPrimaryDefault.ps1</a></li>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/tests_SetPrimaryZwift.ps1" style="color: #44b6b3;">tests/tests_SetPrimaryZwift.ps1</a></li>
+<h2 style="color: #9ec980;">tests/old</h2>
+<li><a href="https://github.com/step-security-bot/ZwiftScripts/blob/main/tests/old/tests_MonitorZwift-v2_3.ps1" style="color: #76ce20;">tests/old/tests_MonitorZwift-v2_3.ps1</a></li></ul>`;
                     break;
             }
             placeholder.innerHTML = file_list_html;
